@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "import"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-debugger": "off",
+    "no-console": 0,
+    "class-methods-use-this": "off",
+    "@typescript-eslint/no-explicit-any": 2
+  },
+  "root": true
+}
