@@ -22,7 +22,7 @@ export default {
     new HtmlWebpackPlugin({
       title: 'Online store',
       filename: 'index.html',
-      template: './src/mainPage/index.html',
+      template: './src/pages/main/index.html',
       inject: 'body',
       minify: false,
     }),
