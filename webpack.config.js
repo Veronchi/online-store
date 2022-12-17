@@ -11,6 +11,7 @@ export default {
   output: {
     filename: './bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -20,7 +21,6 @@ export default {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Online store',
       filename: 'index.html',
       template: './src/pages/main/index.html',
       inject: 'body',
@@ -33,8 +33,12 @@ export default {
   module: {
     rules: [
       {
+        test: /\.html$/i,
+        loader: 'html-loader',
+      },
+      {
         test: /\.(sa|sc|c)ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: ['style-loader', 'css-loader', 'resolve-url-loader', 'sass-loader'],
       },
       {
         test: /\.tsx?$/,
