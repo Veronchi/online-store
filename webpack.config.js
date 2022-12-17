@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 export default {
   mode: 'development',
   entry: {
-    app: './src/script.ts',
+    main: './src/script.ts',
     page404: './src/pages/page-404/script-404.ts' //разделил вход для скриптов
   },
   output: {
@@ -31,7 +31,6 @@ export default {
       minify: false,
     }),
     new HtmlWebpackPlugin({ //страница 404 html
-      title: 'Online store',
       filename: 'page-404.html',
       template: './src/pages/page-404/page-404.html',
       inject: 'body',
