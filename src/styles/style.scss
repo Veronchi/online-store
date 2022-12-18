@@ -1,0 +1,116 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.body {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.header {
+  background-color: $primary-dark;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  &__logo {
+    margin: 0;
+  }
+
+  &__link {
+    text-decoration: none;
+    color: $primary;
+    border-radius: 10px;
+  }
+
+  &__total {
+    color: $primary;
+    line-height: 26px;
+    font-weight: 600;
+  }
+}
+
+.cart {
+  position: relative;
+  text-decoration: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: -15px;
+    width: 16px;
+    height: 16px;
+    background-image: url('../assets/icons/basket.svg');
+    fill: $primary;
+  }
+
+  &__link {
+    text-decoration: none;
+  }
+
+  &__amount {
+    color: $primary;
+    line-height: 35px;
+    font-weight: 600;
+  }
+}
+
+.footer {
+  background-color: $primary-dark;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  &__item {
+    color: $primary;
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &_gh-link {
+      position: relative;
+      padding-left: 25px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        background-image: url('../assets/icons/github.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+    }
+
+    &_rss-link {
+      line-height: 0;
+
+      .img {
+        width: 100px;
+        height: 40px;
+      }
+    }
+  }
+}

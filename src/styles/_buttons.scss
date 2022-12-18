@@ -1,0 +1,16 @@
+@mixin button {
+  width: 100px;
+  border: 2px solid $gray;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 37px;
+  color: $gray;
+  background-color: transparent;
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid $blue;
+    color: $blue;
+  }
+}
