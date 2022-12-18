@@ -45,6 +45,7 @@
 
 .cart {
   position: relative;
+  text-decoration: none;
 
   &::before {
     content: '';
@@ -55,6 +56,10 @@
     height: 16px;
     background-image: url('../assets/icons/basket.svg');
     fill: $primary;
+  }
+
+  &__link {
+    text-decoration: none;
   }
 
   &__amount {
