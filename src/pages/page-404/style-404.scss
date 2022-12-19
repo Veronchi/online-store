@@ -1,0 +1,70 @@
+@import '../../styles/palette.scss';
+@import '../../styles/style.scss';
+@import '../../styles/normalize.css';
+@import '../../styles/fonts.css';
+
+.body {
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.error__content {
+  margin: auto;
+  min-width: 30vw;
+  padding: 20px;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #F5F7FF;
+  border: 5px solid #0156FF;
+  border-radius: 20px;
+  transition: all 0.1s ease;
+}
+
+.error__title {
+  margin: 0 auto;
+  font-size: 4rem;
+  color: #C94D3F;
+}
+
+.error__desc {
+  margin: 0 auto;
+  font-size: 2em;
+  color: #666666;
+}
+
+.footer {
+  height: 100px;
+  background: #000000;
+}
+
+.footer__items {
+  display: flex;
+  justify-content: space-around;
+  align-items: center; 
+  height: 100px;
+  list-style: none;
+  color: #CACDD8;
+  font-size: 20px;
+}
+
+.footer__link {
+  color: #CACDD8;
+  text-decoration: none;    
+}
+
+.footer__logo {
+  height: 60px;
+}

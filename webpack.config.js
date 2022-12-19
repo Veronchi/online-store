@@ -1,15 +1,19 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { fileURLToPath } from 'url';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'; //для очистки dist
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
   mode: 'development',
-  entry: './src/script.ts',
+  entry: {
+    main: './src/script.ts',
+    page404: './src/pages/page-404/script-404.ts' //разделил вход для скриптов
+  },
   output: {
-    filename: './bundle.js',
+    filename: './[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'inline-source-map',
@@ -25,6 +29,13 @@ export default {
       inject: 'body',
       minify: false,
     }),
+    new HtmlWebpackPlugin({ //страница 404 html
+      filename: 'page-404.html',
+      template: './src/pages/page-404/page-404.html',
+      inject: 'body',
+      minify: false,
+    }),
+    new CleanWebpackPlugin(), //очистка dist
   ],
   resolve: {
     extensions: ['.ts', '.js'],
