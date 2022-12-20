@@ -2,4 +2,237 @@
 @import '../../styles/style.scss';
 @import '../../styles/normalize.css';
 @import '../../styles/fonts.css';
+@import '../../styles/buttons';
 
+.details {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    margin: 0 auto;
+    padding: 20px 20px;
+    width: 100%;
+    display: flex;
+    gap: 40px;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+    @media (max-width: 800px) {
+      &__header {
+        padding: 20px 10px;
+        gap: 10px;
+      }
+    }
+    
+    &__cost {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 800px) {
+      &__cost {
+        font-size: 1.3rem;
+      }
+    }
+
+    &__cart,
+    &__buy {
+        @include button;
+    }
+    
+    @media (max-width: 800px) {
+    
+      &__cart,
+      &__buy {
+        width: 75px;
+        height: 30px;
+        font-size: 12px;
+        line-height: 25px;
+      }
+    
+    }
+
+    &__wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    
+    @media (max-width: 800px) {
+    
+      &__wrapper {
+        flex-direction: column-reverse;
+      }
+    
+    }
+
+    &__photo {
+      position: relative;
+      width: 50%;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__photo {
+        width: 100%;
+      }
+    
+    }
+
+    &__discount {
+      position: absolute;
+      padding: 10px 0;
+      left: 5%;
+      top: 40px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      color: $red;
+      background-color: $yellow;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 800px) {
+    
+      &__discount {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+      }
+    
+    }
+    
+    &__container {
+      width: 75%;
+      height: 100%;
+    }
+    
+    &__image {
+      width: 100%;
+      height: 100%;
+      background-image: url("https://items.s1.citilink.ru/1840548_v01_b.jpg");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: 0.5s ease-out;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__image {
+        min-height: 200px;
+      }
+    
+    }
+
+    &__thumbnail {
+      width: 60px;
+      height: 50px;
+      border: none;
+      cursor: pointer;
+      transition: 0.5s;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__thumbnail {
+        width: 50px;
+        height: 42px;
+      }
+    
+    }
+
+    &__thumbnails {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 0;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__thumbnails {
+        gap: 10px;
+      }
+    
+    }
+
+    &__thumbnail_checked,
+    &__thumbnail:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+}
+
+.description {
+  width: 50%;
+  padding: 20px;
+  background-color: $light-blue;
+  color: $primary-dark;
+
+  @media (max-width: 800px) {
+  
+    & {
+      width: 100%;
+    }
+  
+  }
+
+  &____path {
+    padding: 20px 0;
+  }
+
+  &__title {
+    padding: 10px 20px;
+  }
+
+  &__caption {
+    padding: 5px 10px;
+    background-color: $gray;
+    border-radius: 10px;
+  }
+
+  &__info {
+    padding: 10px 20px;
+  }
+
+}
+
+
+.details__thumbnail:nth-child(1) {
+  background-image: url("https://items.s1.citilink.ru/1840548_v01_b.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.details__thumbnail:nth-child(2) {
+  background-image: url("https://items.s1.citilink.ru/1840548_v02_b.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.details__thumbnail:nth-child(3) {
+  background-image: url("https://items.s1.citilink.ru/1840548_v03_b.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.details__thumbnail:nth-child(4) {
+  background-image: url("https://items.s1.citilink.ru/1840548_v04_b.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
