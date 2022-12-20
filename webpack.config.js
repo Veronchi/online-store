@@ -10,7 +10,8 @@ export default {
   mode: 'development',
   entry: {
     main: './src/script.ts',
-    page404: './src/pages/page-404/script-404.ts' //разделил вход для скриптов
+    page404: './src/pages/page-404/script-404.ts', //разделил вход для скриптов
+    details: './src/pages/details/script-details.ts',
   },
   output: {
     filename: './[name].bundle.js',
@@ -32,6 +33,12 @@ export default {
     new HtmlWebpackPlugin({ //страница 404 html
       filename: 'page-404.html',
       template: './src/pages/page-404/page-404.html',
+      inject: 'body',
+      minify: false,
+    }),
+    new HtmlWebpackPlugin({ //страница details html
+      filename: 'details.html',
+      template: './src/pages/details/details.html',
       inject: 'body',
       minify: false,
     }),
