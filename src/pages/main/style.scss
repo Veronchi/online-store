@@ -327,8 +327,20 @@
     color: $primary-dark;
   }
 
+  .wrapper {
+    width: 100%;
+
+    &_row {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      width: 100%;
+      gap: 80px;
+    }
+  }
+
   .img-wrapper {
-    width: 150px;
+    width: 270px;
     height: 150px;
     display: flex;
     flex-direction: column;
@@ -338,7 +350,7 @@
   }
 
   &__img {
-    width: 100%;
+    width: 50%;
     object-fit: contain;
     overflow: hidden;
   }
@@ -346,6 +358,7 @@
   &__title {
     font-size: 16px;
     line-height: 35px;
+    text-align: center;
     margin: 0;
     margin-bottom: 10px;
   }

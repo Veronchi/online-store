@@ -68,13 +68,26 @@ class RendererProducts {
   }
 
   public changeProdLayout(e: Event) {
-    console.log(1111);
+    const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
+    const elCollection: NodeListOf<HTMLDivElement> = document.querySelectorAll('.wrapper');
+    const wrapper: Array<HTMLDivElement> = Array.from(elCollection);
+    const targetClass = (e.target as HTMLButtonElement).className;
+
+    if (targetClass.includes('layout__btn_row')) {
+      catalog?.classList.add('products__catalog_row');
+      wrapper.map((i) => i.classList.add('wrapper_row'));
+    } else {
+      catalog?.classList.remove('products__catalog_row');
+      wrapper.map((i) => i.classList.remove('wrapper_row'));
+    }
   }
 
   private createProductItem(product: IProduct): HTMLLIElement {
     const li = document.createElement('li');
     const link = document.createElement('a');
     const wrapper = document.createElement('div');
+    const imgWrapper = document.createElement('div');
+    const descWrapper = document.createElement('div');
     const img = document.createElement('img');
     const title = document.createElement('h2');
     const rate = document.createElement('div');
@@ -85,7 +98,8 @@ class RendererProducts {
 
     li.className = 'product';
     link.className = 'product__link';
-    wrapper.className = 'img-wrapper';
+    wrapper.className = 'wrapper';
+    imgWrapper.className = 'img-wrapper';
     img.className = 'product__img';
     title.className = 'product__title';
     rate.className = 'product__feature product__feature_rate';
@@ -98,17 +112,19 @@ class RendererProducts {
     img.src = product.images[0];
     title.innerText = product.title;
     rateNum.innerText = product.rating + '';
-    discount.innerText = `Discount: ${product.discountPercentage}`;
+    discount.innerText = `Discount: ${product.discountPercentage}%`;
     price.innerText = `${product.price}$`;
     btn.innerText = 'add to cart';
 
-    wrapper.append(img);
-    link.append(wrapper);
-    link.append(title);
+    imgWrapper.append(img);
+    wrapper.append(imgWrapper);
+    wrapper.append(title);
     rate.append(rateNum);
-    link.append(rate);
-    link.append(discount);
-    link.append(price);
+    descWrapper.append(rate);
+    descWrapper.append(discount);
+    descWrapper.append(price);
+    wrapper.append(descWrapper);
+    link.append(wrapper);
     link.append(btn);
     li.append(link);
 
