@@ -7,6 +7,10 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "strict": true,
+    "lib": [
+      "ES2021",
+      "DOM"
+    ]
   },
   "include": [
     "src/**/*"
