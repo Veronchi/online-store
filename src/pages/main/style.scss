@@ -279,17 +279,23 @@
 .layout {
   &__btn {
     position: relative;
-    width: 23px;
-    height: 23px;
+    width: 24px;
+    height: 24px;
     background-color: transparent;
     border: none;
     cursor: pointer;
+    padding: 0;
+
+    &_active {
+      border: 1px solid $blue;
+      border-radius: 5px;
+    }
 
     &::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 1px;
+      left: 1px;
       width: 20px;
       height: 20px;
       background-repeat: no-repeat;
@@ -301,14 +307,12 @@
     }
 
     &_row::after {
-      width: 23px;
-      height: 23px;
-      background-image: url('../../assets/icons/row-layout.svg');
+      background-image: url('../../assets/icons/view-stacked.svg');
     }
   }
 
   &__btn + &__btn {
-    margin-left: 15px;
+    margin-left: 10px;
   }
 }
 

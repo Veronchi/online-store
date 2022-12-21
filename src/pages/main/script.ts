@@ -1,4 +1,8 @@
 import { products, IProduct } from '../../products';
+// const url = new URL(window.location.href);
+// const searchParams = new URLSearchParams(url.search);
+// searchParams.set('asd', 'zzz');
+// window.location.search = searchParams.toString();
 
 interface IRenderProps {
   rootElement: string;
@@ -71,14 +75,23 @@ class RendererProducts {
     const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
     const elCollection: NodeListOf<HTMLDivElement> = document.querySelectorAll('.wrapper');
     const wrapper: Array<HTMLDivElement> = Array.from(elCollection);
-    const targetClass = (e.target as HTMLButtonElement).className;
+    const target = e.target as HTMLButtonElement;
+    const targetClass = target.className;
 
-    if (targetClass.includes('layout__btn_row')) {
-      catalog?.classList.add('products__catalog_row');
-      wrapper.map((i) => i.classList.add('wrapper_row'));
-    } else {
-      catalog?.classList.remove('products__catalog_row');
-      wrapper.map((i) => i.classList.remove('wrapper_row'));
+    if (target.nodeName === 'BUTTON') {
+      if (targetClass.includes('layout__btn_row')) {
+        target.previousElementSibling?.classList.remove('layout__btn_active');
+        target.classList.add('layout__btn_active');
+
+        catalog?.classList.add('products__catalog_row');
+        wrapper.map((i) => i.classList.add('wrapper_row'));
+      } else {
+        target.nextElementSibling?.classList.remove('layout__btn_active');
+        target.classList.add('layout__btn_active');
+
+        catalog?.classList.remove('products__catalog_row');
+        wrapper.map((i) => i.classList.remove('wrapper_row'));
+      }
     }
   }
 
