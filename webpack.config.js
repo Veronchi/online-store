@@ -29,18 +29,23 @@ export default {
       template: './src/pages/main/index.html',
       inject: 'body',
       minify: false,
+      chunks: ['main'],
     }),
-    new HtmlWebpackPlugin({ //страница 404 html
+    new HtmlWebpackPlugin({
+      //страница 404 html
       filename: 'page-404.html',
       template: './src/pages/page-404/page-404.html',
       inject: 'body',
       minify: false,
+      chunks: ['page404'],
     }),
-    new HtmlWebpackPlugin({ //страница details html
+    new HtmlWebpackPlugin({
+      //страница details html
       filename: 'details.html',
       template: './src/pages/details/details.html',
       inject: 'body',
       minify: false,
+      chunks: ['details'],
     }),
     new CleanWebpackPlugin(), //очистка dist
   ],
