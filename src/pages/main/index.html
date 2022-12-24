@@ -99,22 +99,33 @@
             <h4 class="filters__label">Price</h4>
             <div class="range-filter">
               <div class="range-filter__content">
-                <span class="amount_start">$10</span>
-                <span class="amount_end">$100000</span>
+                <span class="amount__start amount__start_price">$0</span>
+                <span class="amount__end amount__end_price">$1000</span>
               </div>
-              <input class="range-filter__input" type="range" name="price-amount" min="0" max="100" step="1" value="75">
+              <div class="range-filter__control range-filter__control_price">
+                <input class="range-filter__input range-filter__input_from" id="from-price" type="range" value="0"
+                  min="0" max="1000" />
+                <input class="range-filter__input range-filter__input_to" id="to-price" type="range" value="1000"
+                  min="0" max="1000" />
+              </div>
             </div>
           </div>
           <div class="filters__section">
             <h4 class="filters__label">Stock</h4>
             <div class="range-filter">
               <div class="range-filter__content">
-                <span class="amount_start">2</span>
-                <span class="amount_end">100</span>
+                <span class="amount__start amount__start_num">2</span>
+                <span class="amount__end amount__end_num">100</span>
               </div>
-              <input class="range-filter__input" type="range" name="price-amount" min="0" max="100" step="1" value="75">
+              <div class="range-filter__control range-filter__control_stock">
+                <input class="range-filter__input range-filter__input_from" id="from-stock" type="range" value="10"
+                  min="0" max="100" />
+                <input class="range-filter__input range-filter__input_to" id="to-stock" type="range" value="40" min="0"
+                  max="100" />
+              </div>
             </div>
-            <div>
+          </div>
+          <div>
         </aside>
         <section class="products">
           <div class="products__panel">

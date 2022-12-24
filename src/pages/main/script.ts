@@ -7,7 +7,6 @@ import RouterProducts from './routerProducts';
 class Controller {
   private renderer: RendererProducts;
   private filter: Filter;
-  // private router: Router;
   private routerProducts: RouterProducts;
   private data: Array<IProduct>;
 
@@ -38,6 +37,8 @@ class Controller {
 
   private initEvents() {
     this.handlerProductLayout();
+    this.handlePriceFilter();
+    this.handleStockFilter();
   }
 
   private handlerProductLayout() {
@@ -48,6 +49,22 @@ class Controller {
         this.renderer.onChangeProductLayout(e);
         // this.routerProducts.onChangeProductLayout(btnWrapper);
       });
+    }
+  }
+
+  private handlePriceFilter() {
+    const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
+
+    if (priceFilter) {
+      priceFilter.addEventListener('change', (e) => this.filter.onChangePriceAmount(e));
+    }
+  }
+
+  private handleStockFilter() {
+    const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
+
+    if (stockFilter) {
+      stockFilter.addEventListener('change', (e) => this.filter.onChangeStockAmount(e));
     }
   }
 }
