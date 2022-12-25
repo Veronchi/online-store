@@ -1,7 +1,7 @@
 import { products } from '../../products';
 import Filter from './filter';
 import { IProduct, IRenderProps } from './interface';
-import RendererProducts from './renderer';
+import RendererProducts from './productRenderer';
 import RouterProducts from './routerProducts';
 
 class Controller {
@@ -47,7 +47,7 @@ class Controller {
     if (btnWrapper) {
       btnWrapper.addEventListener('click', (e) => {
         this.renderer.onChangeProductLayout(e);
-        // this.routerProducts.onChangeProductLayout(btnWrapper);
+        this.routerProducts.onChangeProductLayout(btnWrapper);
       });
     }
   }
