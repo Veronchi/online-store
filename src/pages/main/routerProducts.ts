@@ -11,8 +11,10 @@ export default class RouterProducts extends Router {
     const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
 
     if (active && active.className.includes('layout__btn_row')) {
+      this.deleteParam('productLayout');
       this.appendParam('productLayout', 'row');
     } else {
+      this.deleteParam('productLayout');
       this.appendParam('productLayout', 'grid');
     }
   }
