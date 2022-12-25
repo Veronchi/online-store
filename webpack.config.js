@@ -47,8 +47,8 @@ export default {
       inject: false,
     }),
     new HtmlWebpackPlugin({
-      filename: 'page-404.html',
-      template: './src/components/404/page-404.html',
+      filename: 'page404.html',
+      template: './src/components/404/page404.html',
       inject: false,
     }),
     new CleanWebpackPlugin(), //очистка dist

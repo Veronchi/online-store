@@ -1,5 +1,5 @@
 import Component from '../../common/component';
-import './style-404.scss';
+import './style404.scss';
 
 export default class ErrorPage extends Component {
   constructor(name: string) {
