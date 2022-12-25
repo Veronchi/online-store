@@ -1,4 +1,4 @@
-import { IProduct } from './pages/main/interface';
+import { IProduct } from './common/interface';
 export { products };
 
 const products: IProduct[] = [

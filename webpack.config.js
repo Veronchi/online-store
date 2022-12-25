@@ -8,11 +8,7 @@ const __dirname = path.dirname(__filename);
 
 export default {
   mode: 'development',
-  entry: {
-    main: './src/script.ts',
-    page404: './src/pages/page-404/script-404.ts', //разделил вход для скриптов
-    details: './src/pages/details/script-details.ts',
-  },
+  entry: './src/script.ts',
   output: {
     filename: './[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
@@ -26,26 +22,34 @@ export default {
   plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './src/pages/main/index.html',
+      template: './src/index.html',
       inject: 'body',
       minify: false,
-      chunks: ['main'],
     }),
     new HtmlWebpackPlugin({
-      //страница 404 html
-      filename: 'page-404.html',
-      template: './src/pages/page-404/page-404.html',
-      inject: 'body',
-      minify: false,
-      chunks: ['page404'],
-    }),
-    new HtmlWebpackPlugin({
-      //страница details html
       filename: 'details.html',
-      template: './src/pages/details/details.html',
-      inject: 'body',
-      minify: false,
-      chunks: ['details'],
+      template: './src/components/details/index.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'main.html',
+      template: './src/components/main/index.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'header.html',
+      template: './src/components/header/index.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'footer.html',
+      template: './src/components/footer/index.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'page-404.html',
+      template: './src/components/404/page-404.html',
+      inject: false,
     }),
     new CleanWebpackPlugin(), //очистка dist
   ],

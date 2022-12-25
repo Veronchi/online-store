@@ -1,10 +1,16 @@
-import { IProduct } from './interface';
+import { IProduct } from '../../common/interface';
 
 export default class RendererProducts {
   private rootElement: HTMLUListElement | null;
+  private rootElementName: string;
 
-  constructor(rootElement: string) {
-    this.rootElement = document.querySelector(rootElement);
+  constructor(rootElementName: string) {
+    this.rootElementName = rootElementName;
+    this.rootElement = null;
+  }
+
+  init() {
+    this.rootElement = document.querySelector(this.rootElementName);
   }
 
   public render(data: Array<IProduct>): void {

@@ -1,38 +1,33 @@
+import Component from '../../common/component';
 import { products } from '../../products';
+import { IProduct } from '../../common/interface';
+import RendererProducts from './renderer';
+import './style.scss';
+import { Router } from '../../common/router';
 import Filter from './filter';
-import { IProduct, IRenderProps } from './interface';
-import RendererProducts from './productRenderer';
-import RouterProducts from './routerProducts';
 
-class Controller {
+export default class Main extends Component {
   private renderer: RendererProducts;
   private filter: Filter;
-  private routerProducts: RouterProducts;
+  private router: Router;
   private data: Array<IProduct>;
 
-  constructor({ rootElement }: IRenderProps) {
-    this.data = [];
-    this.renderer = new RendererProducts(rootElement);
-    this.filter = new Filter();
-    this.routerProducts = new RouterProducts();
-    this.initEvents();
-    this.initialize();
-  }
-
-  private initialize() {
-    this.routerProducts.getParseQueryParam();
-  }
-
-  public fetchData(): void {
+  constructor(name: string, router: Router) {
+    super(name);
     this.data = products;
+    this.renderer = new RendererProducts('.products__catalog');
+    this.filter = new Filter();
+    this.router = router;
+  }
+
+  init() {
+    this.renderer.init();
+    this.renderer.render(this.data);
+    this.initEvents();
   }
 
   public getData(): Array<IProduct> {
     return this.data;
-  }
-
-  public draw(): void {
-    this.renderer.render(this.data);
   }
 
   private initEvents() {
@@ -47,8 +42,22 @@ class Controller {
     if (btnWrapper) {
       btnWrapper.addEventListener('click', (e) => {
         this.renderer.onChangeProductLayout(e);
-        this.routerProducts.onChangeProductLayout(btnWrapper);
+        this.zxc(btnWrapper);
       });
+    }
+  }
+
+  zxc(btnWrapper: HTMLDivElement) {
+    const collection: HTMLCollection = btnWrapper.children;
+    const btnArr = Array.from(collection);
+    const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
+
+    if (active && active.className.includes('layout__btn_row')) {
+      this.router.deleteParam('productLayout');
+      this.router.appendParam('productLayout', 'row');
+    } else {
+      this.router.deleteParam('productLayout');
+      this.router.appendParam('productLayout', 'grid');
     }
   }
 
@@ -68,9 +77,3 @@ class Controller {
     }
   }
 }
-
-const controller = new Controller({
-  rootElement: '.products__catalog',
-});
-controller.fetchData();
-controller.draw();

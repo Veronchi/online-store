@@ -1,6 +1,19 @@
 @import './styles/normalize.css';
 @import './styles/fonts.css';
-@import './styles/palette.scss';
-@import './styles/style.scss';
-@import './styles/buttons';
-@import './pages/main/style.scss';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+}

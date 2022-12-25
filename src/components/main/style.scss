@@ -1,3 +1,6 @@
+@import '../../styles/buttons';
+@import '../../styles/palette.scss';
+
 .main {
   padding-top: 30px;
   padding-bottom: 30px;
@@ -127,17 +130,6 @@
       background-color: $primary;
       border-radius: 50%;
       box-shadow: 0 0 0 1px gray;
-      cursor: pointer;
-    }
-
-    &::-moz-range-thumb {
-      -webkit-appearance: none;
-      pointer-events: all;
-      width: 20px;
-      height: 20px;
-      background-color: $primary;
-      border-radius: 50%;
-      box-shadow: 0 0 0 1px $gray;
       cursor: pointer;
     }
 

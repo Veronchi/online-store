@@ -1,0 +1,47 @@
+@import '../../styles/palette.scss';
+
+.footer {
+  background-color: $primary-dark;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  &__item {
+    color: $primary;
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &_gh-link {
+      position: relative;
+      padding-left: 25px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        //   background-image: url('../assets/icons/github.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+    }
+
+    &_rss-link {
+      line-height: 0;
+
+      .img {
+        width: 100px;
+        height: 40px;
+      }
+    }
+  }
+}
