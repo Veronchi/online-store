@@ -1,0 +1,55 @@
+@import '../../styles/palette.scss';
+
+.header {
+  background-color: $primary-dark;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  &__logo {
+    margin: 0;
+  }
+
+  &__link {
+    text-decoration: none;
+    color: $primary;
+    border-radius: 10px;
+  }
+
+  &__total {
+    color: $primary;
+    line-height: 26px;
+    font-weight: 600;
+  }
+}
+
+.cart {
+  position: relative;
+  text-decoration: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: -15px;
+    width: 16px;
+    height: 16px;
+    background-image: url('../../assets/icons/basket.svg');
+    fill: $primary;
+  }
+
+  &__link {
+    text-decoration: none;
+  }
+
+  &__amount {
+    color: $primary;
+    line-height: 35px;
+    font-weight: 600;
+  }
+}
