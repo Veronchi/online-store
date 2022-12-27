@@ -31,9 +31,37 @@ export default class Main extends Component {
   }
 
   private initEvents() {
+    this.handleProductClick();
     this.handlerProductLayout();
     this.handlePriceFilter();
     this.handleStockFilter();
+  }
+
+  private handleProductClick() {
+    const productCatalog: HTMLElement | null = document.querySelector('.products__catalog');
+
+    if (productCatalog) {
+      productCatalog.addEventListener('click', (e) => this.selectProduct(e));
+    }
+  }
+
+  private selectProduct(e: Event) {
+    const target = e.target as HTMLElement;
+    const product = this.findNode(target);
+    const productId = product?.id;
+
+    localStorage.removeItem('productId');
+    localStorage.setItem('productId', `${productId}`);
+  }
+
+  private findNode(el: HTMLElement): HTMLElement | undefined {
+    let element = el;
+
+    if (el.parentElement?.nodeName === 'LI') {
+      return el.parentElement;
+    } else {
+      return (element = this.findNode(element.parentElement as HTMLElement) as HTMLElement);
+    }
   }
 
   private handlerProductLayout() {
@@ -47,7 +75,7 @@ export default class Main extends Component {
     }
   }
 
-  changeQueryParam(btnWrapper: HTMLDivElement) {
+  private changeQueryParam(btnWrapper: HTMLDivElement) {
     const collection: HTMLCollection = btnWrapper.children;
     const btnArr = Array.from(collection);
     const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
