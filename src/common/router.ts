@@ -1,5 +1,4 @@
 import Component from './component';
-import { TRouteMapping } from './types';
 
 export class Router {
   private url: URL;
@@ -25,27 +24,12 @@ export class Router {
     const path: Array<string> | null = locationHash.match(/(#\w+)/);
     const pathName: string = path ? path[1] : '';
     window.history.pushState(null, '', `${pathName}?${key}=${value}`);
-    // window.history.replaceState(null, '', `?${key}=${value}`);
-
-    // this.searchParams.append(key, value);
-
-    // window.location.search = this.searchParams.toString();
   }
 
   public deleteParam(key: string): void {
     if (this.searchParams.has(key)) {
       this.searchParams.delete(key);
     }
-  }
-
-  getPathAndRouteMapping() {
-    const routeMapping: TRouteMapping = {};
-    for (const routeName in this.routes) {
-      const route: Routes = this.routes[routeName];
-      const componentName = route.component.getName();
-      routeMapping[componentName] = route.component;
-    }
-    return routeMapping;
   }
 
   initialize() {
@@ -56,14 +40,12 @@ export class Router {
     for (let i = 0; i < this.routes.length; i++) {
       const route = this.routes[i];
       if (route.isActiveRoute()) {
-        this.navigate(route.component.getName());
+        this.navigate(route.component);
       }
     }
   }
 
-  navigate(path: string) {
-    const ComponentsMapping = this.getPathAndRouteMapping();
-    const component = ComponentsMapping[path];
+  navigate(component: Component) {
     fetch(component.getURLPath()).then(async (data) => {
       const html = await data.text();
       const element: HTMLElement | null = this.routeElement;

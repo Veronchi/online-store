@@ -42,12 +42,12 @@ export default class Main extends Component {
     if (btnWrapper) {
       btnWrapper.addEventListener('click', (e) => {
         this.renderer.onChangeProductLayout(e);
-        this.zxc(btnWrapper);
+        this.changeQueryParam(btnWrapper);
       });
     }
   }
 
-  zxc(btnWrapper: HTMLDivElement) {
+  changeQueryParam(btnWrapper: HTMLDivElement) {
     const collection: HTMLCollection = btnWrapper.children;
     const btnArr = Array.from(collection);
     const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
