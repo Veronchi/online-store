@@ -1,6 +1,6 @@
 import { IProduct } from '../../common/interface';
 
-export default class RendererProducts {
+export default class Renderer {
   private rootElement: HTMLUListElement | null;
   private rootElementName: string;
 
@@ -24,6 +24,16 @@ export default class RendererProducts {
 
         this.rootElement.append(liEl);
       }
+    }
+  }
+
+  public checkUrlLayout() {
+    const query = window.location.search;
+
+    if (query === '?productLayout=row') {
+      this.setRowProductLayout();
+    } else if (query === '?productLayout=grid') {
+      this.setGridProductLayout();
     }
   }
 
@@ -90,6 +100,7 @@ export default class RendererProducts {
     btn.className = 'product__btn';
 
     li.id = product.id;
+    link.href = '#details';
     img.src = product.images[0];
     title.innerText = product.title;
     rateNum.innerText = product.rating + '';
