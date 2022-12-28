@@ -1,12 +1,12 @@
-import Component from "../../common/component";
-import "./style.scss";
+import Component from '../../common/component';
+import './style.scss';
 
 export default class Header extends Component {
-    constructor(name: string) {
-        super(name)
-    }
+  constructor(name: string) {
+    super(name);
+  }
 
-    init() {
-        console.log("header");
-    }
+  init() {
+    // console.log("header");
+  }
 }
