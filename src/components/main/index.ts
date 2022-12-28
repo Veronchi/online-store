@@ -1,13 +1,13 @@
 import Component from '../../common/component';
 import { products } from '../../products';
 import { IProduct } from '../../common/interface';
-import RendererProducts from './renderer';
+import Renderer from './renderer';
 import './style.scss';
 import { Router } from '../../common/router';
 import Filter from './filter';
 
 export default class Main extends Component {
-  private renderer: RendererProducts;
+  private renderer: Renderer;
   private filter: Filter;
   private router: Router;
   private data: Array<IProduct>;
@@ -15,7 +15,7 @@ export default class Main extends Component {
   constructor(name: string, router: Router) {
     super(name);
     this.data = products;
-    this.renderer = new RendererProducts('.products__catalog');
+    this.renderer = new Renderer('.products__catalog');
     this.filter = new Filter();
     this.router = router;
   }
@@ -24,6 +24,7 @@ export default class Main extends Component {
     this.renderer.init();
     this.renderer.render(this.data);
     this.initEvents();
+    this.renderer.checkUrlLayout();
   }
 
   public getData(): Array<IProduct> {
