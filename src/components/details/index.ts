@@ -13,17 +13,15 @@ export default class Details extends Component {
 
   init() {
     console.log('details');
-    this.draw('1829247');
+    this.draw();
     this.initEvents();
   }
 
-  draw(id: string) {
+  draw():void {
+    const id: string | null = localStorage.getItem('productId');
     const arr: IProduct[] = products.filter((element) => element.id === id);
     this.product = arr[0];
 
-    // const fragment = document.createDocumentFragment();
-
-    // const detailsTemp = document.querySelector('#detailsTemp') as HTMLTemplateElement;
     const detailsClone = document;
     
     const detailsCost = detailsClone.querySelector('.details__cost') as HTMLElement;
@@ -80,24 +78,18 @@ export default class Details extends Component {
       detailsThumbnails.append(thumbnail);
     })
 
-    // fragment.append(detailsClone);
-
-    // const drawSource = document.querySelector('.main') as HTMLElement;
-    // drawSource.innerHTML = '';
-    // drawSource.appendChild(fragment);
-
   }
 
-  private initEvents() {
+  private initEvents():void {
     this.handlerProductImage();
   }
   
-  private handlerProductImage() {
+  private handlerProductImage():void {
     const tubnails: NodeList = document.querySelectorAll('.details__thumbnail');
     tubnails.forEach((el) => el.addEventListener('click', this.onChangeImage));
   }
 
-  private onChangeImage(e: Event) {
+  private onChangeImage(e: Event):void {
     const targetElement = e.target as Element;
     const imageSource = document.querySelector('.details__image') as HTMLElement;
 
