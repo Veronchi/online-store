@@ -24,7 +24,7 @@ export default class Main extends Component {
     this.router = router;
   }
 
-  init() {
+  public init(): void {
     this.handleData();
     this.renderer.init();
     this.renderer.render(this.data);
@@ -34,7 +34,7 @@ export default class Main extends Component {
     this.checkUrlLayout();
   }
 
-  private handleData() {
+  private handleData(): void {
     this.calcBrandStock();
     this.calcCategoryStock();
   }
@@ -77,14 +77,14 @@ export default class Main extends Component {
     this.brandData = brandData;
   }
 
-  private initEvents() {
+  private initEvents(): void {
     this.handleProductClick();
     this.handlerProductLayout();
     this.handlePriceFilter();
     this.handleStockFilter();
   }
 
-  private handleProductClick() {
+  private handleProductClick(): void {
     const productCatalog: HTMLElement | null = document.querySelector('.products__catalog');
 
     if (productCatalog) {
@@ -92,7 +92,7 @@ export default class Main extends Component {
     }
   }
 
-  private selectProduct(e: Event) {
+  private selectProduct(e: Event): void {
     const target = e.target as HTMLElement;
     const product = this.findNode(target);
     const productId = product?.id;
@@ -111,7 +111,7 @@ export default class Main extends Component {
     }
   }
 
-  private handlerProductLayout() {
+  private handlerProductLayout(): void {
     const btnWrapper = document.querySelector<HTMLDivElement>('.layout');
 
     if (btnWrapper) {
@@ -122,7 +122,7 @@ export default class Main extends Component {
     }
   }
 
-  private changeQueryParam(btnWrapper: HTMLDivElement) {
+  private changeQueryParam(btnWrapper: HTMLDivElement): void {
     const collection: HTMLCollection = btnWrapper.children;
     const btnArr = Array.from(collection);
     const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
@@ -136,7 +136,7 @@ export default class Main extends Component {
     }
   }
 
-  private handlePriceFilter() {
+  private handlePriceFilter(): void {
     const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
 
     if (priceFilter) {
@@ -152,7 +152,7 @@ export default class Main extends Component {
     }
   }
 
-  public checkUrlLayout() {
+  public checkUrlLayout(): void {
     const query = window.location.search;
 
     if (query === '?productLayout=row') {

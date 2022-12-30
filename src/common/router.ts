@@ -13,16 +13,17 @@ export class Router {
     this.routes = [];
   }
 
-  initRoutes(routes: Array<Routes>) {
+  public initRoutes(routes: Array<Routes>): void {
     this.routes = routes;
     this.initialize();
     this.hashChanged();
   }
 
-  public appendParam(key: string, value: string) {
+  public appendParam(key: string, value: string): void {
     const locationHash = window.location.hash;
     const path: Array<string> | null = locationHash.match(/(#\w+)/);
     const pathName: string = path ? path[1] : '';
+
     window.history.pushState(null, '', `${pathName}?${key}=${value}`);
   }
 
@@ -32,24 +33,27 @@ export class Router {
     }
   }
 
-  initialize() {
+  private initialize(): void {
     window.addEventListener('hashchange', this.hashChanged.bind(this));
   }
 
-  hashChanged() {
+  private hashChanged(): void {
     for (let i = 0; i < this.routes.length; i++) {
       const route = this.routes[i];
+
       if (route.isActiveRoute()) {
         this.navigate(route.component);
       }
     }
   }
 
-  navigate(component: Component) {
+  private navigate(component: Component): void {
     fetch(component.getURLPath()).then(async (data) => {
       const html = await data.text();
       const element: HTMLElement | null = this.routeElement;
+
       if (element) element.innerHTML = html;
+
       component.init();
     });
   }
@@ -63,10 +67,11 @@ export class Routes {
     this.component = component;
     this.defaultRoute = defaultRoute;
   }
-  isActiveRoute() {
+  public isActiveRoute(): boolean {
     const locationHash = window.location.hash;
     const path: Array<string> | null = locationHash.match(/#(\w+)/);
     const pathName: string = path ? path[1] : '';
+
     return pathName === this.component.getName() || this.defaultRoute;
   }
 }

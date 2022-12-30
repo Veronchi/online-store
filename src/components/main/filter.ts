@@ -1,5 +1,5 @@
 export default class Filter {
-  public onChangePriceAmount(e: Event) {
+  public onChangePriceAmount(e: Event): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
     const inputTo = document.getElementById('to-price') as HTMLInputElement;
@@ -17,7 +17,7 @@ export default class Filter {
     }
   }
 
-  public onChangeStockAmount(e: Event) {
+  public onChangeStockAmount(e: Event): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-stock') as HTMLInputElement;
     const inputTo = document.getElementById('to-stock') as HTMLInputElement;

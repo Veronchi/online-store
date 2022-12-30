@@ -6,7 +6,7 @@ export default class Header extends Component {
     super(name);
   }
 
-  init() {
+  public init() {
     // console.log("header");
   }
 }

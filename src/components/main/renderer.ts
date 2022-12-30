@@ -7,7 +7,7 @@ export default class Renderer {
     this.catalogEl = null;
   }
 
-  init() {
+  public init(): void {
     this.catalogEl = document.querySelector('.products__catalog');
   }
 
@@ -24,7 +24,7 @@ export default class Renderer {
     }
   }
 
-  public onChangeProductLayout(e: Event) {
+  public onChangeProductLayout(e: Event): void {
     const target = e.target as HTMLButtonElement;
     const targetClass = target.className;
     if (target.nodeName === 'BUTTON') {
@@ -32,7 +32,7 @@ export default class Renderer {
     }
   }
 
-  public setGridProductLayout() {
+  public setGridProductLayout(): void {
     const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
     const btnGrid = document.querySelector('.layout__btn_grid') as HTMLButtonElement;
     const btnRow = document.querySelector('.layout__btn_row') as HTMLButtonElement;
@@ -46,7 +46,7 @@ export default class Renderer {
     wrapper.map((i) => i.classList.remove('wrapper_row'));
   }
 
-  public setRowProductLayout() {
+  public setRowProductLayout(): void {
     const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
     const btnGrid = document.querySelector('.layout__btn_grid') as HTMLButtonElement;
     const btnRow = document.querySelector('.layout__btn_row') as HTMLButtonElement;
@@ -143,17 +143,4 @@ export default class Renderer {
       }
     }
   }
-
-  // private getUniqueArray(arr: Array<IFilterInfo>): Array<IFilterInfo> {
-  //   let result: Array<IFilterInfo> = [];
-  // result = arr.filter(() => {})
-  // for (const item of arr) {
-  //   debugger;
-  //   if (!result.includes(item)) {
-  //     result.push();
-  //   }
-  // }
-
-  //   return result;
-  // }
 }
