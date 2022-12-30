@@ -1,6 +1,6 @@
 import Component from '../../common/component';
 import { products } from '../../products';
-import { IProduct } from '../../common/interface';
+import { IFilterProduct, IProduct } from '../../common/interface';
 import Renderer from './renderer';
 import './style.scss';
 import { Router } from '../../common/router';
@@ -11,24 +11,70 @@ export default class Main extends Component {
   private filter: Filter;
   private router: Router;
   private data: Array<IProduct>;
+  private categoryData: Array<IFilterProduct>;
+  private brandData: Array<IFilterProduct>;
 
   constructor(name: string, router: Router) {
     super(name);
     this.data = products;
-    this.renderer = new Renderer('.products__catalog');
+    this.categoryData = [];
+    this.brandData = [];
+    this.renderer = new Renderer();
     this.filter = new Filter();
     this.router = router;
   }
 
   init() {
+    this.handleData();
     this.renderer.init();
     this.renderer.render(this.data);
+    this.renderer.renderFilterList('.scroll-filter_category', this.categoryData);
+    this.renderer.renderFilterList('.scroll-filter_brand', this.brandData);
     this.initEvents();
-    this.renderer.checkUrlLayout();
+    this.checkUrlLayout();
   }
 
-  public getData(): Array<IProduct> {
-    return this.data;
+  private handleData() {
+    this.calcBrandStock();
+    this.calcCategoryStock();
+  }
+
+  private calcCategoryStock(): void {
+    const result: { [n: string]: number } = {};
+
+    for (let i = 0; i < this.data.length; i++) {
+      const stockAmount: number | undefined = result[this.data[i].category];
+      if (!stockAmount) result[this.data[i].category] = this.data[i].stock;
+      else result[this.data[i].category] += this.data[i].stock;
+    }
+
+    const categoryData: Array<IFilterProduct> = Object.entries(result).map((i) => {
+      return {
+        name: i[0],
+        stock: i[1],
+      };
+    });
+
+    this.categoryData = categoryData;
+  }
+
+  private calcBrandStock(): void {
+    const result: { [n: string]: number } = {};
+
+    for (let i = 0; i < this.data.length; i++) {
+      const stockAmount: number | undefined = result[this.data[i].brand];
+      if (!stockAmount) result[this.data[i].brand] = this.data[i].stock;
+      else result[this.data[i].brand] += this.data[i].stock;
+    }
+
+    const brandData: Array<IFilterProduct> = Object.entries(result).map((i) => {
+      return {
+        name: i[0],
+        stock: i[1],
+      };
+    });
+
+    this.brandData = brandData;
   }
 
   private initEvents() {
@@ -103,6 +149,16 @@ export default class Main extends Component {
 
     if (stockFilter) {
       stockFilter.addEventListener('change', (e) => this.filter.onChangeStockAmount(e));
+    }
+  }
+
+  public checkUrlLayout() {
+    const query = window.location.search;
+
+    if (query === '?productLayout=row') {
+      this.renderer.setRowProductLayout();
+    } else if (query === '?productLayout=grid') {
+      this.renderer.setGridProductLayout();
     }
   }
 }

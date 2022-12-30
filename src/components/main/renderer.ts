@@ -1,39 +1,26 @@
-import { IProduct } from '../../common/interface';
+import { IFilterProduct, IProduct } from '../../common/interface';
 
 export default class Renderer {
-  private rootElement: HTMLUListElement | null;
-  private rootElementName: string;
+  private catalogEl: HTMLUListElement | null;
 
-  constructor(rootElementName: string) {
-    this.rootElementName = rootElementName;
-    this.rootElement = null;
+  constructor() {
+    this.catalogEl = null;
   }
 
   init() {
-    this.rootElement = document.querySelector(this.rootElementName);
+    this.catalogEl = document.querySelector('.products__catalog');
   }
 
   public render(data: Array<IProduct>): void {
-    if (this.rootElement) {
-      this.rootElement.innerHTML = '';
+    if (this.catalogEl) {
+      this.catalogEl.innerHTML = '';
     }
 
     for (let i = 0; i < data.length; i++) {
-      if (this.rootElement) {
-        const liEl = this.createProductItem(data[i]);
-
-        this.rootElement.append(liEl);
+      if (this.catalogEl) {
+        const productEl = this.createProductItem(data[i]);
+        this.catalogEl.append(productEl);
       }
-    }
-  }
-
-  public checkUrlLayout() {
-    const query = window.location.search;
-
-    if (query === '?productLayout=row') {
-      this.setRowProductLayout();
-    } else if (query === '?productLayout=grid') {
-      this.setGridProductLayout();
     }
   }
 
@@ -122,4 +109,51 @@ export default class Renderer {
 
     return li;
   }
+
+  public renderFilterList(rootEl: string, list: Array<IFilterProduct>): void {
+    const root: HTMLElement | null = document.querySelector(rootEl);
+
+    if (root) {
+      for (let i = 0; i < list.length; i++) {
+        const li = document.createElement('li');
+        const input = document.createElement('input');
+        const label = document.createElement('label');
+        const spanCurr = document.createElement('span');
+        const spanTotal = document.createElement('span');
+        li.classList.add('scroll-filter__item');
+        input.classList.add('scroll-filter__input');
+        input.id = list[i].name;
+        input.type = 'checkbox';
+        input.name = list[i].name;
+        label.classList.add('scroll-filter__label');
+        label.htmlFor = list[i].name;
+        label.innerText = list[i].name;
+        spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
+        spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
+        spanCurr.innerText = `${list[i].stock}/`;
+        spanTotal.innerText = `${list[i].stock}`;
+        li.append(input);
+        li.append(label);
+        li.append(spanCurr);
+        li.append(spanTotal);
+
+        if (root) {
+          root.append(li);
+        }
+      }
+    }
+  }
+
+  // private getUniqueArray(arr: Array<IFilterInfo>): Array<IFilterInfo> {
+  //   let result: Array<IFilterInfo> = [];
+  // result = arr.filter(() => {})
+  // for (const item of arr) {
+  //   debugger;
+  //   if (!result.includes(item)) {
+  //     result.push();
+  //   }
+  // }
+
+  //   return result;
+  // }
 }

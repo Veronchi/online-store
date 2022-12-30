@@ -27,4 +27,9 @@ interface IRenderProps {
   rootElement: string;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps };
+interface IFilterProduct {
+  name: string;
+  stock: number;
+}
+
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IFilterProduct };
