@@ -1,5 +1,6 @@
 import { Router, Routes } from './common/router';
-import Details from './components/details';
+import Details from './components/details/index';
+import Cart from './components/cart/index';
 import Main from './components/main';
 import ErrorPage from './components/404/script404';
 import Footer from './components/footer';
@@ -19,11 +20,13 @@ class Controller {
     const mainComponent = new Main('main', this.router);
     const detailComponent = new Details('details');
     const errorComponent = new ErrorPage('page404');
+    const cartComponent = new Cart('cart');
 
     this.routes = [
       new Routes(mainComponent, true),
       new Routes(detailComponent, false),
       new Routes(errorComponent, false),
+      new Routes(cartComponent, false),
     ];
 
     this.router.initRoutes(this.routes);
