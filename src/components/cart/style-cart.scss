@@ -1,12 +1,24 @@
 @import '../../styles/buttons';
 @import '../../styles/palette.scss';
 
+hr {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  border-style:inset;
+  border-width: 1px;
+}
+
+
 .main {
   margin: auto;
   margin-top: 0;
 }
 
 .cart-title {
+  margin-block-start: 0;
+  margin-block-end: 0;
   padding: 20px 0;
 }
 
@@ -23,6 +35,8 @@
   flex-direction: column;
 
   &__header {
+    margin-block-start: 0;
+    margin-block-end: 0;
     list-style: none;
     padding: 10px 0;
     display: flex;
@@ -197,32 +211,44 @@
   width: 30%;
 
   &__title {
+    margin-block-start: 0;
+    margin-block-end: 0;
     padding-bottom: 20px;
   }
 
   &__products {
+    margin-block-start: 0;
+    margin-block-end: 0;
     padding-bottom: 20px;
     position: relative;
   }
 
   &__products-count {
+    margin-block-start: 0;
+    margin-block-end: 0;
     position: absolute;
     right: 0;
     padding: 0 10px;
   }
 
   &__discount {
+    margin-block-start: 0;
+    margin-block-end: 0;
     padding-bottom: 20px;
     position: relative;
   }
 
   &__discount-count {
+    margin-block-start: 0;
+    margin-block-end: 0;
     position: absolute;
     right: 0;
     padding: 0 10px;
   }
 
   &__total {
+    margin-block-start: 0;
+    margin-block-end: 0;
     padding-bottom: 20px;
     position: relative;
     font-size: 18px;
@@ -237,6 +263,11 @@
 
   &__promocodes {
     padding-bottom: 20px;
+  }
+
+  &__codes-title {
+    margin-block-start: 0;
+    margin-block-end: 0;
   }
 
   &__promo-items {
@@ -272,6 +303,8 @@
   }
   
   &__submit {
+    margin-block-start: 0;
+    margin-block-end: 0;
     display: block;
     width: fit-content;
     margin: 20px auto;
