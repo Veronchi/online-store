@@ -27,4 +27,15 @@ interface IRenderProps {
   rootElement: string;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps };
+interface IPurchase {
+  count: number;
+  product: IProduct;
+}
+
+interface IBasket {
+  purchases: IPurchase[];
+  totalSumm: number;
+  totalCount: number;
+}
+
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IBasket };
