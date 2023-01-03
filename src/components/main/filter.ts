@@ -1,5 +1,52 @@
+import { IFilterAmount, IProduct } from '../../common/interface';
+
 export default class Filter {
-  public onChangePriceAmount(e: Event): void {
+  private data: Array<IProduct>;
+  private priceRange: IFilterAmount;
+  private amountRange: IFilterAmount;
+
+  constructor(data: Array<IProduct>) {
+    this.data = data;
+    this.priceRange = {
+      from: 0,
+      to: 0,
+    };
+    this.amountRange = {
+      from: 0,
+      to: 0,
+    };
+    this.calcPriceRange();
+    this.calcAmountRange();
+  }
+
+  private calcPriceRange(): void {
+    const cloneData = [...this.data];
+    const result = cloneData.sort((a, b) => a.price - b.price);
+
+    this.priceRange = {
+      from: result[0].price,
+      to: result[result.length - 1].price,
+    };
+  }
+
+  private calcAmountRange(): void {
+    const cloneData = [...this.data];
+    const result = cloneData.sort((a, b) => a.stock - b.stock);
+
+    this.amountRange = {
+      from: result[0].stock,
+      to: result[result.length - 1].stock,
+    };
+  }
+
+  public getPriceRange() {
+    return this.priceRange;
+  }
+  public getAmountRange() {
+    return this.amountRange;
+  }
+
+  public onChangePriceAmount(e: Event, changeParam: (k: string, v: string) => void): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
     const inputTo = document.getElementById('to-price') as HTMLInputElement;
@@ -11,9 +58,11 @@ export default class Filter {
     if (input.id === 'from-price') {
       this.changeInputFromVal(inputFrom, inputTo, minGap);
       priceStart.innerText = `${input.value}`;
+      changeParam(input.id, `${input.value}`);
     } else {
       this.changeInputToVal(inputFrom, inputTo, minGap);
       priceEnd.innerText = `${input.value}`;
+      changeParam(input.id, `${input.value}`);
     }
   }
 

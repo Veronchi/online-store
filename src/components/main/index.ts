@@ -1,6 +1,6 @@
 import Component from '../../common/component';
 import { products } from '../../products';
-import { IFilterAmount, IFilterProduct, IProduct } from '../../common/interface';
+import { IFilterProduct, IProduct } from '../../common/interface';
 import Renderer from './renderer';
 import './style.scss';
 import { Router } from '../../common/router';
@@ -13,24 +13,15 @@ export default class Main extends Component {
   private data: Array<IProduct>;
   private categoryData: Array<IFilterProduct>;
   private brandData: Array<IFilterProduct>;
-  private priceRange: IFilterAmount;
-  private amountRange: IFilterAmount;
 
   constructor(name: string, router: Router) {
     super(name);
     this.data = products;
     this.categoryData = [];
     this.brandData = [];
-    this.priceRange = {
-      from: 0,
-      to: 0,
-    };
-    this.amountRange = {
-      from: 0,
-      to: 0,
-    };
+
     this.renderer = new Renderer();
-    this.filter = new Filter();
+    this.filter = new Filter(this.data);
     this.router = router;
   }
 
@@ -45,14 +36,14 @@ export default class Main extends Component {
       'to-price',
       '.amount__start_price',
       '.amount__end_price',
-      this.priceRange
+      this.filter.getPriceRange()
     );
     this.renderer.renderFilterRangeValues(
       'from-stock',
       'to-stock',
       '.amount__start_num',
       '.amount__end_num',
-      this.amountRange
+      this.filter.getAmountRange()
     );
     this.initEvents();
     this.checkUrlLayout();
@@ -61,8 +52,6 @@ export default class Main extends Component {
   private handleData(): void {
     this.calcBrandStock();
     this.calcCategoryStock();
-    this.calcPriceRange();
-    this.calcAmountRange();
   }
 
   private initEvents(): void {
@@ -110,27 +99,40 @@ export default class Main extends Component {
     this.brandData = brandData;
   }
 
-  private calcPriceRange(): void {
-    const cloneData = [...this.data];
-    const result = cloneData.sort((a, b) => a.price - b.price);
-
-    this.priceRange.from = result[0].price;
-    this.priceRange.to = result[result.length - 1].price;
-  }
-
-  private calcAmountRange(): void {
-    const cloneData = [...this.data];
-    const result = cloneData.sort((a, b) => a.stock - b.stock);
-
-    this.amountRange.from = result[0].stock;
-    this.amountRange.to = result[result.length - 1].stock;
-  }
-
   private handleProductClick(): void {
     const productCatalog: HTMLElement | null = document.querySelector('.products__catalog');
 
     if (productCatalog) {
       productCatalog.addEventListener('click', (e) => this.selectProduct(e));
+    }
+  }
+
+  private handlerProductLayout(): void {
+    const btnWrapper = document.querySelector<HTMLDivElement>('.layout');
+
+    if (btnWrapper) {
+      btnWrapper.addEventListener('click', (e) => {
+        this.renderer.onChangeProductLayout(e);
+        this.changeLayoutQueryParam(btnWrapper);
+      });
+    }
+  }
+
+  private handlePriceFilter(): void {
+    const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
+
+    if (priceFilter) {
+      priceFilter.addEventListener('change', (e) =>
+        this.filter.onChangePriceAmount(e, this.changeQueryParam.bind(this))
+      );
+    }
+  }
+
+  private handleStockFilter() {
+    const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
+
+    if (stockFilter) {
+      stockFilter.addEventListener('change', (e) => this.filter.onChangeStockAmount(e));
     }
   }
 
@@ -153,45 +155,20 @@ export default class Main extends Component {
     }
   }
 
-  private handlerProductLayout(): void {
-    const btnWrapper = document.querySelector<HTMLDivElement>('.layout');
-
-    if (btnWrapper) {
-      btnWrapper.addEventListener('click', (e) => {
-        this.renderer.onChangeProductLayout(e);
-        this.changeQueryParam(btnWrapper);
-      });
-    }
-  }
-
-  private changeQueryParam(btnWrapper: HTMLDivElement): void {
+  private changeLayoutQueryParam(btnWrapper: HTMLDivElement): void {
     const collection: HTMLCollection = btnWrapper.children;
     const btnArr = Array.from(collection);
     const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
 
     if (active && active.className.includes('layout__btn_row')) {
-      this.router.deleteParam('productLayout');
-      this.router.appendParam('productLayout', 'row');
+      this.router.appendParam('productLayout', 'row', 'productLayout', 'grid');
     } else {
-      this.router.deleteParam('productLayout');
-      this.router.appendParam('productLayout', 'grid');
+      this.router.appendParam('productLayout', 'grid', 'productLayout', 'row');
     }
   }
 
-  private handlePriceFilter(): void {
-    const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
-
-    if (priceFilter) {
-      priceFilter.addEventListener('change', (e) => this.filter.onChangePriceAmount(e));
-    }
-  }
-
-  private handleStockFilter() {
-    const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
-
-    if (stockFilter) {
-      stockFilter.addEventListener('change', (e) => this.filter.onChangeStockAmount(e));
-    }
+  public changeQueryParam(key: string, value: string): void {
+    this.router.appendParam(key, value);
   }
 
   public checkUrlLayout(): void {
