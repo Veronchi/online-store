@@ -1,6 +1,6 @@
 import Component from '../../common/component';
 import { products } from '../../products';
-import { IFilterProduct, IProduct } from '../../common/interface';
+import { IFilterAmount, IFilterProduct, IProduct } from '../../common/interface';
 import Renderer from './renderer';
 import './style.scss';
 import { Router } from '../../common/router';
@@ -13,12 +13,22 @@ export default class Main extends Component {
   private data: Array<IProduct>;
   private categoryData: Array<IFilterProduct>;
   private brandData: Array<IFilterProduct>;
+  private priceRange: IFilterAmount;
+  private amountRange: IFilterAmount;
 
   constructor(name: string, router: Router) {
     super(name);
     this.data = products;
     this.categoryData = [];
     this.brandData = [];
+    this.priceRange = {
+      from: 0,
+      to: 0,
+    };
+    this.amountRange = {
+      from: 0,
+      to: 0,
+    };
     this.renderer = new Renderer();
     this.filter = new Filter();
     this.router = router;
@@ -30,6 +40,20 @@ export default class Main extends Component {
     this.renderer.render(this.data);
     this.renderer.renderFilterList('.scroll-filter_category', this.categoryData);
     this.renderer.renderFilterList('.scroll-filter_brand', this.brandData);
+    this.renderer.renderFilterRangeValues(
+      'from-price',
+      'to-price',
+      '.amount__start_price',
+      '.amount__end_price',
+      this.priceRange
+    );
+    this.renderer.renderFilterRangeValues(
+      'from-stock',
+      'to-stock',
+      '.amount__start_num',
+      '.amount__end_num',
+      this.amountRange
+    );
     this.initEvents();
     this.checkUrlLayout();
   }
@@ -37,6 +61,15 @@ export default class Main extends Component {
   private handleData(): void {
     this.calcBrandStock();
     this.calcCategoryStock();
+    this.calcPriceRange();
+    this.calcAmountRange();
+  }
+
+  private initEvents(): void {
+    this.handleProductClick();
+    this.handlerProductLayout();
+    this.handlePriceFilter();
+    this.handleStockFilter();
   }
 
   private calcCategoryStock(): void {
@@ -77,11 +110,20 @@ export default class Main extends Component {
     this.brandData = brandData;
   }
 
-  private initEvents(): void {
-    this.handleProductClick();
-    this.handlerProductLayout();
-    this.handlePriceFilter();
-    this.handleStockFilter();
+  private calcPriceRange(): void {
+    const cloneData = [...this.data];
+    const result = cloneData.sort((a, b) => a.price - b.price);
+
+    this.priceRange.from = result[0].price;
+    this.priceRange.to = result[result.length - 1].price;
+  }
+
+  private calcAmountRange(): void {
+    const cloneData = [...this.data];
+    const result = cloneData.sort((a, b) => a.stock - b.stock);
+
+    this.amountRange.from = result[0].stock;
+    this.amountRange.to = result[result.length - 1].stock;
   }
 
   private handleProductClick(): void {

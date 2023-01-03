@@ -1,4 +1,4 @@
-import { IFilterProduct, IProduct } from '../../common/interface';
+import { IFilterAmount, IFilterProduct, IProduct } from '../../common/interface';
 
 export default class Renderer {
   private catalogEl: HTMLUListElement | null;
@@ -142,5 +142,28 @@ export default class Renderer {
         }
       }
     }
+  }
+
+  public renderFilterRangeValues(fromInp: string, toInp: string, fromEl: string, toEl: string, data: IFilterAmount) {
+    const fromInput = document.getElementById(fromInp) as HTMLInputElement | null;
+    const toInput = document.getElementById(toInp) as HTMLInputElement | null;
+    const fromSpan = document.querySelector(fromEl) as HTMLSpanElement;
+    const toSpan = document.querySelector(toEl) as HTMLSpanElement;
+
+    if (fromInput) {
+      fromInput.value = `${data.from}`;
+      fromInput.min = `${data.from}`;
+      fromInput.max = `${data.to}`;
+    }
+    if (toInput) {
+      toInput.min = `${data.from}`;
+      toInput.max = `${data.to}`;
+      toInput.value = `${data.to}`;
+    }
+
+    console.log(fromSpan);
+
+    fromSpan.innerText = `${data.from}`;
+    toSpan.innerText = `${data.to}`;
   }
 }

@@ -32,4 +32,9 @@ interface IFilterProduct {
   stock: number;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps, IFilterProduct };
+interface IFilterAmount {
+  from: number;
+  to: number;
+}
+
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IFilterProduct, IFilterAmount };

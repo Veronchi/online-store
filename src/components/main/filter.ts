@@ -10,10 +10,10 @@ export default class Filter {
 
     if (input.id === 'from-price') {
       this.changeInputFromVal(inputFrom, inputTo, minGap);
-      priceStart.innerText = `$${input.value}`;
+      priceStart.innerText = `${input.value}`;
     } else {
       this.changeInputToVal(inputFrom, inputTo, minGap);
-      priceEnd.innerText = `$${input.value}`;
+      priceEnd.innerText = `${input.value}`;
     }
   }
 
