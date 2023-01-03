@@ -66,7 +66,7 @@ export default class Filter {
     }
   }
 
-  public onChangeStockAmount(e: Event): void {
+  public onChangeStockAmount(e: Event, changeParam: (k: string, v: string) => void): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-stock') as HTMLInputElement;
     const inputTo = document.getElementById('to-stock') as HTMLInputElement;
@@ -78,9 +78,11 @@ export default class Filter {
     if (input.id === 'from-stock') {
       this.changeInputFromVal(inputFrom, inputTo, minGap);
       stockStartNum.innerText = `${input.value}`;
+      changeParam(input.id, `${input.value}`);
     } else {
       this.changeInputToVal(inputFrom, inputTo, minGap);
       stockEndNum.innerText = `${input.value}`;
+      changeParam(input.id, `${input.value}`);
     }
   }
 

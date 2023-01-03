@@ -132,7 +132,9 @@ export default class Main extends Component {
     const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
 
     if (stockFilter) {
-      stockFilter.addEventListener('change', (e) => this.filter.onChangeStockAmount(e));
+      stockFilter.addEventListener('change', (e) =>
+        this.filter.onChangeStockAmount(e, this.changeQueryParam.bind(this))
+      );
     }
   }
 
