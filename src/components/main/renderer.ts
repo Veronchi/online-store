@@ -161,8 +161,6 @@ export default class Renderer {
       toInput.value = `${data.to}`;
     }
 
-    console.log(fromSpan);
-
     fromSpan.innerText = `${data.from}`;
     toSpan.innerText = `${data.to}`;
   }
