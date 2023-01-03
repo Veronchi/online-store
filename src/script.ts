@@ -1,6 +1,6 @@
 import { Router, Routes } from './common/router';
 import Details from './components/details/index';
-import Cart from './components/cart/index';
+import Cart, { Basket } from './components/cart/index';
 import Main from './components/main';
 import ErrorPage from './components/404/script404';
 import Footer from './components/footer';
@@ -33,4 +33,13 @@ class Controller {
   }
 }
 
+
 new Controller();
+
+declare global {
+  interface Window {
+    basket: Basket;
+  }
+}
+
+window.basket = new Basket();

@@ -1,10 +1,7 @@
-import { threadId } from 'worker_threads';
 import Component from '../../common/component';
-import { IProduct, IPurchase, IBasket } from '../../common/interface';
+import { IProduct, IPurchase } from '../../common/interface';
 import { products} from '../../products';
 import './style-cart.scss';
-
-
 
 export default class Cart extends Component {
 
@@ -15,7 +12,7 @@ export default class Cart extends Component {
   public init(): void {
     console.log('cart');
     const btn = document.querySelector('.cart-summary__submit') as HTMLElement;
-    btn.addEventListener('click', () => basket.addProducts());
+    btn.addEventListener('click', () => window.basket.addProducts());
     this.draw();
 
     this.initEvents();
@@ -25,7 +22,7 @@ export default class Cart extends Component {
     const cartProducts = document.querySelector('.cart-products') as HTMLElement;
     cartProducts.innerHTML = '';
 
-    basket.purchases.forEach((el: IPurchase) => {
+    window.basket.purchases.forEach((el: IPurchase) => {
       const cartEl = this.createCartProduct(el.product);
       cartProducts.append(cartEl);
     });
@@ -35,7 +32,7 @@ export default class Cart extends Component {
     const target = e.target as HTMLElement;
     const productId = target.parentElement?.parentElement?.parentElement?.dataset.id as string;
 
-    const newCount = basket.changeProductCount(productId, String(target.textContent));
+    const newCount = window.basket.changeProductCount(productId, String(target.textContent));
 
     if (newCount > 0) {
       const searchBlock = target.parentElement?.parentElement as HTMLElement;
@@ -44,7 +41,7 @@ export default class Cart extends Component {
 
       const searchTotal = target.parentElement?.parentElement?.parentElement as HTMLElement;
       const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
-      subTotal.textContent = `${newCount * basket.getProduct(productId).price}$`;
+      subTotal.textContent = `${newCount * window.basket.getProduct(productId).price}$`;
     } else {
       this.draw();
       this.initEvents();
@@ -54,7 +51,7 @@ export default class Cart extends Component {
   private deleteProduct(e: Event): void {
     const target = e.target as HTMLElement;
     const productId = target.parentElement?.dataset.id as string;
-    basket.deleteProduct(productId);
+    window.basket.deleteProduct(productId);
     this.draw();
     this.initEvents();
   }
@@ -111,11 +108,11 @@ export default class Cart extends Component {
     liDiscount.textContent = `${product.discountPercentage}%`;
     img.src = product.thumbnail;
     img.alt = `${product.title}`;
-    count.textContent = `${basket.getProductCount(product.id)}`;
+    count.textContent = `${window.basket.getProductCount(product.id)}`;
     stock.textContent = `Stock: ${product.stock}`;
     btnPlus.textContent = '+';
     btnMinus.textContent = '-';
-    liSubtotal.textContent = `${basket.getProductCount(product.id) * product.price}$`;
+    liSubtotal.textContent = `${window.basket.getProductCount(product.id) * product.price}$`;
 
     div.append(btnPlus);
     div.append(btnMinus);
@@ -232,7 +229,4 @@ export class Basket {
     localStorage.setItem('basket', JSON.stringify(this));
   }
 }
-
-const basket = new Basket();
-
 
