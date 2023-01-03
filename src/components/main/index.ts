@@ -176,9 +176,9 @@ export default class Main extends Component {
   public checkUrlLayout(): void {
     const query = window.location.search;
 
-    if (query === '?productLayout=row') {
+    if (query.includes('&productLayout=row')) {
       this.renderer.setRowProductLayout();
-    } else if (query === '?productLayout=grid') {
+    } else if (query.includes('&productLayout=grid')) {
       this.renderer.setGridProductLayout();
     }
   }
