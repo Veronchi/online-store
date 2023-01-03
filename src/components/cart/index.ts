@@ -1,3 +1,4 @@
+import { threadId } from 'worker_threads';
 import Component from '../../common/component';
 import { IProduct, IPurchase, IBasket } from '../../common/interface';
 import { products} from '../../products';
@@ -11,14 +12,16 @@ export default class Cart extends Component {
     super(name);
   }
 
-  init(): void {
+  public init(): void {
     console.log('cart');
     const btn = document.querySelector('.cart-summary__submit') as HTMLElement;
     btn.addEventListener('click', () => basket.addProducts());
     this.draw();
+
+    this.initEvents();
   }
 
-  draw(): void {
+  public draw(): void {
     const cartProducts = document.querySelector('.cart-products') as HTMLElement;
     cartProducts.innerHTML = '';
 
@@ -26,6 +29,49 @@ export default class Cart extends Component {
       const cartEl = this.createCartProduct(el.product);
       cartProducts.append(cartEl);
     });
+  }
+
+  private changeCountProduct(e: Event): void {
+    const target = e.target as HTMLElement;
+    const productId = target.parentElement?.parentElement?.parentElement?.dataset.id as string;
+
+    const newCount = basket.changeProductCount(productId, String(target.textContent));
+
+    if (newCount > 0) {
+      const searchBlock = target.parentElement?.parentElement as HTMLElement;
+      const productCount = searchBlock.querySelector('.cart-products__quantity-count') as HTMLElement;
+      productCount.textContent = `${newCount}`;
+
+      const searchTotal = target.parentElement?.parentElement?.parentElement as HTMLElement;
+      const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
+      subTotal.textContent = `${newCount * basket.getProduct(productId).price}$`;
+    } else {
+      this.draw();
+      this.initEvents();
+    }
+  }
+
+  private deleteProduct(e: Event): void {
+    const target = e.target as HTMLElement;
+    const productId = target.parentElement?.dataset.id as string;
+    basket.deleteProduct(productId);
+    this.draw();
+    this.initEvents();
+  }
+
+  private initEvents():void {
+    this.handlerChangeCount();
+    this.handlerDeleteProduct();
+  }
+  
+  private handlerChangeCount():void {
+    const btnCount: NodeList = document.querySelectorAll('.ride-button');
+    btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.changeCountProduct(event)));
+  }
+
+  private handlerDeleteProduct():void {
+    const btnCount: NodeList = document.querySelectorAll('.cart-products__delete');
+    btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.deleteProduct(event)));
   }
 
   private createCartProduct(product: IProduct): HTMLUListElement {
@@ -40,6 +86,7 @@ export default class Cart extends Component {
     const img = document.createElement('img');
     const count = document.createElement('p');
     const div = document.createElement('div');
+    const stock = document.createElement('p');
     const btnPlus = document.createElement('button');
     const btnMinus = document.createElement('button');
 
@@ -54,21 +101,25 @@ export default class Cart extends Component {
     img.className = 'cart-products__img';
     count.className = 'cart-products__quantity-count';
     div.className = 'cart-products__quantity-ride';
+    stock.className = 'cart-products__stock';
     btnPlus.className = 'ride-button cart-products__quantity-up';
     btnMinus.className = 'ride-button cart-products__quantity-down';
 
+    ul.setAttribute('data-id', product.id);
     liDesc.textContent = product.description;
     liPrice.textContent = `${product.price}$`;
     liDiscount.textContent = `${product.discountPercentage}%`;
     img.src = product.thumbnail;
     img.alt = `${product.title}`;
     count.textContent = `${basket.getProductCount(product.id)}`;
+    stock.textContent = `Stock: ${product.stock}`;
     btnPlus.textContent = '+';
     btnMinus.textContent = '-';
-    liSubtotal.textContent = `${basket.getProductCount(product.id) * product.price}`;
+    liSubtotal.textContent = `${basket.getProductCount(product.id) * product.price}$`;
 
     div.append(btnPlus);
     div.append(btnMinus);
+    div.append(stock);
     liQuantity.append(count);
     liQuantity.append(div);
     liImage.append(img);
@@ -129,7 +180,32 @@ export class Basket {
     return result;
   }
 
-  private getProduct(id: string | null): IProduct {
+  public changeProductCount(id: string, operation: string): number {
+    const purchaseId =  this.getPurchaseId(id);
+
+    if (operation === '+') {
+      if (this.purchases[purchaseId].count < this.purchases[purchaseId].product.stock) {
+        this.purchases[purchaseId].count += 1;
+      }
+    } else if (operation === '-') {
+      if (this.purchases[purchaseId].count > 1) {
+        this.purchases[purchaseId].count -= 1;
+      } else {
+        this.deleteProduct(id);
+        return 0;
+      }
+    }
+    this.setToLocalStorage();
+    return this.purchases[purchaseId].count;
+  }
+
+  public deleteProduct(id: string): void {
+    const purchaseId =  this.getPurchaseId(id);
+    this.purchases.splice(purchaseId, 1);
+    this.setToLocalStorage();
+  }
+
+  public getProduct(id: string | null): IProduct {
     const productsArray: IProduct[] = products.filter((element) => element.id === id);
     return JSON.parse(JSON.stringify(productsArray[0]));
   }
@@ -158,5 +234,5 @@ export class Basket {
 }
 
 const basket = new Basket();
-basket.init();
+
 
