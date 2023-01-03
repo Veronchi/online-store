@@ -19,18 +19,24 @@ export class Router {
     this.hashChanged();
   }
 
-  public appendParam(key: string, value: string, removeKey?: string, removeValue?: string): void {
+  public appendParam(key: string, value: string): void {
     let search = window.location.search;
     if (search[0] === '?') search = search.slice(1);
 
     const array = search.split('&');
     if (array[0] === '') array.length = 0;
 
-    const deletedparams = `${removeKey}=${removeValue}`;
     const params = `${key}=${value}`;
+    let deletedIdx;
+    const findDelParam = array.find((el) => el.includes(key));
 
-    const deletedIndex = array.indexOf(deletedparams);
-    if (deletedIndex >= 0) array.splice(deletedIndex, 1);
+    if (findDelParam) {
+      deletedIdx = array.indexOf(findDelParam);
+
+      if (deletedIdx >= 0) {
+        array.splice(deletedIdx, 1);
+      }
+    }
 
     if (!array.includes(params)) array.push(params);
 

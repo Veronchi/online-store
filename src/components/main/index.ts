@@ -163,9 +163,9 @@ export default class Main extends Component {
     const active = btnArr.find((btn) => btn.className.includes('layout__btn_active'));
 
     if (active && active.className.includes('layout__btn_row')) {
-      this.router.appendParam('productLayout', 'row', 'productLayout', 'grid');
+      this.router.appendParam('productLayout', 'row');
     } else {
-      this.router.appendParam('productLayout', 'grid', 'productLayout', 'row');
+      this.router.appendParam('productLayout', 'grid');
     }
   }
 
