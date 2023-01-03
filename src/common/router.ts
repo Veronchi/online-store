@@ -19,18 +19,23 @@ export class Router {
     this.hashChanged();
   }
 
-  public appendParam(key: string, value: string): void {
-    const locationHash = window.location.hash;
-    const path: Array<string> | null = locationHash.match(/(#\w+)/);
-    const pathName: string = path ? path[1] : '';
+  public appendParam(key: string, value: string, removeKey?: string, removeValue?: string): void {
+    let search = window.location.search;
+    if (search[0] === '?') search = search.slice(1);
 
-    window.history.pushState(null, '', `${pathName}?${key}=${value}`);
-  }
+    const array = search.split('&');
+    if (array[0] === '') array.length = 0;
 
-  public deleteParam(key: string): void {
-    if (this.searchParams.has(key)) {
-      this.searchParams.delete(key);
-    }
+    const deletedparams = `${removeKey}=${removeValue}`;
+    const params = `${key}=${value}`;
+
+    const deletedIndex = array.indexOf(deletedparams);
+    if (deletedIndex >= 0) array.splice(deletedIndex, 1);
+
+    if (!array.includes(params)) array.push(params);
+
+    this.url.search = array.join('&');
+    history.pushState(null, '', this.url.href);
   }
 
   private initialize(): void {
