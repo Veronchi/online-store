@@ -12,7 +12,7 @@ export default class Cart extends Component {
   public init(): void {
     console.log('cart');
     const btn = document.querySelector('.cart-summary__submit') as HTMLElement;
-    btn.addEventListener('click', () => window.basket.addProducts());
+    btn.addEventListener('click', () => window.basket.addProduct());
     this.draw();
 
     this.initEvents();
@@ -55,7 +55,7 @@ export default class Cart extends Component {
     const target = e.target as HTMLElement;
     const product = this.findNode(target);
     const productId = product?.dataset.id;
-    
+
     if (productId) {
       window.basket.deleteProduct(productId);
       this.draw();
@@ -172,7 +172,7 @@ export class Basket {
     console.log(this.purchases);
   }
 
-  public addProducts(): void {
+  public addProduct(): void {
     const id: string | null = localStorage.getItem('productId');
     if (id) {
       if (this.isInBasket(id)) {
@@ -224,7 +224,7 @@ export class Basket {
     return JSON.parse(JSON.stringify(productsArray[0]));
   }
 
-  private isInBasket(id: string): boolean {
+  public isInBasket(id: string): boolean {
     let result = false;
     this.purchases.forEach((el: IPurchase) => {
       if (el.product.id === id) result = true;
