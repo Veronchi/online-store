@@ -51,6 +51,11 @@ export default {
       template: './src/components/404/page404.html',
       inject: false,
     }),
+    new HtmlWebpackPlugin({
+      filename: 'cart.html',
+      template: './src/components/cart/index.html',
+      inject: false,
+    }),
     new CleanWebpackPlugin(), //очистка dist
   ],
   resolve: {
