@@ -14,7 +14,7 @@ export default class Cart extends Component {
     const btn = document.querySelector('.cart-summary__submit') as HTMLElement;
     btn.addEventListener('click', () => window.basket.addProduct());
     this.draw();
-
+    this.drawSummary();
     this.initEvents();
   }
 
@@ -43,7 +43,9 @@ export default class Cart extends Component {
   
         const searchTotal = target.parentElement?.parentElement?.parentElement as HTMLElement;
         const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
-        subTotal.textContent = `${newCount * window.basket.getProduct(productId).price}$`;
+        subTotal.textContent = `${(newCount * window.basket.getProduct(productId).price * 
+          (100 - window.basket.getProduct(productId).discountPercentage) / 100).toFixed(2)}$`;
+        this.drawSummary();
       } else {
         this.draw();
         this.initEvents();
@@ -59,8 +61,20 @@ export default class Cart extends Component {
     if (productId) {
       window.basket.deleteProduct(productId);
       this.draw();
+      this.drawSummary();
       this.initEvents();
     }
+  }
+
+  private drawSummary() {
+    const countProducts = document.querySelector('.cart-summary__products-count') as HTMLElement;
+    countProducts.textContent = `${window.basket.getTotalCount()}`;
+
+    const countDiscount = document.querySelector('.cart-summary__discount-count') as HTMLElement;
+    countDiscount.textContent = `${window.basket.getTotalDiscount().toFixed(2)}$`;
+
+    const countSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
+    countSumm.textContent = `${window.basket.getTotalSumm().toFixed(2)}$`;
   }
 
   private initEvents():void {
@@ -111,7 +125,7 @@ export default class Cart extends Component {
 
     ul.setAttribute('data-id', product.id);
     liDesc.textContent = product.description;
-    liPrice.textContent = `${product.price}$`;
+    liPrice.textContent = `${product.price.toFixed(2)}$`;
     liDiscount.textContent = `${product.discountPercentage}%`;
     img.src = product.thumbnail;
     img.alt = `${product.title}`;
@@ -119,8 +133,8 @@ export default class Cart extends Component {
     stock.textContent = `Stock: ${product.stock}`;
     btnPlus.textContent = '+';
     btnMinus.textContent = '-';
-    liSubtotal.textContent = `${window.basket.getProductCount(product.id) * product.price}$`;
-
+    liSubtotal.textContent = `${(window.basket.getProductCount(product.id) * product.price * (100 - product.discountPercentage) / 100).toFixed(2)}$`;
+    
     div.append(btnPlus);
     div.append(btnMinus);
     div.append(stock);
@@ -153,6 +167,7 @@ export class Basket {
   public purchases: IPurchase[];
   public totalSumm: number;
   public totalCount: number;
+  public totalDiscount: number;
 
   constructor() {
     const basketSave:string | null = localStorage.getItem('basket');
@@ -161,10 +176,12 @@ export class Basket {
       this.purchases = basketValue.purchases;
       this.totalCount = basketValue.totalCount;
       this.totalSumm = basketValue.totalSumm;
+      this.totalDiscount = basketValue.totalDiscount;
     } else {
       this.purchases = [];
       this.totalCount = 0;
       this.totalSumm = 0;
+      this.totalDiscount = 0;
     }
   }
 
@@ -176,12 +193,15 @@ export class Basket {
     const id: string | null = localStorage.getItem('productId');
     if (id) {
       if (this.isInBasket(id)) {
-        this.purchases[this.getPurchaseId(id)].count++;
+        if (this.purchases[this.getPurchaseId(id)].count < this.purchases[this.getPurchaseId(id)].product.stock) {
+          this.purchases[this.getPurchaseId(id)].count++;
+        }
       } else {
         this.purchases.push({count: 1, product: this.getProduct(id)});
         this.totalCount++;
         this.totalSumm += this.getProduct(id).price;
       }
+      this.setTotals();
       this.setToLocalStorage();
     }
   }
@@ -209,13 +229,41 @@ export class Basket {
         return 0;
       }
     }
+    this.setTotals();
     this.setToLocalStorage();
     return this.purchases[purchaseId].count;
+  }
+
+  private setTotals(): void {
+    let count = 0;
+    let summ = 0;
+    let discount = 0;
+    this.purchases.forEach((element: IPurchase) => {
+      count += element.count;
+      summ += element.count * element.product.price * (100 - element.product.discountPercentage) / 100;
+      discount += element.count * element.product.price * element.product.discountPercentage / 100;
+    })
+    this.totalCount = count;
+    this.totalSumm = summ;
+    this.totalDiscount = discount;
+  }
+
+  public getTotalSumm(): number {
+    return this.totalSumm;
+  }
+
+  public getTotalCount(): number {
+    return this.totalCount;
+  }
+
+  public getTotalDiscount(): number {
+    return this.totalDiscount;
   }
 
   public deleteProduct(id: string): void {
     const purchaseId =  this.getPurchaseId(id);
     this.purchases.splice(purchaseId, 1);
+    this.setTotals();
     this.setToLocalStorage();
   }
 
