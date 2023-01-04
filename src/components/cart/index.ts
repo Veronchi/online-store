@@ -30,30 +30,37 @@ export default class Cart extends Component {
 
   private changeCountProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const productId = target.parentElement?.parentElement?.parentElement?.dataset.id as string;
+    const product = this.findNode(target);
+    const productId = product?.dataset.id;
 
-    const newCount = window.basket.changeProductCount(productId, String(target.textContent));
-
-    if (newCount > 0) {
-      const searchBlock = target.parentElement?.parentElement as HTMLElement;
-      const productCount = searchBlock.querySelector('.cart-products__quantity-count') as HTMLElement;
-      productCount.textContent = `${newCount}`;
-
-      const searchTotal = target.parentElement?.parentElement?.parentElement as HTMLElement;
-      const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
-      subTotal.textContent = `${newCount * window.basket.getProduct(productId).price}$`;
-    } else {
-      this.draw();
-      this.initEvents();
+    if (productId) {
+      const newCount = window.basket.changeProductCount(productId, String(target.textContent));
+  
+      if (newCount > 0) {
+        const searchBlock = target.parentElement?.parentElement as HTMLElement;
+        const productCount = searchBlock.querySelector('.cart-products__quantity-count') as HTMLElement;
+        productCount.textContent = `${newCount}`;
+  
+        const searchTotal = target.parentElement?.parentElement?.parentElement as HTMLElement;
+        const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
+        subTotal.textContent = `${newCount * window.basket.getProduct(productId).price}$`;
+      } else {
+        this.draw();
+        this.initEvents();
+      }
     }
   }
 
   private deleteProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const productId = target.parentElement?.dataset.id as string;
-    window.basket.deleteProduct(productId);
-    this.draw();
-    this.initEvents();
+    const product = this.findNode(target);
+    const productId = product?.dataset.id;
+    
+    if (productId) {
+      window.basket.deleteProduct(productId);
+      this.draw();
+      this.initEvents();
+    }
   }
 
   private initEvents():void {
@@ -129,6 +136,16 @@ export default class Cart extends Component {
     ul.append(liDelete);
 
     return ul;
+  }
+
+  private findNode(el: HTMLElement): HTMLElement | undefined {
+    let element = el;
+
+    if (el.parentElement?.nodeName === 'UL') {
+      return el.parentElement;
+    } else {
+      return (element = this.findNode(element.parentElement as HTMLElement) as HTMLElement);
+    }
   }
 }
 
