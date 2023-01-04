@@ -124,7 +124,7 @@ export default class Main extends Component {
 
     if (priceFilter) {
       priceFilter.addEventListener('change', (e) =>
-        this.filter.onChangePriceAmount(e, this.changeQueryParam.bind(this))
+        this.filter.onChangePriceAmount(e, this.changeQueryParam.bind(this), this.compareData.bind(this))
       );
     }
   }
@@ -142,28 +142,13 @@ export default class Main extends Component {
 
     if (stockFilter) {
       stockFilter.addEventListener('change', (e) =>
-        this.filter.onChangeStockAmount(e, this.changeQueryParam.bind(this))
+        this.filter.onChangeStockAmount(e, this.changeQueryParam.bind(this), this.compareData.bind(this))
       );
     }
   }
 
-  private selectProduct(e: Event): void {
-    const target = e.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.id;
-
-    localStorage.removeItem('productId');
-    localStorage.setItem('productId', `${productId}`);
-  }
-
-  private findNode(el: HTMLElement): HTMLElement | undefined {
-    let element = el;
-
-    if (el.parentElement?.nodeName === 'LI') {
-      return el.parentElement;
-    } else {
-      return (element = this.findNode(element.parentElement as HTMLElement) as HTMLElement);
-    }
+  public compareData(newData: Array<IProduct>) {
+    this.renderer.render(newData);
   }
 
   private changeLayoutQueryParam(btnWrapper: HTMLDivElement): void {
@@ -234,6 +219,25 @@ export default class Main extends Component {
         this.filter.getAmountRange(),
         str.match(regEx)?.[0]
       );
+    }
+  }
+
+  private selectProduct(e: Event): void {
+    const target = e.target as HTMLElement;
+    const product = this.findNode(target);
+    const productId = product?.id;
+
+    localStorage.removeItem('productId');
+    localStorage.setItem('productId', `${productId}`);
+  }
+
+  private findNode(el: HTMLElement): HTMLElement | undefined {
+    let element = el;
+
+    if (el.parentElement?.nodeName === 'LI') {
+      return el.parentElement;
+    } else {
+      return (element = this.findNode(element.parentElement as HTMLElement) as HTMLElement);
     }
   }
 }

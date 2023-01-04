@@ -16,10 +16,16 @@ export default class Renderer {
       this.catalogEl.innerHTML = '';
     }
 
-    for (let i = 0; i < data.length; i++) {
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        if (this.catalogEl) {
+          const productEl = this.createProductItem(data[i]);
+          this.catalogEl.append(productEl);
+        }
+      }
+    } else {
       if (this.catalogEl) {
-        const productEl = this.createProductItem(data[i]);
-        this.catalogEl.append(productEl);
+        this.catalogEl.innerHTML = 'Oops! No products found';
       }
     }
   }

@@ -2,11 +2,13 @@ import { IFilterAmount, IProduct } from '../../common/interface';
 
 export default class Filter {
   private data: Array<IProduct>;
+  private filteredData: Array<IProduct>;
   private priceRange: IFilterAmount;
   private amountRange: IFilterAmount;
 
   constructor(data: Array<IProduct>) {
     this.data = data;
+    this.filteredData = this.data;
     this.priceRange = {
       from: 0,
       to: 0,
@@ -15,11 +17,11 @@ export default class Filter {
       from: 0,
       to: 0,
     };
-    this.calcPriceRange();
-    this.calcAmountRange();
+    this.calcInitPriceRange();
+    this.calcInitAmountRange();
   }
 
-  private calcPriceRange(): void {
+  private calcInitPriceRange(): void {
     const cloneData = [...this.data];
     const result = cloneData.sort((a, b) => a.price - b.price);
 
@@ -29,7 +31,7 @@ export default class Filter {
     };
   }
 
-  private calcAmountRange(): void {
+  private calcInitAmountRange(): void {
     const cloneData = [...this.data];
     const result = cloneData.sort((a, b) => a.stock - b.stock);
 
@@ -52,7 +54,11 @@ export default class Filter {
     await navigator.clipboard.writeText(href);
   }
 
-  public onChangePriceAmount(e: Event, changeParam: (k: string, v: string) => void): void {
+  public onChangePriceAmount(
+    e: Event,
+    changeParam: (k: string, v: string) => void,
+    compareData: (data: Array<IProduct>) => void
+  ): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
     const inputTo = document.getElementById('to-price') as HTMLInputElement;
@@ -64,14 +70,24 @@ export default class Filter {
       this.changeInputFromVal(inputFrom, inputTo);
       priceStart.innerText = `${input.value}`;
       changeParam(input.id, `${input.value}`);
+      this.priceRange.from = +input.value;
+      this.calcProductsByRange(this.priceRange, 'price');
+      compareData(this.filteredData);
     } else {
       this.changeInputToVal(inputFrom, inputTo);
       priceEnd.innerText = `${input.value}`;
       changeParam(input.id, `${input.value}`);
+      this.priceRange.to = +input.value;
+      this.calcProductsByRange(this.priceRange, 'price');
+      compareData(this.filteredData);
     }
   }
 
-  public onChangeStockAmount(e: Event, changeParam: (k: string, v: string) => void): void {
+  public onChangeStockAmount(
+    e: Event,
+    changeParam: (k: string, v: string) => void,
+    compareData: (data: Array<IProduct>) => void
+  ): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-stock') as HTMLInputElement;
     const inputTo = document.getElementById('to-stock') as HTMLInputElement;
@@ -83,10 +99,25 @@ export default class Filter {
       this.changeInputFromVal(inputFrom, inputTo);
       stockStartNum.innerText = `${input.value}`;
       changeParam(input.id, `${input.value}`);
+      this.amountRange.from = +input.value;
+      this.calcProductsByRange(this.amountRange, 'stock');
+      compareData(this.filteredData);
     } else {
       this.changeInputToVal(inputFrom, inputTo);
       stockEndNum.innerText = `${input.value}`;
       changeParam(input.id, `${input.value}`);
+      this.amountRange.to = +input.value;
+      this.calcProductsByRange(this.amountRange, 'stock');
+      compareData(this.filteredData);
+    }
+  }
+
+  private calcProductsByRange(range: IFilterAmount, value: string): void {
+    debugger;
+    if (value === 'price') {
+      this.filteredData = this.filteredData.filter((i) => i.price >= range.from && i.price <= range.to);
+    } else {
+      this.filteredData = this.filteredData.filter((i) => i.stock >= range.from && i.stock <= range.to);
     }
   }
 
