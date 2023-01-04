@@ -59,6 +59,7 @@ export default class Main extends Component {
     this.handlerProductLayout();
     this.handlePriceFilter();
     this.handleStockFilter();
+    this.handleCopyUrl();
   }
 
   private calcCategoryStock(): void {
@@ -125,6 +126,14 @@ export default class Main extends Component {
       priceFilter.addEventListener('change', (e) =>
         this.filter.onChangePriceAmount(e, this.changeQueryParam.bind(this))
       );
+    }
+  }
+
+  private handleCopyUrl(): void {
+    const copyBtn = document.querySelector<HTMLDivElement>('.btn_copy');
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', this.filter.copyFilters);
     }
   }
 
