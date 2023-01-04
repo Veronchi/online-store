@@ -151,9 +151,9 @@ export default class Renderer {
     const toSpan = document.querySelector(toEl) as HTMLSpanElement;
 
     if (fromInput) {
-      fromInput.value = `${data.from}`;
       fromInput.min = `${data.from}`;
       fromInput.max = `${data.to}`;
+      fromInput.value = `${data.from}`;
     }
     if (toInput) {
       toInput.min = `${data.from}`;
@@ -163,5 +163,17 @@ export default class Renderer {
 
     fromSpan.innerText = `${data.from}`;
     toSpan.innerText = `${data.to}`;
+  }
+
+  public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string) {
+    const input = document.getElementById(inp) as HTMLInputElement | null;
+    const span = document.querySelector(el) as HTMLSpanElement;
+
+    if (input) {
+      input.min = `${data.from}`;
+      input.max = `${data.to}`;
+      input.value = `${urlData}`;
+      span.innerText = `${urlData}`;
+    }
   }
 }

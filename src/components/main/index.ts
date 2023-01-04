@@ -175,11 +175,56 @@ export default class Main extends Component {
 
   public checkUrlLayout(): void {
     const query = window.location.search;
+    const regEx = /(?<==)(\w+)/gm;
 
-    if (query.includes('&productLayout=row')) {
+    if (query.includes('productLayout=row')) {
       this.renderer.setRowProductLayout();
-    } else if (query.includes('&productLayout=grid')) {
+    } else if (query.includes('productLayout=grid')) {
       this.renderer.setGridProductLayout();
+    }
+    if (query.includes('from-price')) {
+      const param = query.indexOf('from-price');
+      const str = query.slice(param);
+
+      this.renderer.changeFilterRangeValues(
+        'from-price',
+        '.amount__start_price',
+        this.filter.getPriceRange(),
+        str.match(regEx)?.[0]
+      );
+    }
+    if (query.includes('to-price')) {
+      const param = query.indexOf('to-price');
+      const str = query.slice(param);
+
+      this.renderer.changeFilterRangeValues(
+        'to-price',
+        '.amount__end_price',
+        this.filter.getPriceRange(),
+        str.match(regEx)?.[0]
+      );
+    }
+    if (query.includes('from-stock')) {
+      const param = query.indexOf('from-stock');
+      const str = query.slice(param);
+
+      this.renderer.changeFilterRangeValues(
+        'from-stock',
+        '.amount__start_num',
+        this.filter.getAmountRange(),
+        str.match(regEx)?.[0]
+      );
+    }
+    if (query.includes('to-stock')) {
+      const param = query.indexOf('to-stock');
+      const str = query.slice(param);
+
+      this.renderer.changeFilterRangeValues(
+        'to-stock',
+        '.amount__end_num',
+        this.filter.getAmountRange(),
+        str.match(regEx)?.[0]
+      );
     }
   }
 }
