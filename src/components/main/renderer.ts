@@ -116,10 +116,11 @@ export default class Renderer {
     return li;
   }
 
-  public renderFilterList(rootEl: string, list: Array<IFilterProduct>): void {
+  public renderFilterList(rootEl: string, list: Array<IFilterProduct>, prevList?: Array<IFilterProduct>): void {
     const root: HTMLElement | null = document.querySelector(rootEl);
 
     if (root) {
+      root.innerHTML = '';
       for (let i = 0; i < list.length; i++) {
         const li = document.createElement('li');
         const input = document.createElement('input');
@@ -137,7 +138,7 @@ export default class Renderer {
         spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
         spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
         spanCurr.innerText = `${list[i].stock}/`;
-        spanTotal.innerText = `${list[i].stock}`;
+        spanTotal.innerText = prevList ? `${prevList[i].stock}` : `${list[i].stock}`;
         li.append(input);
         li.append(label);
         li.append(spanCurr);
@@ -157,13 +158,13 @@ export default class Renderer {
     const toSpan = document.querySelector(toEl) as HTMLSpanElement;
 
     if (fromInput) {
-      fromInput.min = `${data.from}`;
-      fromInput.max = `${data.to}`;
+      fromInput.min = localStorage.getItem(fromInp) as string;
+      fromInput.max = localStorage.getItem(toInp) as string;
       fromInput.value = `${data.from}`;
     }
     if (toInput) {
-      toInput.min = `${data.from}`;
-      toInput.max = `${data.to}`;
+      toInput.min = localStorage.getItem(fromInp) as string;
+      toInput.max = localStorage.getItem(toInp) as string;
       toInput.value = `${data.to}`;
     }
 
