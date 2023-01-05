@@ -1,4 +1,5 @@
 import Component from './component';
+import { TQParams } from './interface';
 
 export class Router {
   private url: URL;
@@ -67,6 +68,17 @@ export class Router {
 
       component.init();
     });
+  }
+
+  public getObjProperties() {
+    const qParams: string = window.location.search.slice(1);
+    const params: string[][] = qParams.split('&').map((str) => str.split('='));
+    const initialObj: TQParams = {};
+
+    return params.reduce((init, item) => {
+      init[item[0]] = item[1];
+      return init;
+    }, initialObj);
   }
 }
 

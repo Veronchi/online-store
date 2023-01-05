@@ -1,6 +1,6 @@
 import Component from '../../common/component';
 import { products } from '../../products';
-import { IFilterAmount, IFilterProduct, IProduct } from '../../common/interface';
+import { IFilterAmount, IFilterProduct, IProduct, TQParams } from '../../common/interface';
 import Renderer from './renderer';
 import './style.scss';
 import { Router } from '../../common/router';
@@ -202,58 +202,55 @@ export default class Main extends Component {
   }
 
   public checkUrlLayout(): void {
-    const query = window.location.search;
-    const regEx = /(?<==)(\w+)/gm;
+    const qParams: TQParams = this.router.getObjProperties();
 
-    if (query.includes('productLayout=row')) {
-      this.renderer.setRowProductLayout();
-    }
-    if (query.includes('productLayout=grid')) {
-      this.renderer.setGridProductLayout();
-    }
-    if (query.includes('from-price')) {
-      const param = query.indexOf('from-price');
-      const str = query.slice(param);
+    for (const key in qParams) {
+      if (Object.prototype.hasOwnProperty.call(qParams, key)) {
+        switch (key) {
+          case 'productLayout':
+            qParams[key] === 'row' ? this.renderer.setRowProductLayout() : this.renderer.setGridProductLayout();
+            break;
 
-      this.renderer.changeFilterRangeValues(
-        'from-price',
-        '.amount__start_price',
-        this.filter.getPriceRange(),
-        str.match(regEx)?.[0]
-      );
-    }
-    if (query.includes('to-price')) {
-      const param = query.indexOf('to-price');
-      const str = query.slice(param);
+          case 'from-price':
+            this.renderer.changeFilterRangeValues(
+              'from-price',
+              '.amount__start_price',
+              this.filter.getPriceRange(),
+              qParams[key]
+            );
+            break;
 
-      this.renderer.changeFilterRangeValues(
-        'to-price',
-        '.amount__end_price',
-        this.filter.getPriceRange(),
-        str.match(regEx)?.[0]
-      );
-    }
-    if (query.includes('from-stock')) {
-      const param = query.indexOf('from-stock');
-      const str = query.slice(param);
+          case 'to-price':
+            this.renderer.changeFilterRangeValues(
+              'to-price',
+              '.amount__end_price',
+              this.filter.getPriceRange(),
+              qParams[key]
+            );
+            break;
 
-      this.renderer.changeFilterRangeValues(
-        'from-stock',
-        '.amount__start_num',
-        this.filter.getAmountRange(),
-        str.match(regEx)?.[0]
-      );
-    }
-    if (query.includes('to-stock')) {
-      const param = query.indexOf('to-stock');
-      const str = query.slice(param);
+          case 'from-stock':
+            this.renderer.changeFilterRangeValues(
+              'from-stock',
+              '.amount__start_num',
+              this.filter.getAmountRange(),
+              qParams[key]
+            );
+            break;
 
-      this.renderer.changeFilterRangeValues(
-        'to-stock',
-        '.amount__end_num',
-        this.filter.getAmountRange(),
-        str.match(regEx)?.[0]
-      );
+          case 'to-stock':
+            this.renderer.changeFilterRangeValues(
+              'to-stock',
+              '.amount__end_num',
+              this.filter.getAmountRange(),
+              qParams[key]
+            );
+            break;
+
+          default:
+            break;
+        }
+      }
     }
   }
 

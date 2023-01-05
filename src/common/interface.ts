@@ -37,4 +37,8 @@ interface IFilterAmount {
   to: number;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps, IFilterProduct, IFilterAmount };
+type TQParams = {
+  [n: string]: string;
+};
+
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IFilterProduct, IFilterAmount, TQParams };
