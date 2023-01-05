@@ -17,6 +17,7 @@ export default class Details extends Component {
   init() {
     console.log('details');
     this.draw();
+    this.basket.drawHeader();
     this.initEvents();
   }
 

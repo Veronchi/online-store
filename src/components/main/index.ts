@@ -52,6 +52,7 @@ export default class Main extends Component {
 
     localStorage.removeItem('productId');
     localStorage.setItem('productId', `${productId}`);
+    window.location.replace('#details');
   }
 
   private findNode(el: HTMLElement): HTMLElement | undefined {

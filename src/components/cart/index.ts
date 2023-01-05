@@ -17,6 +17,7 @@ export default class Cart extends Component {
     btn.addEventListener('click', () => this.basket.addProduct());
     this.draw();
     this.drawSummary();
+    this.basket.drawHeader();
     this.initEvents();
   }
 
@@ -24,10 +25,19 @@ export default class Cart extends Component {
     const cartProducts = document.querySelector('.cart-products') as HTMLElement;
     cartProducts.innerHTML = '';
 
-    this.basket.purchases.forEach((el: IPurchase) => {
-      const cartEl = this.createCartProduct(el.product);
+    if (this.basket.purchases.length > 0) {
+      this.basket.purchases.forEach((el: IPurchase) => {
+        const cartEl = this.createCartProduct(el.product);
+        cartProducts.append(cartEl);
+      });
+    } else 
+    {
+      const cartProducts = document.querySelector('.cart-container') as HTMLElement;
+      cartProducts.innerHTML = '';
+
+      const cartEl = this.createEmptyCart();
       cartProducts.append(cartEl);
-    });
+    }
   }
 
   private changeCountProduct(e: Event): void {
@@ -47,11 +57,11 @@ export default class Cart extends Component {
         const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
         subTotal.textContent = `${(newCount * this.basket.getProduct(productId).price * 
           (100 - this.basket.getProduct(productId).discountPercentage) / 100).toFixed(2)}$`;
-        this.drawSummary();
       } else {
         this.draw();
         this.initEvents();
       }
+      this.drawSummary();
     }
   }
 
@@ -152,6 +162,13 @@ export default class Cart extends Component {
     ul.append(liDelete);
 
     return ul;
+  }
+
+  private createEmptyCart():HTMLElement {
+    const emptyCArt = document.createElement('p');
+    emptyCArt.className = 'cart-products__empty';
+    emptyCArt.textContent = 'Cart is Empty'
+    return emptyCArt;
   }
 
   private findNode(el: HTMLElement): HTMLElement | undefined {

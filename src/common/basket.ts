@@ -40,6 +40,7 @@ export default class Basket {
         this.totalSumm += this.getProduct(id).price;
       }
       this.setTotals();
+      this.drawHeader();
       this.setToLocalStorage();
     }
   }
@@ -68,6 +69,7 @@ export default class Basket {
       }
     }
     this.setTotals();
+    this.drawHeader();
     this.setToLocalStorage();
     return this.purchases[purchaseId].count;
   }
@@ -78,12 +80,12 @@ export default class Basket {
     let discount = 0;
     this.purchases.forEach((element: IPurchase) => {
       count += element.count;
-      summ += element.count * element.product.price * (100 - element.product.discountPercentage) / 100;
+      summ +=element.count * element.product.price * (100 - element.product.discountPercentage) / 100;
       discount += element.count * element.product.price * element.product.discountPercentage / 100;
     })
     this.totalCount = count;
-    this.totalSumm = summ;
-    this.totalDiscount = discount;
+    this.totalSumm = Math.round(summ * 100) / 100;
+    this.totalDiscount = Math.round(discount * 100) / 100;
   }
 
   public getTotalSumm(): number {
@@ -102,6 +104,7 @@ export default class Basket {
     const purchaseId =  this.getPurchaseId(id);
     this.purchases.splice(purchaseId, 1);
     this.setTotals();
+    this.drawHeader();
     this.setToLocalStorage();
   }
 
@@ -126,6 +129,14 @@ export default class Basket {
       }
     }
     return result;
+  }
+
+  public drawHeader() {
+    const totalSumm = document.querySelector('.header__total') as HTMLElement;
+    totalSumm.textContent = `Total amount: ${this.getTotalSumm().toFixed(2)}$`;
+
+    const totalCount = document.querySelector('.cart__amount') as HTMLElement;
+    totalCount.textContent = `${this.getTotalCount()}`;
   }
 
   public setToLocalStorage(): void {
