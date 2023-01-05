@@ -56,14 +56,11 @@ export default class Renderer {
     const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
     const btnGrid = document.querySelector('.layout__btn_grid') as HTMLButtonElement;
     const btnRow = document.querySelector('.layout__btn_row') as HTMLButtonElement;
-    const elCollection: NodeListOf<HTMLDivElement> = document.querySelectorAll('.wrapper');
-    const wrapper: Array<HTMLDivElement> = Array.from(elCollection);
 
     btnGrid.classList.remove('layout__btn_active');
     btnRow.classList.add('layout__btn_active');
 
     catalog?.classList.add('products__catalog_row');
-    wrapper.map((i) => i.classList.add('wrapper_row'));
   }
 
   private createProductItem(product: IProduct): HTMLLIElement {

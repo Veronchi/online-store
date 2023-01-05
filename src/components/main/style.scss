@@ -352,14 +352,6 @@
 
   .wrapper {
     width: 100%;
-
-    &_row {
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      width: 100%;
-      gap: 80px;
-    }
   }
 
   .img-wrapper {
@@ -370,6 +362,7 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
+    margin: 0 auto;
   }
 
   &__img {
