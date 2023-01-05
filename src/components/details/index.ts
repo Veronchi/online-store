@@ -1,14 +1,17 @@
 import Component from '../../common/component';
 import './style-details.scss';
+import Basket from '../../common/basket';
 import { IProduct } from '../../common/interface';
 import { products} from '../../products';
 
 export default class Details extends Component {
   private product: IProduct | null;
+  private basket: Basket;
 
   constructor(name: string) {
     super(name);
     this.product = null;
+    this.basket = new Basket();
   }
 
   init() {
@@ -87,7 +90,7 @@ export default class Details extends Component {
     const id: string | null = localStorage.getItem('productId');
     if (id) {
       const btnAddCart = document.querySelector('.details__cart') as HTMLButtonElement;
-      if (window.basket.isInBasket(id)) {
+      if (this.basket.isInBasket(id)) {
         btnAddCart.textContent = 'Drop from Cart';
       } else {
         btnAddCart.textContent = 'Add in Cart';
@@ -115,9 +118,9 @@ export default class Details extends Component {
     const target = e.target as HTMLElement;
     if (id) {
       if (target.textContent === 'Add in Cart') {
-        window.basket.addProduct();
+        this.basket.addProduct();
       } else {
-        window.basket.deleteProduct(id);
+        this.basket.deleteProduct(id);
       }
       this.checkProductCart();
     }
