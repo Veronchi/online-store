@@ -53,6 +53,14 @@ export default class Basket {
     return result;
   }
 
+  public getProductPosition(id: string): number {
+    let result = 0;
+    this.purchases.forEach((el: IPurchase, index: number) => {
+      if (el.product.id === id) result = index;
+    })
+    return result;
+  }
+
   public changeProductCount(id: string, operation: string): number {
     const purchaseId =  this.getPurchaseId(id);
 

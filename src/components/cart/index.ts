@@ -13,6 +13,13 @@ export default class Cart extends Component {
 
   public init(): void {
     console.log('cart');
+
+    const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
+    const itemPerPage = Number(maxItem.value);
+
+    const blockProducts = document.querySelector('.cart-products') as HTMLElement;
+    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalCount()) * 100}px`;
+
     const btn = document.querySelector('.cart-summary__submit') as HTMLElement;
     btn.addEventListener('click', () => this.basket.addProduct());
     this.draw();
@@ -26,10 +33,7 @@ export default class Cart extends Component {
     cartProducts.innerHTML = '';
 
     if (this.basket.purchases.length > 0) {
-      this.basket.purchases.forEach((el: IPurchase) => {
-        const cartEl = this.createCartProduct(el.product);
-        cartProducts.append(cartEl);
-      });
+      this.changePage(1);
     } else 
     {
       const cartProducts = document.querySelector('.cart-container') as HTMLElement;
@@ -58,8 +62,8 @@ export default class Cart extends Component {
         subTotal.textContent = `${(newCount * this.basket.getProduct(productId).price * 
           (100 - this.basket.getProduct(productId).discountPercentage) / 100).toFixed(2)}$`;
       } else {
-        this.draw();
-        this.initEvents();
+        const currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
+        this.changePage(Math.min(currentPage, this.getNumPages()));
       }
       this.drawSummary();
     }
@@ -71,10 +75,10 @@ export default class Cart extends Component {
     const productId = product?.dataset.id;
 
     if (productId) {
+      const currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
       this.basket.deleteProduct(productId);
-      this.draw();
+      this.changePage(Math.min(currentPage, this.getNumPages()));
       this.drawSummary();
-      this.initEvents();
     }
   }
 
@@ -90,8 +94,9 @@ export default class Cart extends Component {
   }
 
   private initEvents():void {
-    this.handlerChangeCount();
-    this.handlerDeleteProduct();
+    this.handlerPrevPage();
+    this.handlerNextPage();
+    this.handlerItemsPerPage();
   }
   
   private handlerChangeCount():void {
@@ -104,8 +109,24 @@ export default class Cart extends Component {
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.deleteProduct(event)));
   }
 
+  private handlerPrevPage():void {
+    const btnPrev = document.querySelector('.cart-pagination__left') as HTMLButtonElement;
+    btnPrev.addEventListener('click', () => this.prevPage());
+  }
+
+  private handlerNextPage():void {
+    const btnNext = document.querySelector('.cart-pagination__right') as HTMLButtonElement;
+    btnNext.addEventListener('click', () => this.nextPage());
+  }
+
+  private handlerItemsPerPage():void {
+    const btnNext = document.querySelector('.cart-pagination__input') as HTMLButtonElement;
+    btnNext.addEventListener('input', () => this.changeItemsPerPage());
+  }
+
   private createCartProduct(product: IProduct): HTMLUListElement {
     const ul = document.createElement('ul');
+    const liNum = document.createElement('li');
     const liImage = document.createElement('li');
     const liDesc = document.createElement('li');
     const liPrice = document.createElement('li');
@@ -121,6 +142,7 @@ export default class Cart extends Component {
     const btnMinus = document.createElement('button');
 
     ul.className = 'cart-products__items';
+    liNum.className = 'cart-products__num';
     liImage.className = 'cart-products__image';
     liDesc.className = 'cart-products__description';
     liPrice.className = 'cart-products__price';
@@ -136,6 +158,7 @@ export default class Cart extends Component {
     btnMinus.className = 'ride-button cart-products__quantity-down';
 
     ul.setAttribute('data-id', product.id);
+    liNum.textContent = `${this.basket.getProductPosition(product.id) + 1}`
     liDesc.textContent = product.description;
     liPrice.textContent = `${product.price.toFixed(2)}$`;
     liDiscount.textContent = `${product.discountPercentage}%`;
@@ -153,6 +176,7 @@ export default class Cart extends Component {
     liQuantity.append(count);
     liQuantity.append(div);
     liImage.append(img);
+    ul.append(liNum);
     ul.append(liImage);
     ul.append(liDesc);
     ul.append(liPrice);
@@ -180,6 +204,79 @@ export default class Cart extends Component {
       return (element = this.findNode(element.parentElement as HTMLElement) as HTMLElement);
     }
   }
+
+  private prevPage(): void {
+    let currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
+    if (currentPage > 1) {
+      currentPage--;
+      this.changePage(currentPage);
+    }
+  }
+
+  private nextPage(): void {
+    let currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
+    if (currentPage < this.getNumPages()) {
+      currentPage++;
+      this.changePage(currentPage);
+    }
+  }
+
+  private changePage(page: number): void {
+    const pageCount = document.querySelector('.cart-pagination__count') as HTMLElement;
+    pageCount.textContent = `${page}`;
+
+    const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
+    const itemPerPage = Number(maxItem.value);
+
+    const nextPage = document.querySelector('.cart-pagination__right') as HTMLButtonElement;
+    const prevPage = document.querySelector('.cart-pagination__left') as HTMLButtonElement;
+
+    const cartProducts = document.querySelector('.cart-products') as HTMLElement;
+    cartProducts.innerHTML = '';
+
+    for (let i = (page - 1) * itemPerPage; i < (page * itemPerPage) && i < this.basket.purchases.length; i++) {
+      const cartEl = this.createCartProduct(this.basket.purchases[i].product);
+      cartProducts.append(cartEl);
+    }
+
+    if (page === 1) {
+      prevPage.style.visibility = "hidden";
+    } else {
+      prevPage.style.visibility = "visible";
+    }
+
+    if (page === this.getNumPages()) {
+      nextPage.style.visibility = "hidden";
+    } else {
+      nextPage.style.visibility = "visible";
+    }
+
+    this.handlerChangeCount();
+    this.handlerDeleteProduct();
+  }
+
+  private changeItemsPerPage() {
+    const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
+    const itemPerPage = Number(maxItem.value);
+    
+    const blockProducts = document.querySelector('.cart-products') as HTMLElement;
+    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalCount()) * 100}px`;
+
+    const pageCount = document.querySelector('.cart-pagination__count') as HTMLElement;
+    const curPage = Number(pageCount.textContent);
+
+    if (curPage > this.getNumPages()) {
+      this.changePage(this.getNumPages());
+    } else {
+      this.changePage(curPage);
+    }
+  }
+
+  private getNumPages(): number {
+    const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
+    return Math.ceil(this.basket.purchases.length / Number(maxItem.value));
+  }
+
 }
 
 
