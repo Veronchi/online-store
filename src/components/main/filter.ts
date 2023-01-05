@@ -17,12 +17,12 @@ export default class Filter {
       from: 0,
       to: 0,
     };
-    this.calcInitPriceRange();
-    this.calcInitAmountRange();
+    this.calcInitPriceRange(this.data);
+    this.calcInitAmountRange(this.data);
   }
 
-  private calcInitPriceRange(): void {
-    const cloneData = [...this.data];
+  private calcInitPriceRange(data: Array<IProduct>): void {
+    const cloneData = [...data];
     const result = cloneData.sort((a, b) => a.price - b.price);
 
     this.priceRange = {
@@ -31,14 +31,20 @@ export default class Filter {
     };
   }
 
-  private calcInitAmountRange(): void {
-    const cloneData = [...this.data];
+  private calcInitAmountRange(data: Array<IProduct>): void {
+    const cloneData = [...data];
     const result = cloneData.sort((a, b) => a.stock - b.stock);
 
     this.amountRange = {
       from: result[0].stock,
       to: result[result.length - 1].stock,
     };
+  }
+
+  public changeFoundAmount(num: number) {
+    const foundSpan = document.querySelector('.found__amount');
+
+    foundSpan ? (foundSpan.innerHTML = `Found: ${num}`) : null;
   }
 
   public getPriceRange(): IFilterAmount {
@@ -57,7 +63,7 @@ export default class Filter {
   public onChangePriceAmount(
     e: Event,
     changeParam: (k: string, v: string) => void,
-    compareData: (data: Array<IProduct>) => void
+    renderNewData: (data: Array<IProduct>, range: IFilterAmount, indicator: string) => void
   ): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
@@ -69,24 +75,28 @@ export default class Filter {
     if (input.id === 'from-price') {
       this.changeInputFromVal(inputFrom, inputTo);
       priceStart.innerText = `${input.value}`;
-      changeParam(input.id, `${input.value}`);
       this.priceRange.from = +input.value;
       this.calcProductsByRange(this.priceRange, 'price');
-      compareData(this.filteredData);
+      this.calcInitAmountRange(this.filteredData);
+      renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+      changeParam(input.id, `${input.value}`);
+      this.changeFoundAmount(this.filteredData.length);
     } else {
       this.changeInputToVal(inputFrom, inputTo);
       priceEnd.innerText = `${input.value}`;
-      changeParam(input.id, `${input.value}`);
       this.priceRange.to = +input.value;
       this.calcProductsByRange(this.priceRange, 'price');
-      compareData(this.filteredData);
+      this.calcInitAmountRange(this.filteredData);
+      renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+      changeParam(input.id, `${input.value}`);
+      this.changeFoundAmount(this.filteredData.length);
     }
   }
 
   public onChangeStockAmount(
     e: Event,
     changeParam: (k: string, v: string) => void,
-    compareData: (data: Array<IProduct>) => void
+    renderNewData: (data: Array<IProduct>, range: IFilterAmount) => void
   ): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-stock') as HTMLInputElement;
@@ -98,26 +108,29 @@ export default class Filter {
     if (input.id === 'from-stock') {
       this.changeInputFromVal(inputFrom, inputTo);
       stockStartNum.innerText = `${input.value}`;
-      changeParam(input.id, `${input.value}`);
       this.amountRange.from = +input.value;
       this.calcProductsByRange(this.amountRange, 'stock');
-      compareData(this.filteredData);
+      this.calcInitPriceRange(this.filteredData);
+      renderNewData(this.filteredData, this.getPriceRange());
+      changeParam(input.id, `${input.value}`);
+      this.changeFoundAmount(this.filteredData.length);
     } else {
       this.changeInputToVal(inputFrom, inputTo);
       stockEndNum.innerText = `${input.value}`;
-      changeParam(input.id, `${input.value}`);
       this.amountRange.to = +input.value;
       this.calcProductsByRange(this.amountRange, 'stock');
-      compareData(this.filteredData);
+      this.calcInitPriceRange(this.filteredData);
+      renderNewData(this.filteredData, this.getPriceRange());
+      changeParam(input.id, `${input.value}`);
+      this.changeFoundAmount(this.filteredData.length);
     }
   }
 
   private calcProductsByRange(range: IFilterAmount, value: string): void {
-    debugger;
     if (value === 'price') {
-      this.filteredData = this.filteredData.filter((i) => i.price >= range.from && i.price <= range.to);
+      this.filteredData = this.data.filter((i) => i.price >= range.from && i.price <= range.to);
     } else {
-      this.filteredData = this.filteredData.filter((i) => i.stock >= range.from && i.stock <= range.to);
+      this.filteredData = this.data.filter((i) => i.stock >= range.from && i.stock <= range.to);
     }
   }
 
