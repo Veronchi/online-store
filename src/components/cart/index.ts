@@ -38,10 +38,8 @@ export default class Cart extends Component {
     const itemPerPage = Number(maxItem.value);
 
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
-    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalCount()) * 100}px`;
+    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalProducts()) * 100}px`;
 
-    const btn = document.querySelector('.cart-summary__submit') as HTMLElement;
-    btn.addEventListener('click', () => this.basket.addProduct());
     this.draw();
     this.drawSummary();
     this.basket.drawHeader();
@@ -68,6 +66,7 @@ export default class Cart extends Component {
     const target = e.target as HTMLElement;
     const product = this.findNode(target);
     const productId = product?.dataset.id;
+    e.stopPropagation();
 
     if (productId) {
       const newCount = this.basket.changeProductCount(productId, String(target.textContent));
@@ -93,6 +92,7 @@ export default class Cart extends Component {
     const target = e.target as HTMLElement;
     const product = this.findNode(target);
     const productId = product?.dataset.id;
+    e.stopPropagation();
 
     if (productId) {
       const currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
@@ -224,7 +224,19 @@ export default class Cart extends Component {
     ul.append(liSubtotal);
     ul.append(liDelete);
 
+    ul.addEventListener('click', (event: Event) => this.openProductInfo(event));
+
     return ul;
+  }
+
+  private openProductInfo(event: Event):void {
+    const target = event.target as HTMLElement;
+    const product = this.findNode(target);
+    const productId = product?.dataset.id;
+
+    const url = window.location.href.slice(0, window.location.href.indexOf('#'));
+
+    window.location.href = `${url}#details/${productId}`;
   }
 
   private createEmptyCart():HTMLElement {
@@ -308,7 +320,7 @@ export default class Cart extends Component {
     const itemPerPage = Number(maxItem.value);
     
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
-    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalCount()) * 100}px`;
+    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalProducts()) * 100}px`;
 
     const pageCount = document.querySelector('.cart-pagination__count') as HTMLElement;
     const curPage = Number(pageCount.textContent);
@@ -401,7 +413,6 @@ export default class Cart extends Component {
     if (this.promocodes.length > 0) {
       this.promocodes.forEach((element: IPromo) => {
         promoSumm = Math.round((prevSumm * (100 - element.discount) / 100) * 100) / 100;
-        // totalSumm = prevSumm;
         prevSumm = promoSumm;
       });
       promoTotalSumm.textContent = `${totalSumm.toFixed(2)}$`;

@@ -16,13 +16,23 @@ export default class Details extends Component {
 
   init() {
     console.log('details');
-    this.draw();
+    let id: string | null;
+    const url = window.location.href;
+    const productId = url.slice(url.lastIndexOf('/') - url.length + 1);
+    // const location = url.slice(0, url.indexOf('#'));
+
+    if (this.isIdInProducts(productId)) {
+      id = productId;
+    } else {
+      // window.location.href = `${location}#page404`;
+      id = localStorage.getItem('productId');
+    }
+    this.draw(id);
     this.basket.drawHeader();
     this.initEvents();
   }
 
-  draw():void {
-    const id: string | null = localStorage.getItem('productId');
+  draw(id: string | null):void {
     if (id) {
       const arr: IProduct[] = products.filter((element) => element.id === id);
       this.product = arr[0];
@@ -137,6 +147,16 @@ export default class Details extends Component {
     const checkedImage = document.querySelector('.details__thumbnail_checked') as HTMLElement;
     checkedImage.classList.toggle('details__thumbnail_checked');
     targetElement.classList.add('details__thumbnail_checked');
+  }
+
+  private isIdInProducts(id: string): boolean {
+    let result = false;
+    products.forEach((element) => {
+      if (element.id === id) {
+        result = true;
+      }
+    });
+    return result;
   }
 
   // buyNow() {

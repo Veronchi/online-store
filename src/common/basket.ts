@@ -108,6 +108,10 @@ export default class Basket {
     return this.totalDiscount;
   }
 
+  public getTotalProducts(): number {
+    return this.purchases.length;
+  }
+
   public deleteProduct(id: string): void {
     const purchaseId =  this.getPurchaseId(id);
     this.purchases.splice(purchaseId, 1);
