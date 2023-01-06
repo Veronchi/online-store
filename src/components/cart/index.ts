@@ -1,14 +1,29 @@
 import Component from '../../common/component';
 import Basket from '../../common/basket';
-import { IPurchase, IProduct } from '../../common/interface';
+import { IPromo, IProduct } from '../../common/interface';
 import './style-cart.scss';
+
+const validPromo: IPromo[] = [
+  {
+    promoname: 'NEWYEAR',
+    description: 'Happy New Year',
+    discount: 23
+  },
+  {
+    promoname: 'RS',
+    description: 'Rolling Scopes School',
+    discount: 10
+  },
+]
 
 export default class Cart extends Component {
   private basket: Basket;
+  private promocodes: IPromo[];
 
   constructor(name: string) {
     super(name);
     this.basket = new Basket();
+    this.promocodes = [];
   }
 
   public init(): void {
@@ -91,12 +106,16 @@ export default class Cart extends Component {
 
     const countSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
     countSumm.textContent = `${this.basket.getTotalSumm().toFixed(2)}$`;
+
+    this.setPromoTotalSumm();
   }
 
   private initEvents():void {
     this.handlerPrevPage();
     this.handlerNextPage();
     this.handlerItemsPerPage();
+    this.handlerInputPromo();
+    this.handlerAddPromo()
   }
   
   private handlerChangeCount():void {
@@ -122,6 +141,20 @@ export default class Cart extends Component {
   private handlerItemsPerPage():void {
     const btnNext = document.querySelector('.cart-pagination__input') as HTMLButtonElement;
     btnNext.addEventListener('input', () => this.changeItemsPerPage());
+  }
+
+  private handlerInputPromo():void {
+    const promo = document.querySelector('.cart-summary__promo') as HTMLInputElement;
+    promo.addEventListener('input', (e: Event) => this.findPromoCode(e));
+  }
+
+  private handlerAddPromo():void {
+    const btnAddpromo = document.querySelector('.cart-summary__promo-add') as HTMLButtonElement;
+    btnAddpromo.addEventListener('click', () => this.addPromoCode());
+  }
+
+  private handlerDelPromo(element: HTMLButtonElement):void {
+    element.addEventListener('click', (event: Event) => this.delPromoCode(event));
   }
 
   private createCartProduct(product: IProduct): HTMLUListElement {
@@ -168,7 +201,8 @@ export default class Cart extends Component {
     stock.textContent = `Stock: ${product.stock}`;
     btnPlus.textContent = '+';
     btnMinus.textContent = '-';
-    liSubtotal.textContent = `${(this.basket.getProductCount(product.id) * product.price * (100 - product.discountPercentage) / 100).toFixed(2)}$`;
+    liSubtotal.textContent = `${(this.basket.getProductCount(product.id) * product.price * 
+      (100 - product.discountPercentage) / 100).toFixed(2)}$`;
     
     div.append(btnPlus);
     div.append(btnMinus);
@@ -222,6 +256,7 @@ export default class Cart extends Component {
   }
 
   private changePage(page: number): void {
+
     const pageCount = document.querySelector('.cart-pagination__count') as HTMLElement;
     pageCount.textContent = `${page}`;
 
@@ -234,25 +269,33 @@ export default class Cart extends Component {
     const cartProducts = document.querySelector('.cart-products') as HTMLElement;
     cartProducts.innerHTML = '';
 
-    for (let i = (page - 1) * itemPerPage; i < (page * itemPerPage) && i < this.basket.purchases.length; i++) {
-      const cartEl = this.createCartProduct(this.basket.purchases[i].product);
+    if (this.basket.purchases.length !== 0) {
+      for (let i = (page - 1) * itemPerPage; i < (page * itemPerPage) && i < this.basket.purchases.length; i++) {
+        const cartEl = this.createCartProduct(this.basket.purchases[i].product);
+        cartProducts.append(cartEl);
+      }
+  
+      if (page === 1) {
+        prevPage.style.visibility = "hidden";
+      } else {
+        prevPage.style.visibility = "visible";
+      }
+  
+      if (page === this.getNumPages()) {
+        nextPage.style.visibility = "hidden";
+      } else {
+        nextPage.style.visibility = "visible";
+      }
+  
+      this.handlerChangeCount();
+      this.handlerDeleteProduct();
+    } else {
+      const cartProducts = document.querySelector('.cart-container') as HTMLElement;
+      cartProducts.innerHTML = '';
+
+      const cartEl = this.createEmptyCart();
       cartProducts.append(cartEl);
     }
-
-    if (page === 1) {
-      prevPage.style.visibility = "hidden";
-    } else {
-      prevPage.style.visibility = "visible";
-    }
-
-    if (page === this.getNumPages()) {
-      nextPage.style.visibility = "hidden";
-    } else {
-      nextPage.style.visibility = "visible";
-    }
-
-    this.handlerChangeCount();
-    this.handlerDeleteProduct();
   }
 
   private changeItemsPerPage() {
@@ -275,6 +318,102 @@ export default class Cart extends Component {
   private getNumPages(): number {
     const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
     return Math.ceil(this.basket.purchases.length / Number(maxItem.value));
+  }
+
+  private getPromoCode(name: string): IPromo {
+    const index = validPromo.findIndex(el => el.promoname === name);
+    return validPromo[index];
+  }
+
+  private findPromoCode(e: Event): void {
+    const target = e.target as HTMLInputElement;
+    const index = validPromo.findIndex(el => el.promoname === target.value);
+    const promoFind = document.querySelector('.cart-summary__promo-find') as HTMLElement;
+    if (index >= 0) {
+      const promoDesc = document.querySelector('.cart-summary__promo-desc') as HTMLElement;
+      promoDesc.textContent = `${validPromo[index].description} - ${validPromo[index].discount}%`;
+      promoFind.style.display = 'block';
+    } else {
+      promoFind.style.display = 'none';
+    }
+  }
+
+  private addPromoCode(): void {
+    const promoName = document.querySelector('.cart-summary__promo') as HTMLInputElement;
+    this.promocodes.push(this.getPromoCode(promoName.value));
+    this.drawPromoCodes();
+    promoName.value = '';
+    promoName.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  private delPromoCode(e: Event):void {
+    const target = e.target as HTMLElement;
+    const liItem = target.parentNode as HTMLElement;
+    const codeName = liItem.dataset.promoname;
+    
+    if (codeName) {
+      const index = this.getPromoCodesIndex(codeName);
+      this.promocodes.splice(index, 1);
+      liItem?.parentNode?.removeChild(liItem);
+      this.drawPromoCodes();
+    }
+  }
+
+  private drawPromoCodes(): void {
+    const promoBlock = document.querySelector('.cart-summary__promocodes') as HTMLElement;
+    const promoItems = document.querySelector('.cart-summary__promo-items') as HTMLElement;
+    const promoTotal = document.querySelector('.cart-summary__total-promo') as HTMLElement;
+    promoItems.innerHTML = '';
+    if (this.promocodes.length > 0) {
+      this.promocodes.forEach((element: IPromo) => {
+        const liItem = document.createElement('li');
+        const liDrop = document.createElement('button');
+        liItem.className = 'cart-summary__promo-item';
+        liItem.textContent = `${element.description} - ${element.discount}%`;
+        liItem.setAttribute('data-promoname', element.promoname);
+        liDrop.className = 'cart-summary__promo-drop';
+        liDrop.textContent = 'X';
+        liItem.append(liDrop);
+        promoItems.append(liItem);
+        promoBlock.style.display = 'block';
+        promoTotal.style.display = 'block';
+        this.handlerDelPromo(liDrop);
+      });
+    } else {
+      promoBlock.style.display = 'none';
+      promoTotal.style.display = 'none';
+    }
+    this.setPromoTotalSumm();
+  }
+
+  private setPromoTotalSumm() {
+    const promoTotalSumm = document.querySelector('.cart-summary__total-count-promo') as HTMLElement;
+    const summaryTotalSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
+
+    let promoSumm = 0;
+    let totalSumm = this.basket.getTotalSumm();
+    let prevSumm = totalSumm;
+    if (this.promocodes.length > 0) {
+      this.promocodes.forEach((element: IPromo) => {
+        promoSumm = Math.round((prevSumm * (100 - element.discount) / 100) * 100) / 100;
+        totalSumm = prevSumm;
+        prevSumm = promoSumm;
+      });
+      promoTotalSumm.textContent = `${totalSumm}$`;
+      summaryTotalSumm.textContent = `${promoSumm}$`;
+    } else {
+      summaryTotalSumm.textContent = `${totalSumm}$`;
+    }
+  }
+
+  private getPromoCodesIndex(name: string): number {
+    let result = -1;
+    for (let i = 0; i < this.promocodes.length; i++) {
+      if (this.promocodes[i].promoname === name) {
+        result = i;
+      }
+    }
+    return result;
   }
 
 }

@@ -280,7 +280,8 @@ hr {
     padding: 0 10px;
   }
 
-  &__total {
+  &__total, 
+  &__total-promo {
     margin-block-start: 0;
     margin-block-end: 0;
     padding-bottom: 20px;
@@ -289,13 +290,24 @@ hr {
     font-weight: 700;
   }
 
-  &__total-count {
+  &__total-promo {
+    display: none;
+    text-decoration: line-through;
+  }
+
+  &__total-count,
+  &__total-count-promo {
     position: absolute;
     right: 0;
     padding: 0 10px;
   }
 
+  &__total-count-promo {
+    text-decoration: line-through;
+  }
+
   &__promocodes {
+    display: none;
     padding-bottom: 20px;
   }
 
@@ -309,7 +321,12 @@ hr {
     text-align: right;
   }
 
-  &__promo-drop {
+  &__promo-item {
+    padding: 5px 0;
+  }
+
+  &__promo-drop, 
+  &__promo-add {
     width: fit-content;
     margin: 0 5px;
     padding: 0 5px;
@@ -328,6 +345,7 @@ hr {
 
   &__promo {
     display: inline-block;
+    padding: 5px;
     width: 100%;
     margin: 0 auto;
     border-radius: 5px;
@@ -335,7 +353,13 @@ hr {
     text-align: center;
     line-height: 25px;
   }
-  
+
+  &__promo-find {
+    display: none;
+    padding: 10px 0;
+    text-align: right;
+  }
+
   &__submit {
     margin-block-start: 0;
     margin-block-end: 0;
