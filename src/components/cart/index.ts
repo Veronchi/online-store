@@ -14,6 +14,11 @@ const validPromo: IPromo[] = [
     description: 'Rolling Scopes School',
     discount: 10
   },
+  {
+    promoname: 'MC',
+    description: 'Merry Christmas',
+    discount: 7
+  },
 ]
 
 export default class Cart extends Component {
@@ -391,18 +396,18 @@ export default class Cart extends Component {
     const summaryTotalSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
 
     let promoSumm = 0;
-    let totalSumm = this.basket.getTotalSumm();
+    const totalSumm = this.basket.getTotalSumm();
     let prevSumm = totalSumm;
     if (this.promocodes.length > 0) {
       this.promocodes.forEach((element: IPromo) => {
         promoSumm = Math.round((prevSumm * (100 - element.discount) / 100) * 100) / 100;
-        totalSumm = prevSumm;
+        // totalSumm = prevSumm;
         prevSumm = promoSumm;
       });
-      promoTotalSumm.textContent = `${totalSumm}$`;
-      summaryTotalSumm.textContent = `${promoSumm}$`;
+      promoTotalSumm.textContent = `${totalSumm.toFixed(2)}$`;
+      summaryTotalSumm.textContent = `${promoSumm.toFixed(2)}$`;
     } else {
-      summaryTotalSumm.textContent = `${totalSumm}$`;
+      summaryTotalSumm.textContent = `${totalSumm.toFixed(2)}$`;
     }
   }
 
