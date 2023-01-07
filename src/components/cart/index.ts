@@ -34,7 +34,7 @@ export default class Cart extends Component {
     if (cartSave) {
       this.cartParams = JSON.parse(cartSave);
     } else {
-      this.cartParams = {maxItems: 4};
+      this.cartParams = {maxItems: 4, currenPage: 1};
     }
   }
 
@@ -58,7 +58,7 @@ export default class Cart extends Component {
     cartInput.value = `${this.cartParams.maxItems}`;
 
     if (this.basket.purchases.length > 0) {
-      this.changePage(1);
+      this.changePage(this.cartParams.currenPage);
     } else 
     {
       const cartProducts = document.querySelector('.cart-container') as HTMLElement;
@@ -264,7 +264,8 @@ export default class Cart extends Component {
   }
 
   private prevPage(): void {
-    let currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
+    const countPage = document.querySelector('.cart-pagination__count') as HTMLElement;
+    let currentPage = Number(countPage.textContent);
     if (currentPage > 1) {
       currentPage--;
       this.changePage(currentPage);
@@ -272,7 +273,8 @@ export default class Cart extends Component {
   }
 
   private nextPage(): void {
-    let currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
+    const countPage = document.querySelector('.cart-pagination__count') as HTMLElement;
+    let currentPage = Number(countPage.textContent);
     if (currentPage < this.getNumPages()) {
       currentPage++;
       this.changePage(currentPage);
@@ -320,9 +322,17 @@ export default class Cart extends Component {
       const cartEl = this.createEmptyCart();
       cartProducts.append(cartEl);
     }
+    
+    this.cartParams.currenPage = page;
+   
+    const url = new URL(window.location.href);
+    const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
+    window.history.pushState({path: newUrl}, '', newUrl);
+
+    this.setToLocalStorage();
   }
 
-  private changeItemsPerPage() {
+  private changeItemsPerPage(): void {
     const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
     const itemPerPage = Number(maxItem.value);
     
@@ -347,14 +357,18 @@ export default class Cart extends Component {
     return Math.ceil(this.basket.purchases.length / Number(maxItem.value));
   }
 
+  private getQueryParamNumPage(page: number): string {
+    return `?page=${page}`;
+  }
+
   private getPromoCode(name: string): IPromo {
-    const index = validPromo.findIndex(el => el.promoname === name);
+    const index: number = validPromo.findIndex(el => el.promoname === name);
     return validPromo[index];
   }
 
   private findPromoCode(e: Event): void {
     const target = e.target as HTMLInputElement;
-    const index = validPromo.findIndex(el => el.promoname === target.value);
+    const index: number = validPromo.findIndex(el => el.promoname === target.value);
     const promoFind = document.querySelector('.cart-summary__promo-find') as HTMLElement;
     if (index >= 0) {
       const promoDesc = document.querySelector('.cart-summary__promo-desc') as HTMLElement;

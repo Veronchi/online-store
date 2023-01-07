@@ -34,6 +34,7 @@ interface IPurchase {
 
 interface ICart {
   maxItems: number;
+  currenPage: number;
 }
 
 interface IPromo {
