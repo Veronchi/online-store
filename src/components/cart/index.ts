@@ -58,6 +58,24 @@ export default class Cart extends Component {
   private initEvents(): void {
     this.handlerChangeCount();
     this.handlerDeleteProduct();
+    this.handleBodyClick();
+  }
+
+  private handleBodyClick() {
+    document.body.addEventListener('click', (e) => {
+      const target = e.target as HTMLDivElement;
+      const targetParent = target.offsetParent;
+      const modal = document.querySelector('.modal') as HTMLElement;
+
+      if (
+        target.className !== 'modal' &&
+        targetParent?.className !== 'modal' &&
+        target.className !== 'cart-summary__submit'
+      ) {
+        modal.style.display = 'none';
+        document.body.classList.remove('shadow');
+      }
+    });
   }
 
   private handlerChangeCount(): void {
@@ -156,6 +174,8 @@ export class Basket {
 
   public addProducts(): void {
     const id: string | null = localStorage.getItem('productId');
+    this.callPopup();
+
     if (id) {
       if (this.isInBasket(id)) {
         this.purchases[this.getPurchaseId(id)].count++;
@@ -168,6 +188,24 @@ export class Basket {
     }
   }
 
+  private callPopup() {
+    const body = document.body;
+    const modal = document.querySelector('.modal') as HTMLDivElement;
+
+    body.classList.add('shadow');
+
+    if (modal) {
+      modal.style.display = 'block';
+      modal.addEventListener('click', (e) => this.handleModal(e));
+    }
+  }
+
+  handleModal(e: Event) {
+    const target = e.target as HTMLElement;
+
+    // добавить валидацию
+  }
+
   public getProductCount(id: string): number {
     let result = 0;
     this.purchases.forEach((el: IPurchase) => {
@@ -178,7 +216,7 @@ export class Basket {
 
   public changeProductCount(id: string, operation: string): number {
     const purchaseId = this.getPurchaseId(id);
-    debugger;
+
     if (operation === '+') {
       if (this.purchases[purchaseId].count < this.purchases[purchaseId].product.stock) {
         this.purchases[purchaseId].count += 1;
