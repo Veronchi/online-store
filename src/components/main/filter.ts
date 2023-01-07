@@ -65,7 +65,11 @@ export default class Filter {
     await navigator.clipboard.writeText(href);
   }
 
-  public onChangePriceAmount(e: Event): void {
+  public onChangePriceAmount(
+    e: Event,
+    changeParam: (k: string, v: string) => void,
+    renderNewData: (data: Array<IProduct>, range: IFilterAmount, ind: string) => void
+  ): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
     const inputTo = document.getElementById('to-price') as HTMLInputElement;
@@ -79,8 +83,8 @@ export default class Filter {
       this.changeInputFromVal(inputFrom, inputTo);
       this.calcProductsByRange(this.priceRange, 'price');
       this.calcInitAmountRange(this.filteredData);
-      // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-      // changeParam(input.id, `${input.value}`);
+      renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+      changeParam(input.id, `${input.value}`);
       this.changeFoundAmount(this.filteredData.length);
     } else {
       priceEnd.innerText = `${input.value}`;
@@ -88,8 +92,8 @@ export default class Filter {
       this.changeInputToVal(inputFrom, inputTo);
       this.calcProductsByRange(this.priceRange, 'price');
       this.calcInitAmountRange(this.filteredData);
-      // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-      // changeParam(input.id, `${input.value}`);
+      renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+      changeParam(input.id, `${input.value}`);
       this.changeFoundAmount(this.filteredData.length);
     }
   }
