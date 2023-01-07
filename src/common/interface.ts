@@ -32,55 +32,15 @@ interface IPurchase {
   product: IProduct;
 }
 
-interface IBasket {
-  purchases: IPurchase[];
-  totalSumm: number;
-  totalCount: number;
-}
-interface IFilterProduct {
-  name: string;
-  stock: number;
+interface ICart {
+  maxItems: number;
+  currenPage: number;
 }
 
-interface IFilterAmount {
-  from: number;
-  to: number;
+interface IPromo {
+  promoname: string;
+  description: string;
+  discount: number;
 }
 
-interface IFilterRootElement {
-  root: string;
-}
-
-type MapRootElements = {
-  [n: string]: HTMLElement;
-};
-
-interface IFilterInitValues {
-  lists: Array<IFilterRootElement>;
-  ranges: Array<IFilterRootElement>;
-}
-
-interface IFilterMapElements {
-  lists: MapRootElements;
-  ranges: MapRootElements;
-}
-
-type TQParams = {
-  [n: string]: string;
-};
-
-export {
-  IComponentProps,
-  IRouterProps,
-  IProduct,
-  IRenderProps,
-  IFilterProduct,
-  IFilterAmount,
-  IFilterInitValues,
-  IFilterRootElement,
-  IFilterMapElements,
-  MapRootElements,
-  IPurchase,
-  IBasket,
-  TQParams,
-};
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IPromo, ICart };
