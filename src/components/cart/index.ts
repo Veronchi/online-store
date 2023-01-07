@@ -1,10 +1,9 @@
 import Component from '../../common/component';
 import { IProduct, IPurchase } from '../../common/interface';
-import { products} from '../../products';
+import { products } from '../../products';
 import './style-cart.scss';
 
 export default class Cart extends Component {
-
   constructor(name: string) {
     super(name);
   }
@@ -56,17 +55,35 @@ export default class Cart extends Component {
     this.initEvents();
   }
 
-  private initEvents():void {
+  private initEvents(): void {
     this.handlerChangeCount();
     this.handlerDeleteProduct();
+    this.handleBodyClick();
   }
-  
-  private handlerChangeCount():void {
+
+  private handleBodyClick() {
+    document.body.addEventListener('click', (e) => {
+      const target = e.target as HTMLDivElement;
+      const targetParent = target.offsetParent;
+      const modal = document.querySelector('.modal') as HTMLElement;
+
+      if (
+        target.className !== 'modal' &&
+        targetParent?.className !== 'modal' &&
+        target.className !== 'cart-summary__submit'
+      ) {
+        modal.style.display = 'none';
+        document.body.classList.remove('shadow');
+      }
+    });
+  }
+
+  private handlerChangeCount(): void {
     const btnCount: NodeList = document.querySelectorAll('.ride-button');
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.changeCountProduct(event)));
   }
 
-  private handlerDeleteProduct():void {
+  private handlerDeleteProduct(): void {
     const btnCount: NodeList = document.querySelectorAll('.cart-products__delete');
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.deleteProduct(event)));
   }
@@ -138,7 +155,7 @@ export class Basket {
   public totalCount: number;
 
   constructor() {
-    const basketSave:string | null = localStorage.getItem('basket');
+    const basketSave: string | null = localStorage.getItem('basket');
     if (basketSave) {
       const basketValue = JSON.parse(basketSave);
       this.purchases = basketValue.purchases;
@@ -157,11 +174,13 @@ export class Basket {
 
   public addProducts(): void {
     const id: string | null = localStorage.getItem('productId');
+    this.callPopup();
+
     if (id) {
       if (this.isInBasket(id)) {
         this.purchases[this.getPurchaseId(id)].count++;
       } else {
-        this.purchases.push({count: 1, product: this.getProduct(id)});
+        this.purchases.push({ count: 1, product: this.getProduct(id) });
         this.totalCount++;
         this.totalSumm += this.getProduct(id).price;
       }
@@ -169,16 +188,34 @@ export class Basket {
     }
   }
 
+  private callPopup() {
+    const body = document.body;
+    const modal = document.querySelector('.modal') as HTMLDivElement;
+
+    body.classList.add('shadow');
+
+    if (modal) {
+      modal.style.display = 'block';
+      modal.addEventListener('click', (e) => this.handleModal(e));
+    }
+  }
+
+  handleModal(e: Event) {
+    const target = e.target as HTMLElement;
+
+    // добавить валидацию
+  }
+
   public getProductCount(id: string): number {
     let result = 0;
     this.purchases.forEach((el: IPurchase) => {
       if (el.product.id === id) result = el.count;
-    })
+    });
     return result;
   }
 
   public changeProductCount(id: string, operation: string): number {
-    const purchaseId =  this.getPurchaseId(id);
+    const purchaseId = this.getPurchaseId(id);
 
     if (operation === '+') {
       if (this.purchases[purchaseId].count < this.purchases[purchaseId].product.stock) {
@@ -197,7 +234,7 @@ export class Basket {
   }
 
   public deleteProduct(id: string): void {
-    const purchaseId =  this.getPurchaseId(id);
+    const purchaseId = this.getPurchaseId(id);
     this.purchases.splice(purchaseId, 1);
     this.setToLocalStorage();
   }
@@ -211,7 +248,7 @@ export class Basket {
     let result = false;
     this.purchases.forEach((el: IPurchase) => {
       if (el.product.id === id) result = true;
-    })
+    });
     return result;
   }
 
@@ -229,4 +266,3 @@ export class Basket {
     localStorage.setItem('basket', JSON.stringify(this));
   }
 }
-
