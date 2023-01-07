@@ -59,6 +59,13 @@ export default class Details extends Component {
       descriptionBlock.append(block);
     });
 
+    // const btnAddCart = document.querySelector('.details__cart') as HTMLButtonElement;
+    // if (basket.isInBasket(id)) {
+    //   btnAddCart.textContent = 'Drop from Cart';
+    // } else {
+    //   btnAddCart.textContent = 'Add in Cart';
+    // }
+
     const detailsDiscount = detailsClone.querySelector('.details__discount') as HTMLElement;
     detailsDiscount.textContent = `Sale ${String(this.product.discountPercentage)}%`;
     if (this.product.discountPercentage === 0) detailsDiscount.style.visibility = 'hidden';
@@ -82,11 +89,22 @@ export default class Details extends Component {
 
   private initEvents():void {
     this.handlerProductImage();
+    this.handlerAddCart();
   }
   
   private handlerProductImage():void {
     const tubnails: NodeList = document.querySelectorAll('.details__thumbnail');
     tubnails.forEach((el) => el.addEventListener('click', this.onChangeImage));
+  }
+
+  private handlerAddCart():void {
+    const btnCart = document.querySelector('.details__cart') as HTMLButtonElement;
+    btnCart.addEventListener('click', this.addProductToCart)
+  }
+
+  private addProductToCart() {
+    // basket.addProducts();
+    console.log('Add product')
   }
 
   private onChangeImage(e: Event):void {
@@ -100,10 +118,6 @@ export default class Details extends Component {
     checkedImage.classList.toggle('details__thumbnail_checked');
     targetElement.classList.add('details__thumbnail_checked');
   }
-
-  // addToCart() {
-
-  // }
 
   // buyNow() {
 

@@ -11,6 +11,12 @@ hr {
   border-width: 1px;
 }
 
+.main {
+  min-height: calc(100vh - 197px);
+  margin: auto;
+  margin-top: 0;
+}
+
 .details {
   margin: 0 auto;
   display: flex;
