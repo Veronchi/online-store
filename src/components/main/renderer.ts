@@ -1,7 +1,7 @@
 import { IProduct } from '../../common/interface';
 
 export default class Renderer {
-  private catalogEl: HTMLUListElement | null;
+  public catalogEl: HTMLUListElement | null;
 
   constructor() {
     this.catalogEl = null;
@@ -111,6 +111,16 @@ export default class Renderer {
     li.append(link);
 
     return li;
+  }
+
+  public changeProductBtn(data: ChildNode[]) {
+    data.forEach((i) => {
+      i.childNodes.forEach((i) => {
+        const item = i.childNodes[1] as HTMLElement;
+        item.classList.add('active');
+        item.textContent = 'Drop from Cart';
+      });
+    });
   }
 
   // public renderFilterList(rootEl: string, list: Array<IFilterProduct>, prevList?: Array<IFilterProduct>): void {

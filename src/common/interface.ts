@@ -75,6 +75,13 @@ type TQParams = {
   [n: string]: string;
 };
 
+interface Ibasket {
+  purchases: Array<IPurchase>;
+  totalCount: number;
+  totalDiscount: number;
+  totalSumm: number;
+}
+
 export {
   IComponentProps,
   IRouterProps,
@@ -88,4 +95,5 @@ export {
   IFilterInitValues,
   IFilterMapElements,
   TQParams,
+  Ibasket,
 };

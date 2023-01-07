@@ -1,6 +1,6 @@
 import Component from '../../common/component';
 import { products } from '../../products';
-import { IFilterAmount, IFilterProduct, IProduct, TQParams } from '../../common/interface';
+import { Ibasket, IFilterAmount, IFilterProduct, IProduct, TQParams } from '../../common/interface';
 import Renderer from './renderer';
 import './style.scss';
 import { Router } from '../../common/router';
@@ -50,6 +50,10 @@ export default class Main extends Component {
     this.initEvents();
     this.checkUrlLayout();
     this.filter.changeFoundAmount(this.data.length);
+    const basketData = JSON.parse(localStorage.getItem('basket') as string);
+    const nodes = this.findItem(basketData);
+
+    basketData ? this.renderer.changeProductBtn(nodes) : null;
   }
 
   private handleData(): void {
@@ -278,12 +282,31 @@ export default class Main extends Component {
       }
     }
 
-    console.log(localStorage.getItem('productId'));
-
     if (el.parentElement?.nodeName === 'LI') {
       return el.parentElement;
     } else {
       return (element = this.findNode(element.parentElement as HTMLElement, e) as HTMLElement);
     }
+  }
+
+  private findItem(data: Ibasket): ChildNode[] {
+    const items = data.purchases;
+    let list: NodeListOf<ChildNode>;
+    const catalogList: ChildNode[] = [];
+    if (this.renderer.catalogEl) {
+      list = this.renderer.catalogEl.childNodes;
+
+      for (let i = 0; i < items.length; i++) {
+        list.forEach((item) => {
+          if ((item as HTMLElement).id === items[i].product.id) {
+            catalogList.push(item);
+          }
+        });
+      }
+    }
+
+    return catalogList;
+
+    // console.log(this.renderer.catalogEl?.childNodes);
   }
 }
