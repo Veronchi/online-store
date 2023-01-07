@@ -32,10 +32,15 @@ interface IPurchase {
   product: IProduct;
 }
 
-interface IBasket {
-  purchases: IPurchase[];
-  totalSumm: number;
-  totalCount: number;
+interface ICart {
+  maxItems: number;
+  currenPage: number;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IBasket };
+interface IPromo {
+  promoname: string;
+  description: string;
+  discount: number;
+}
+
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IPromo, ICart };
