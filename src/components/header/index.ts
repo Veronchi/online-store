@@ -17,22 +17,27 @@ export default class Header extends Component {
     return this.cartAmount;
   }
 
-  private setAmount(value: number) {
+  private setAmount(value?: number) {
     if (value === -1) {
       this.cartAmount = 0;
     } else {
-      this.cartAmount += value;
+      this.cartAmount += 1;
     }
   }
 
   private changeCartAmount(): void {
-    const cartAmount = document.querySelector('cart__amount');
+    const cartAmount = document.querySelector('.cart__amount');
 
     cartAmount ? (cartAmount.innerHTML = `${this.amount}`) : null;
   }
 
   public addToCart() {
-    // console.log(11111);
-    this.setAmount(1);
+    this.setAmount();
+    this.changeCartAmount();
+  }
+
+  public removeFromCart() {
+    this.setAmount(-1);
+    this.changeCartAmount();
   }
 }

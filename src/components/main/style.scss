@@ -428,5 +428,11 @@
       background-size: contain;
       margin-top: -8px;
     }
+
+    &.active {
+      background-color: $light-blue;
+      color: $blue;
+      border-color: $blue;
+    }
   }
 }

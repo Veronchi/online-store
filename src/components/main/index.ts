@@ -15,6 +15,7 @@ export default class Main extends Component {
   private router: Router;
   private data: Array<IProduct>;
   private header: Header;
+  private isAdded: boolean;
   // private categoryData: Array<IFilterProduct>;
   // private brandData: Array<IFilterProduct>;
 
@@ -23,7 +24,7 @@ export default class Main extends Component {
     this.data = products;
     // this.categoryData = [];
     // this.brandData = [];
-
+    this.isAdded = false;
     this.renderer = new Renderer();
     this.header = header;
     this.filter = new Filter(this.data);
@@ -265,9 +266,12 @@ export default class Main extends Component {
   private findNode(el: HTMLElement, e?: Event): HTMLElement | undefined {
     let element = el;
 
-    if (el.className === 'product__btn') {
+    if (el.className.includes('product__btn')) {
+      el.classList.toggle('active');
+
       if (e) {
-        this.addHeaderCart(e);
+        this.isAdded = !this.isAdded;
+        this.changeHeaderCart(e);
       }
     }
 
@@ -278,9 +282,13 @@ export default class Main extends Component {
     }
   }
 
-  private addHeaderCart(e: Event) {
+  private changeHeaderCart(e: Event) {
     e.preventDefault();
 
-    this.header.addToCart();
+    if (this.isAdded) {
+      this.header.addToCart();
+    } else {
+      this.header.removeFromCart();
+    }
   }
 }
