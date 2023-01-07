@@ -7,6 +7,7 @@ export default class Filter {
   private amountRange: IFilterAmount;
 
   constructor(data: Array<IProduct>) {
+    // debugger;
     this.data = data;
     this.filteredData = this.data;
     this.priceRange = {
@@ -19,6 +20,10 @@ export default class Filter {
     };
     this.calcInitPriceRange(this.data);
     this.calcInitAmountRange(this.data);
+  }
+
+  public getFilteredData() {
+    return this.filteredData;
   }
 
   private calcInitPriceRange(data: Array<IProduct>): void {
@@ -60,11 +65,7 @@ export default class Filter {
     await navigator.clipboard.writeText(href);
   }
 
-  public onChangePriceAmount(
-    e: Event,
-    changeParam: (k: string, v: string) => void,
-    renderNewData: (data: Array<IProduct>, range: IFilterAmount, indicator: string) => void
-  ): void {
+  public onChangePriceAmount(e: Event): void {
     const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
     const inputTo = document.getElementById('to-price') as HTMLInputElement;
@@ -73,22 +74,22 @@ export default class Filter {
     const priceEnd = document.querySelector('.amount__end_price') as HTMLSpanElement;
 
     if (input.id === 'from-price') {
-      this.changeInputFromVal(inputFrom, inputTo);
       priceStart.innerText = `${input.value}`;
       this.priceRange.from = +input.value;
+      this.changeInputFromVal(inputFrom, inputTo);
       this.calcProductsByRange(this.priceRange, 'price');
       this.calcInitAmountRange(this.filteredData);
-      renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-      changeParam(input.id, `${input.value}`);
+      // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+      // changeParam(input.id, `${input.value}`);
       this.changeFoundAmount(this.filteredData.length);
     } else {
-      this.changeInputToVal(inputFrom, inputTo);
       priceEnd.innerText = `${input.value}`;
       this.priceRange.to = +input.value;
+      this.changeInputToVal(inputFrom, inputTo);
       this.calcProductsByRange(this.priceRange, 'price');
       this.calcInitAmountRange(this.filteredData);
-      renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-      changeParam(input.id, `${input.value}`);
+      // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+      // changeParam(input.id, `${input.value}`);
       this.changeFoundAmount(this.filteredData.length);
     }
   }
@@ -124,6 +125,18 @@ export default class Filter {
       changeParam(input.id, `${input.value}`);
       this.changeFoundAmount(this.filteredData.length);
     }
+  }
+
+  public onChangeCatalogList(e: Event) {
+    // const target = e.target as HTMLElement;
+    // console.log(this.data);
+    // // debugger;
+    // if (target.innerHTML) {
+    //   this.filteredData = this.data.filter((i) => i.category === target.innerHTML);
+    // } else {
+    //   this.filteredData = this.data.filter((i) => i.category === target.id);
+    // }
+    // console.log(this.filteredData);
   }
 
   private calcProductsByRange(range: IFilterAmount, value: string): void {

@@ -47,6 +47,24 @@ interface IFilterAmount {
   to: number;
 }
 
+interface IFilterRootElement {
+  root: string;
+}
+
+type MapRootElements = {
+  [n: string]: HTMLElement;
+};
+
+interface IFilterInitValues {
+  lists: Array<IFilterRootElement>;
+  ranges: Array<IFilterRootElement>;
+}
+
+interface IFilterMapElements {
+  lists: MapRootElements;
+  ranges: MapRootElements;
+}
+
 type TQParams = {
   [n: string]: string;
 };
@@ -58,7 +76,11 @@ export {
   IRenderProps,
   IFilterProduct,
   IFilterAmount,
-  TQParams,
+  IFilterInitValues,
+  IFilterRootElement,
+  IFilterMapElements,
+  MapRootElements,
   IPurchase,
   IBasket,
+  TQParams,
 };
