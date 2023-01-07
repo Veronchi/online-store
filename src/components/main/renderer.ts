@@ -1,4 +1,4 @@
-import { IFilterAmount, IFilterProduct, IProduct } from '../../common/interface';
+import { IProduct } from '../../common/interface';
 
 export default class Renderer {
   private catalogEl: HTMLUListElement | null;
