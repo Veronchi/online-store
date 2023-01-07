@@ -1,6 +1,6 @@
 import Component from '../../common/component';
 import Basket from '../../common/basket';
-import { IPromo, IProduct } from '../../common/interface';
+import { IPromo, IProduct, ICart } from '../../common/interface';
 import './style-cart.scss';
 
 const validPromo: IPromo[] = [
@@ -24,21 +24,25 @@ const validPromo: IPromo[] = [
 export default class Cart extends Component {
   private basket: Basket;
   private promocodes: IPromo[];
+  private cartParams: ICart;
 
   constructor(name: string) {
     super(name);
     this.basket = new Basket();
     this.promocodes = [];
+    const cartSave:string | null = localStorage.getItem('cartParams');
+    if (cartSave) {
+      this.cartParams = JSON.parse(cartSave);
+    } else {
+      this.cartParams = {maxItems: 4};
+    }
   }
 
   public init(): void {
     console.log('cart');
 
-    const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
-    const itemPerPage = Number(maxItem.value);
-
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
-    blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalProducts()) * 100}px`;
+    blockProducts.style.height = `${Math.min(this.cartParams.maxItems, this.basket.getTotalProducts()) * 100}px`;
 
     this.draw();
     this.drawSummary();
@@ -49,6 +53,9 @@ export default class Cart extends Component {
   public draw(): void {
     const cartProducts = document.querySelector('.cart-products') as HTMLElement;
     cartProducts.innerHTML = '';
+
+    const cartInput = document.querySelector('.cart-pagination__input') as HTMLInputElement;
+    cartInput.value = `${this.cartParams.maxItems}`;
 
     if (this.basket.purchases.length > 0) {
       this.changePage(1);
@@ -330,6 +337,9 @@ export default class Cart extends Component {
     } else {
       this.changePage(curPage);
     }
+
+    this.cartParams.maxItems = itemPerPage;
+    this.setToLocalStorage();
   }
 
   private getNumPages(): number {
@@ -432,6 +442,9 @@ export default class Cart extends Component {
     return result;
   }
 
+  public setToLocalStorage(): void {
+    localStorage.setItem('cartParams', JSON.stringify(this.cartParams));
+  }
 }
 
 

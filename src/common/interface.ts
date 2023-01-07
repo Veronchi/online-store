@@ -32,11 +32,9 @@ interface IPurchase {
   product: IProduct;
 }
 
-// interface IBasket {
-//   purchases: IPurchase[];
-//   totalSumm: number;
-//   totalCount: number;
-// }
+interface ICart {
+  maxItems: number;
+}
 
 interface IPromo {
   promoname: string;
@@ -44,4 +42,4 @@ interface IPromo {
   discount: number;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IPromo };
+export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IPromo, ICart };
