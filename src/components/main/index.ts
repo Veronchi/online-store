@@ -7,6 +7,7 @@ import { Router } from '../../common/router';
 import Filter from './filter';
 import FilterRenderer from './filterRender';
 import Header from '../header';
+import Cart from '../cart';
 
 export default class Main extends Component {
   private renderer: Renderer;
@@ -15,16 +16,18 @@ export default class Main extends Component {
   private router: Router;
   private data: Array<IProduct>;
   private header: Header;
+  private cart: Cart;
   // private categoryData: Array<IFilterProduct>;
   // private brandData: Array<IFilterProduct>;
 
-  constructor(name: string, router: Router, header: Header) {
+  constructor(name: string, router: Router, header: Header, cart: Cart) {
     super(name);
     this.data = products;
     // this.categoryData = [];
     // this.brandData = [];
     this.renderer = new Renderer();
     this.header = header;
+    this.cart = cart;
     this.filter = new Filter(this.data);
     this.filterRenderer = new FilterRenderer({
       lists: [{ root: '.scroll-filter_category' }, { root: '.scroll-filter_brand' }],

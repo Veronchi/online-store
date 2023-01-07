@@ -18,10 +18,10 @@ class Controller {
     header.inject('.header');
     new Footer('footer').inject('.footer');
 
-    const mainComponent = new Main('main', this.router, header);
+    const cartComponent = new Cart('cart');
+    const mainComponent = new Main('main', this.router, header, cartComponent);
     const detailComponent = new Details('details');
     const errorComponent = new ErrorPage('page404');
-    const cartComponent = new Cart('cart');
 
     this.routes = [
       new Routes(mainComponent, true),
