@@ -128,14 +128,35 @@ export default class Cart extends Component {
     this.handlerItemsPerPage();
     this.handlerInputPromo();
     this.handlerAddPromo()
+
+    this.handlerChangeCount();
+    this.handlerDeleteProduct();
+    this.handleBodyClick();
   }
-  
-  private handlerChangeCount():void {
+
+  private handleBodyClick() {
+    document.body.addEventListener('click', (e) => {
+      const target = e.target as HTMLDivElement;
+      const targetParent = target.offsetParent;
+      const modal = document.querySelector('.modal') as HTMLElement;
+
+      if (
+        target.className !== 'modal' &&
+        targetParent?.className !== 'modal' &&
+        target.className !== 'cart-summary__submit'
+      ) {
+        modal.style.display = 'none';
+        document.body.classList.remove('shadow');
+      }
+    });
+  }
+
+  private handlerChangeCount(): void {
     const btnCount: NodeList = document.querySelectorAll('.ride-button');
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.changeCountProduct(event)));
   }
 
-  private handlerDeleteProduct():void {
+  private handlerDeleteProduct(): void {
     const btnCount: NodeList = document.querySelectorAll('.cart-products__delete');
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.deleteProduct(event)));
   }
@@ -459,7 +480,22 @@ export default class Cart extends Component {
   public setToLocalStorage(): void {
     localStorage.setItem('cartParams', JSON.stringify(this.cartParams));
   }
+
+  private callPopup() {
+    const body = document.body;
+    const modal = document.querySelector('.modal') as HTMLDivElement;
+
+    body.classList.add('shadow');
+
+    if (modal) {
+      modal.style.display = 'block';
+      modal.addEventListener('click', (e) => this.handleModal(e));
+    }
+  }
+
+  handleModal(e: Event) {
+    const target = e.target as HTMLElement;
+
+    // добавить валидацию
+  }
 }
-
-
-
