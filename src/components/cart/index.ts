@@ -134,23 +134,6 @@ export default class Cart extends Component {
     this.handleBodyClick();
   }
 
-  private handleBodyClick() {
-    document.body.addEventListener('click', (e) => {
-      const target = e.target as HTMLDivElement;
-      const targetParent = target.offsetParent;
-      const modal = document.querySelector('.modal') as HTMLElement;
-
-      if (
-        target.className !== 'modal' &&
-        targetParent?.className !== 'modal' &&
-        target.className !== 'cart-summary__submit'
-      ) {
-        modal.style.display = 'none';
-        document.body.classList.remove('shadow');
-      }
-    });
-  }
-
   private handlerChangeCount(): void {
     const btnCount: NodeList = document.querySelectorAll('.ride-button');
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.changeCountProduct(event)));
@@ -479,6 +462,23 @@ export default class Cart extends Component {
 
   public setToLocalStorage(): void {
     localStorage.setItem('cartParams', JSON.stringify(this.cartParams));
+  }
+
+  private handleBodyClick() {
+    document.body.addEventListener('click', (e) => {
+      const target = e.target as HTMLDivElement;
+      const targetParent = target.offsetParent;
+      const modal = document.querySelector('.modal') as HTMLElement;
+
+      if (
+        target.className !== 'modal' &&
+        targetParent?.className !== 'modal' &&
+        target.className !== 'cart-summary__submit'
+      ) {
+        modal.style.display = 'none';
+        document.body.classList.remove('shadow');
+      }
+    });
   }
 
   private callPopup() {
