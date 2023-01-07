@@ -19,7 +19,7 @@ export default class Header extends Component {
 
   private setAmount(value?: number) {
     if (value === -1) {
-      this.cartAmount = 0;
+      this.cartAmount -= 1;
     } else {
       this.cartAmount += 1;
     }
@@ -32,12 +32,12 @@ export default class Header extends Component {
   }
 
   public addToCart() {
-    this.setAmount();
+    this.cartAmount += 1;
     this.changeCartAmount();
   }
 
   public removeFromCart() {
-    this.setAmount(-1);
+    this.cartAmount -= 1;
     this.changeCartAmount();
   }
 }

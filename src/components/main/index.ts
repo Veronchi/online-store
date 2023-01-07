@@ -15,7 +15,6 @@ export default class Main extends Component {
   private router: Router;
   private data: Array<IProduct>;
   private header: Header;
-  private isAdded: boolean;
   // private categoryData: Array<IFilterProduct>;
   // private brandData: Array<IFilterProduct>;
 
@@ -24,7 +23,6 @@ export default class Main extends Component {
     this.data = products;
     // this.categoryData = [];
     // this.brandData = [];
-    this.isAdded = false;
     this.renderer = new Renderer();
     this.header = header;
     this.filter = new Filter(this.data);
@@ -264,32 +262,27 @@ export default class Main extends Component {
     window.location.replace('#details');
   }
 
-  private findNode(el: HTMLElement, e?: Event): HTMLElement | undefined {
+  private findNode(el: HTMLElement, e: Event): HTMLElement | undefined {
     let element = el;
 
     if (el.className.includes('product__btn')) {
-      el.classList.toggle('active');
-
-      if (e) {
-        this.isAdded = !this.isAdded;
-        this.changeHeaderCart(e);
+      if (el.className.includes('active')) {
+        e.preventDefault();
+        this.header.removeFromCart();
+        el.classList.remove('active');
+      } else {
+        e.preventDefault();
+        this.header.addToCart();
+        el.classList.add('active');
       }
     }
+
+    console.log(localStorage.getItem('productId'));
 
     if (el.parentElement?.nodeName === 'LI') {
       return el.parentElement;
     } else {
-      return (element = this.findNode(element.parentElement as HTMLElement) as HTMLElement);
-    }
-  }
-
-  private changeHeaderCart(e: Event) {
-    e.preventDefault();
-
-    if (this.isAdded) {
-      this.header.addToCart();
-    } else {
-      this.header.removeFromCart();
+      return (element = this.findNode(element.parentElement as HTMLElement, e) as HTMLElement);
     }
   }
 }
