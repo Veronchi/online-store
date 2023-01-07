@@ -412,6 +412,7 @@
   &__btn {
     @include button;
     position: relative;
+    width: 130px;
     border-radius: 5px;
     padding-left: 20px;
     line-height: 30px;

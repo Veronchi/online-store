@@ -96,7 +96,7 @@ export default class Renderer {
     rateNum.innerText = product.rating + '';
     discount.innerText = `Discount: ${product.discountPercentage}%`;
     price.innerText = `${product.price}$`;
-    btn.innerText = 'add to cart';
+    btn.innerText = 'Add in Cart';
 
     imgWrapper.append(img);
     wrapper.append(imgWrapper);

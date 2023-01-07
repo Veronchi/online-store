@@ -6,8 +6,7 @@ import './style.scss';
 import { Router } from '../../common/router';
 import Filter from './filter';
 import FilterRenderer from './filterRender';
-import Header from '../header';
-import Cart from '../cart';
+import Details from '../details';
 
 export default class Main extends Component {
   private renderer: Renderer;
@@ -15,19 +14,17 @@ export default class Main extends Component {
   private filterRenderer: FilterRenderer;
   private router: Router;
   private data: Array<IProduct>;
-  private header: Header;
-  private cart: Cart;
+  private details: Details;
   // private categoryData: Array<IFilterProduct>;
   // private brandData: Array<IFilterProduct>;
 
-  constructor(name: string, router: Router, header: Header, cart: Cart) {
+  constructor(name: string, router: Router, details: Details) {
     super(name);
     this.data = products;
     // this.categoryData = [];
     // this.brandData = [];
     this.renderer = new Renderer();
-    this.header = header;
-    this.cart = cart;
+    this.details = details;
     this.filter = new Filter(this.data);
     this.filterRenderer = new FilterRenderer({
       lists: [{ root: '.scroll-filter_category' }, { root: '.scroll-filter_brand' }],
@@ -40,6 +37,7 @@ export default class Main extends Component {
     this.handleData();
     this.renderer.init();
     this.renderer.render(this.data);
+    this.details.drawCart();
     this.filterRenderer.init();
     this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(this.data));
     this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(this.data));
@@ -134,11 +132,9 @@ export default class Main extends Component {
 
     if (priceFilter) {
       priceFilter.addEventListener('change', (e) => {
-        this.filter.onChangePriceAmount(e);
+        this.filter.onChangePriceAmount(e, this.changeQueryParam.bind(this), this.renderNewData.bind(this));
         const filteredData = this.filter.getFilteredData();
         this.renderer.render(filteredData);
-        // this.renderNewData.bind(this, filteredData);
-        // this.changeQueryParam.bind(this);
       });
     }
   }
@@ -262,7 +258,7 @@ export default class Main extends Component {
 
     localStorage.removeItem('productId');
     localStorage.setItem('productId', `${productId}`);
-    window.location.replace('#details');
+    // window.location.replace('#details');
   }
 
   private findNode(el: HTMLElement, e: Event): HTMLElement | undefined {
@@ -271,12 +267,14 @@ export default class Main extends Component {
     if (el.className.includes('product__btn')) {
       if (el.className.includes('active')) {
         e.preventDefault();
-        this.header.removeFromCart();
         el.classList.remove('active');
+        this.details.addProductFromMain(e);
+        el.textContent = 'Add in Cart';
       } else {
         e.preventDefault();
-        this.header.addToCart();
         el.classList.add('active');
+        this.details.addProductFromMain(e);
+        el.textContent = 'Drop from Cart';
       }
     }
 

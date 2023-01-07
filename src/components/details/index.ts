@@ -159,6 +159,22 @@ export default class Details extends Component {
     return result;
   }
 
+  public addProductFromMain(e: Event): void {
+    const id: string | null = localStorage.getItem('productId');
+    const target = e.target as HTMLElement;
+    if (id) {
+      if (target.textContent === 'Add in Cart') {
+        this.basket.addProduct();
+      } else {
+        this.basket.deleteProduct(id);
+      }
+    }
+  }
+
+  public drawCart() {
+    this.basket.drawHeader();
+  }
+
   // buyNow() {
 
   // }

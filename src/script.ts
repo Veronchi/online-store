@@ -19,8 +19,8 @@ class Controller {
     new Footer('footer').inject('.footer');
 
     const cartComponent = new Cart('cart');
-    const mainComponent = new Main('main', this.router, header, cartComponent);
     const detailComponent = new Details('details');
+    const mainComponent = new Main('main', this.router, detailComponent);
     const errorComponent = new ErrorPage('page404');
 
     this.routes = [
