@@ -14,10 +14,11 @@ class Controller {
   constructor() {
     this.router = new Router('root');
 
-    new Header('header').inject('.header');
+    const header = new Header('header');
+    header.inject('.header');
     new Footer('footer').inject('.footer');
 
-    const mainComponent = new Main('main', this.router);
+    const mainComponent = new Main('main', this.router, header);
     const detailComponent = new Details('details');
     const errorComponent = new ErrorPage('page404');
     const cartComponent = new Cart('cart');
@@ -32,7 +33,6 @@ class Controller {
     this.router.initRoutes(this.routes);
   }
 }
-
 
 new Controller();
 
