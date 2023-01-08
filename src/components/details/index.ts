@@ -164,7 +164,7 @@ export default class Details extends Component {
     const target = e.target as HTMLElement;
     if (id) {
       if (target.textContent === 'Add in Cart') {
-        this.basket.addProduct();
+        this.basket.addProduct(id);
       } else {
         this.basket.deleteProduct(id);
       }
