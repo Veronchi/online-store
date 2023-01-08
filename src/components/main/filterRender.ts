@@ -33,7 +33,7 @@ export default class FilterRenderer {
   // this.changeFilterRangeValues();
   // }
 
-  public renderFilterList(rootEl: string, list: Array<IFilterProduct>, prevList?: Array<IFilterProduct>): void {
+  public renderFilterList(rootEl: string, list: Array<IFilterProduct>): void {
     const root: HTMLElement | null = document.querySelector(rootEl);
 
     if (root) {
@@ -55,7 +55,7 @@ export default class FilterRenderer {
         spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
         spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
         spanCurr.innerText = `${list[i].stock}/`;
-        spanTotal.innerText = prevList ? `${prevList[i].stock}` : `${list[i].stock}`;
+        if(spanTotal.innerText.length < 1) spanTotal.innerText = `${list[i].stock}`;
         li.append(input);
         li.append(label);
         li.append(spanCurr);
