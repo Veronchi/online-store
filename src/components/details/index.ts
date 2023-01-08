@@ -7,27 +7,44 @@ import { products } from '../../products';
 export default class Details extends Component {
   private product: IProduct | null;
   private basket: Basket;
+  private id: string | null;
 
   constructor(name: string) {
     super(name);
     this.product = null;
     this.basket = new Basket();
+    this.id = localStorage.getItem('productId');
   }
 
   init() {
     console.log('details');
-    let id: string | null;
-    const url = window.location.href;
-    const productId = url.slice(url.lastIndexOf('/') - url.length + 1);
-    // const location = url.slice(0, url.indexOf('#'));
 
-    if (this.isIdInProducts(productId)) {
-      id = productId;
-    } else {
-      // window.location.href = `${location}#page404`;
-      id = localStorage.getItem('productId');
-    }
-    this.draw(id);
+//     const url = window.location.href;
+//     const productId = url.slice(url.lastIndexOf('/') - url.length + 1);
+//     // const location = url.slice(0, url.indexOf('#'));
+// console.log(url, productId)
+//     if (productId[0] !== '#') {
+//       if (this.isIdInProducts(productId)) {
+//         this.id = productId;
+//       } else {
+//         this.id = null;
+//         this.router.initRoutes(this.router.routes);
+//       }
+//     } else {
+//       if (localStorage.getItem('productId')) {
+//         this.id = localStorage.getItem('productId');
+//       } else {
+//         this.id = null;
+//         window.location.href = `${location}#page404`;
+//       }
+//     }
+    this.id = localStorage.getItem('productId');
+
+    // const url = new URL(window.location.href);
+    // const newUrl = `${url.origin}/#details/${this.id}`
+    // window.history.pushState({path: newUrl}, '', newUrl);
+    this.basket.init();
+    this.draw(this.id);
     this.basket.drawHeader();
     this.initEvents();
   }
@@ -98,10 +115,10 @@ export default class Details extends Component {
   }
 
   private checkProductCart() {
-    const id: string | null = localStorage.getItem('productId');
-    if (id) {
+    // const id: string | null = localStorage.getItem('productId');
+    if (this.id) {
       const btnAddCart = document.querySelector('.details__cart') as HTMLButtonElement;
-      if (this.basket.isInBasket(id)) {
+      if (this.basket.isInBasket(this.id)) {
         btnAddCart.textContent = 'Drop from Cart';
       } else {
         btnAddCart.textContent = 'Add in Cart';
@@ -121,17 +138,17 @@ export default class Details extends Component {
 
   private handlerAddCart(): void {
     const btnCart = document.querySelector('.details__cart') as HTMLButtonElement;
-    btnCart.addEventListener('click', (event: Event) => this.addProductToCart(event));
+    btnCart.addEventListener('click', () => this.addProductToCart());
   }
 
-  private addProductToCart(e: Event): void {
-    const id: string | null = localStorage.getItem('productId');
-    const target = e.target as HTMLElement;
-    if (id) {
-      if (target.textContent === 'Add in Cart') {
+  private addProductToCart(): void {
+    // const id: string | null = localStorage.getItem('productId');
+    // const target = e.target as HTMLElement;
+    if (this.id) {
+      if (!this.basket.isInBasket(this.id)) {
         this.basket.addProduct();
       } else {
-        this.basket.deleteProduct(id);
+        this.basket.deleteProduct(this.id);
       }
       this.checkProductCart();
     }
@@ -160,13 +177,13 @@ export default class Details extends Component {
   }
 
   public addProductFromMain(e: Event): void {
-    const id: string | null = localStorage.getItem('itemId');
+    // const id: string | null = localStorage.getItem('itemId');
     const target = e.target as HTMLElement;
-    if (id) {
+    if (this.id) {
       if (target.textContent === 'Add in Cart') {
-        this.basket.addProduct(id);
+        this.basket.addProduct(this.id);
       } else {
-        this.basket.deleteProduct(id);
+        this.basket.deleteProduct(this.id);
       }
     }
   }
