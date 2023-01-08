@@ -277,6 +277,8 @@ export default class Main extends Component {
       } else {
         e.preventDefault();
         el.classList.add('active');
+        localStorage.removeItem('itemId');
+        localStorage.setItem('itemId', `${el.parentElement?.parentElement?.id}`);
         this.details.addProductFromMain(e);
         el.textContent = 'Drop from Cart';
       }

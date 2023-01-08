@@ -160,7 +160,7 @@ export default class Details extends Component {
   }
 
   public addProductFromMain(e: Event): void {
-    const id: string | null = localStorage.getItem('productId');
+    const id: string | null = localStorage.getItem('itemId');
     const target = e.target as HTMLElement;
     if (id) {
       if (target.textContent === 'Add in Cart') {
