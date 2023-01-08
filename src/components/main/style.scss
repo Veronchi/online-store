@@ -352,14 +352,6 @@
 
   .wrapper {
     width: 100%;
-
-    &_row {
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      width: 100%;
-      gap: 80px;
-    }
   }
 
   .img-wrapper {
@@ -370,6 +362,7 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
+    margin: 0 auto;
   }
 
   &__img {
@@ -419,6 +412,7 @@
   &__btn {
     @include button;
     position: relative;
+    width: 130px;
     border-radius: 5px;
     padding-left: 20px;
     line-height: 30px;
@@ -434,6 +428,12 @@
       background-repeat: no-repeat;
       background-size: contain;
       margin-top: -8px;
+    }
+
+    &.active {
+      background-color: $light-blue;
+      color: $blue;
+      border-color: $blue;
     }
   }
 }

@@ -1,33 +1,36 @@
 import { IProduct } from '../../common/interface';
 
-export default class RendererProducts {
-  private rootElement: HTMLUListElement | null;
-  private rootElementName: string;
+export default class Renderer {
+  public catalogEl: HTMLUListElement | null;
 
-  constructor(rootElementName: string) {
-    this.rootElementName = rootElementName;
-    this.rootElement = null;
+  constructor() {
+    this.catalogEl = null;
   }
 
-  init() {
-    this.rootElement = document.querySelector(this.rootElementName);
+  public init(): void {
+    this.catalogEl = document.querySelector('.products__catalog');
   }
 
   public render(data: Array<IProduct>): void {
-    if (this.rootElement) {
-      this.rootElement.innerHTML = '';
+    if (this.catalogEl) {
+      this.catalogEl.innerHTML = '';
     }
 
-    for (let i = 0; i < data.length; i++) {
-      if (this.rootElement) {
-        const liEl = this.createProductItem(data[i]);
-
-        this.rootElement.append(liEl);
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        if (this.catalogEl) {
+          const productEl = this.createProductItem(data[i]);
+          this.catalogEl.append(productEl);
+        }
+      }
+    } else {
+      if (this.catalogEl) {
+        this.catalogEl.innerHTML = 'Oops! No products found';
       }
     }
   }
 
-  public onChangeProductLayout(e: Event) {
+  public onChangeProductLayout(e: Event): void {
     const target = e.target as HTMLButtonElement;
     const targetClass = target.className;
     if (target.nodeName === 'BUTTON') {
@@ -35,7 +38,7 @@ export default class RendererProducts {
     }
   }
 
-  public setGridProductLayout() {
+  public setGridProductLayout(): void {
     const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
     const btnGrid = document.querySelector('.layout__btn_grid') as HTMLButtonElement;
     const btnRow = document.querySelector('.layout__btn_row') as HTMLButtonElement;
@@ -49,18 +52,15 @@ export default class RendererProducts {
     wrapper.map((i) => i.classList.remove('wrapper_row'));
   }
 
-  public setRowProductLayout() {
+  public setRowProductLayout(): void {
     const catalog = document.querySelector('.products__catalog') as HTMLUListElement | null;
     const btnGrid = document.querySelector('.layout__btn_grid') as HTMLButtonElement;
     const btnRow = document.querySelector('.layout__btn_row') as HTMLButtonElement;
-    const elCollection: NodeListOf<HTMLDivElement> = document.querySelectorAll('.wrapper');
-    const wrapper: Array<HTMLDivElement> = Array.from(elCollection);
 
     btnGrid.classList.remove('layout__btn_active');
     btnRow.classList.add('layout__btn_active');
 
     catalog?.classList.add('products__catalog_row');
-    wrapper.map((i) => i.classList.add('wrapper_row'));
   }
 
   private createProductItem(product: IProduct): HTMLLIElement {
@@ -90,12 +90,13 @@ export default class RendererProducts {
     btn.className = 'product__btn';
 
     li.id = product.id;
+    link.href = '#details';
     img.src = product.images[0];
     title.innerText = product.title;
     rateNum.innerText = product.rating + '';
     discount.innerText = `Discount: ${product.discountPercentage}%`;
     price.innerText = `${product.price}$`;
-    btn.innerText = 'add to cart';
+    btn.innerText = 'Add in Cart';
 
     imgWrapper.append(img);
     wrapper.append(imgWrapper);
@@ -111,4 +112,82 @@ export default class RendererProducts {
 
     return li;
   }
+
+  public changeProductBtn(data: ChildNode[]) {
+    data.forEach((i) => {
+      i.childNodes.forEach((i) => {
+        const item = i.childNodes[1] as HTMLElement;
+        item.classList.add('active');
+        item.textContent = 'Drop from Cart';
+      });
+    });
+  }
+
+  // public renderFilterList(rootEl: string, list: Array<IFilterProduct>, prevList?: Array<IFilterProduct>): void {
+  //   const root: HTMLElement | null = document.querySelector(rootEl);
+
+  //   if (root) {
+  //     root.innerHTML = '';
+  //     for (let i = 0; i < list.length; i++) {
+  //       const li = document.createElement('li');
+  //       const input = document.createElement('input');
+  //       const label = document.createElement('label');
+  //       const spanCurr = document.createElement('span');
+  //       const spanTotal = document.createElement('span');
+  //       li.classList.add('scroll-filter__item');
+  //       input.classList.add('scroll-filter__input');
+  //       input.id = list[i].name;
+  //       input.type = 'checkbox';
+  //       input.name = list[i].name;
+  //       label.classList.add('scroll-filter__label');
+  //       label.htmlFor = list[i].name;
+  //       label.innerText = list[i].name;
+  //       spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
+  //       spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
+  //       spanCurr.innerText = `${list[i].stock}/`;
+  //       spanTotal.innerText = prevList ? `${prevList[i].stock}` : `${list[i].stock}`;
+  //       li.append(input);
+  //       li.append(label);
+  //       li.append(spanCurr);
+  //       li.append(spanTotal);
+
+  //       if (root) {
+  //         root.append(li);
+  //       }
+  //     }
+  //   }
+  // }
+
+  // public renderFilterRangeValues(fromInp: string, toInp: string, fromEl: string, toEl: string, data: IFilterAmount) {
+  //   const fromInput = document.getElementById(fromInp) as HTMLInputElement | null;
+  //   const toInput = document.getElementById(toInp) as HTMLInputElement | null;
+  //   const fromSpan = document.querySelector(fromEl) as HTMLSpanElement;
+  //   const toSpan = document.querySelector(toEl) as HTMLSpanElement;
+
+  //   if (fromInput) {
+  //     fromInput.min = localStorage.getItem(fromInp) as string;
+  //     fromInput.max = localStorage.getItem(toInp) as string;
+  //     fromInput.value = `${data.from}`;
+  //   }
+  //   if (toInput) {
+  //     toInput.min = localStorage.getItem(fromInp) as string;
+  //     toInput.max = localStorage.getItem(toInp) as string;
+  //     toInput.value = `${data.to}`;
+  //   }
+
+  //   fromSpan.innerText = `${data.from}`;
+  //   toSpan.innerText = `${data.to}`;
+  // }
+
+  // public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string) {
+  //   const input = document.getElementById(inp) as HTMLInputElement | null;
+  //   const span = document.querySelector(el) as HTMLSpanElement;
+
+  //   if (input) {
+  //     input.min = `${data.from}`;
+  //     input.max = `${data.to}`;
+  //     input.value = `${urlData}`;
+  //     span.innerText = `${urlData}`;
+  //   }
+  // }
 }

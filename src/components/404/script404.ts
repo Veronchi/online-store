@@ -6,7 +6,7 @@ export default class ErrorPage extends Component {
     super(name);
   }
 
-  init() {
+  public init() {
     console.log('404');
   }
 }

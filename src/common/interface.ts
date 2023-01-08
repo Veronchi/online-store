@@ -43,4 +43,57 @@ interface IPromo {
   discount: number;
 }
 
-export { IComponentProps, IRouterProps, IProduct, IRenderProps, IPurchase, IPromo, ICart };
+interface IFilterProduct {
+  name: string;
+  stock: number;
+}
+
+interface IFilterAmount {
+  from: number;
+  to: number;
+}
+
+interface IFilterRootElement {
+  root: string;
+}
+
+type MapRootElements = {
+  [n: string]: HTMLElement;
+};
+
+interface IFilterInitValues {
+  lists: Array<IFilterRootElement>;
+  ranges: Array<IFilterRootElement>;
+}
+
+interface IFilterMapElements {
+  lists: MapRootElements;
+  ranges: MapRootElements;
+}
+
+type TQParams = {
+  [n: string]: string;
+};
+
+interface Ibasket {
+  purchases: Array<IPurchase>;
+  totalCount: number;
+  totalDiscount: number;
+  totalSumm: number;
+}
+
+export {
+  IComponentProps,
+  IRouterProps,
+  IProduct,
+  IRenderProps,
+  IPurchase,
+  IPromo,
+  ICart,
+  IFilterProduct,
+  IFilterAmount,
+  IFilterInitValues,
+  IFilterMapElements,
+  TQParams,
+  Ibasket,
+};
