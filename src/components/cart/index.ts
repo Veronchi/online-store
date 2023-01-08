@@ -59,8 +59,7 @@ export default class Cart extends Component {
 
     if (this.basket.purchases.length > 0) {
       this.changePage(this.cartParams.currenPage);
-    } else 
-    {
+    } else {
       const cartProducts = document.querySelector('.cart-container') as HTMLElement;
       cartProducts.innerHTML = '';
 
@@ -316,7 +315,9 @@ export default class Cart extends Component {
       } else {
         nextPage.style.visibility = "visible";
       }
-  
+      
+      this.cartParams.currenPage = page;
+      
       this.handlerChangeCount();
       this.handlerDeleteProduct();
     } else {
@@ -326,9 +327,7 @@ export default class Cart extends Component {
       const cartEl = this.createEmptyCart();
       cartProducts.append(cartEl);
     }
-    
-    this.cartParams.currenPage = page;
-   
+       
     const url = new URL(window.location.href);
     const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
     window.history.pushState({path: newUrl}, '', newUrl);
