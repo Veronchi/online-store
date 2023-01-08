@@ -27,21 +27,36 @@ export default class Basket {
     console.log(this.purchases);
   }
 
-  public addProduct(): void {
-    const id: string | null = localStorage.getItem('productId');
-    if (id) {
-      if (this.isInBasket(id)) {
-        if (this.purchases[this.getPurchaseId(id)].count < this.purchases[this.getPurchaseId(id)].product.stock) {
-          this.purchases[this.getPurchaseId(id)].count++;
+  public addProduct(idx?: string): void {
+    if (idx) {
+      if (this.isInBasket(idx)) {
+        if (this.purchases[this.getPurchaseId(idx)].count < this.purchases[this.getPurchaseId(idx)].product.stock) {
+          this.purchases[this.getPurchaseId(idx)].count++;
         }
       } else {
-        this.purchases.push({ count: 1, product: this.getProduct(id) });
+        this.purchases.push({ count: 1, product: this.getProduct(idx) });
         this.totalCount++;
-        this.totalSumm += this.getProduct(id).price;
+        this.totalSumm += this.getProduct(idx).price;
       }
       this.setTotals();
       this.drawHeader();
       this.setToLocalStorage();
+    } else {
+      const id: string | null = localStorage.getItem('productId');
+      if (id) {
+        if (this.isInBasket(id)) {
+          if (this.purchases[this.getPurchaseId(id)].count < this.purchases[this.getPurchaseId(id)].product.stock) {
+            this.purchases[this.getPurchaseId(id)].count++;
+          }
+        } else {
+          this.purchases.push({ count: 1, product: this.getProduct(id) });
+          this.totalCount++;
+          this.totalSumm += this.getProduct(id).price;
+        }
+        this.setTotals();
+        this.drawHeader();
+        this.setToLocalStorage();
+      }
     }
   }
 
