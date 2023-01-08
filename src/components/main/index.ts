@@ -68,6 +68,82 @@ export default class Main extends Component {
     this.handleStockFilter();
     this.handleCategoryFilter();
     this.handleCopyUrl();
+    this.handleBrandList();
+    this.handleCategoryList();
+    this.handleSearchInput();
+    this.handleDropdownList();
+  }
+
+  private handleDropdownList() {
+    const dropdown: HTMLElement | null = document.querySelector('.dropdown');
+    const dropdownList: HTMLElement | null = document.querySelector('.dropdown .dropdown__list');
+
+    if (dropdown && dropdownList) {
+      dropdown.addEventListener('click', (e) => {
+        const dropdownEl = <HTMLInputElement>e.target;
+        if (dropdownEl.classList.contains('dropdown') || dropdownEl.classList.contains('dropdown__label')) {
+          dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block';
+        } else if (dropdownEl.classList.contains('dropdown__item')) {
+          dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block';
+          const sortID: string = dropdownEl.dataset.sortid || '';
+          this.filter.addSortParam(sortID);
+          this.filter.filter();
+          const renderedData = this.filter.getFilteredData();
+          this.renderer.render(renderedData);
+        }
+      });
+    }
+  }
+
+  private handleBrandList() {
+    const brandList: HTMLElement | null = document.querySelector('.scroll-filter_brand');
+
+    if (brandList) {
+      brandList.addEventListener('click', (e) => {
+        if ((<Element>e.target).tagName === 'INPUT') {
+          const inputElem = <HTMLInputElement>e.target;
+          inputElem.checked
+            ? this.filter.addFilterBrand(inputElem.name)
+            : this.filter.removeFilterBrand(inputElem.name);
+          this.filter.filter();
+          const renderedData = this.filter.getFilteredData();
+          this.renderer.render(renderedData);
+        }
+      });
+    }
+  }
+
+  private handleCategoryList() {
+    const categoryList: HTMLElement | null = document.querySelector('.scroll-filter_category');
+
+    if (categoryList) {
+      categoryList.addEventListener('click', (e) => {
+        if ((<Element>e.target).tagName === 'INPUT') {
+          const inputElem = <HTMLInputElement>e.target;
+          inputElem.checked
+            ? this.filter.addFilterCatergory(inputElem.name)
+            : this.filter.removeFilterCatergory(inputElem.name);
+          this.filter.filter();
+          const renderedData = this.filter.getFilteredData();
+          this.renderer.render(renderedData);
+        }
+      });
+    }
+  }
+
+  private handleSearchInput() {
+    const searchInput: HTMLElement | null = document.querySelector('.search__input');
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const searchInput = <HTMLInputElement>e.target;
+        const value = searchInput.value;
+        this.filter.addSearchParam(value);
+        this.filter.filter();
+        const filteredData = this.filter.getFilteredData();
+        this.renderer.render(filteredData);
+      });
+    }
   }
 
   private calcCategoryStock(dataArr: Array<IProduct>): Array<IFilterProduct> {
@@ -75,8 +151,8 @@ export default class Main extends Component {
 
     for (let i = 0; i < dataArr.length; i++) {
       const stockAmount: number | undefined = result[dataArr[i].category];
-      if (!stockAmount) result[dataArr[i].category] = dataArr[i].stock;
-      else result[dataArr[i].category] += dataArr[i].stock;
+      if (!stockAmount) result[dataArr[i].category] = 1;
+      else result[dataArr[i].category] += 1;
     }
 
     const categoryData: Array<IFilterProduct> = Object.entries(result).map((i) => {
@@ -87,8 +163,6 @@ export default class Main extends Component {
     });
 
     return categoryData;
-
-    // this.categoryData = categoryData;
   }
 
   private calcBrandStock(dataArr: Array<IProduct>): Array<IFilterProduct> {
@@ -96,8 +170,8 @@ export default class Main extends Component {
 
     for (let i = 0; i < dataArr.length; i++) {
       const stockAmount: number | undefined = result[dataArr[i].brand];
-      if (!stockAmount) result[dataArr[i].brand] = dataArr[i].stock;
-      else result[dataArr[i].brand] += dataArr[i].stock;
+      if (!stockAmount) result[dataArr[i].brand] = 1;
+      else result[dataArr[i].brand] += 1;
     }
 
     const brandData: Array<IFilterProduct> = Object.entries(result).map((i) => {
@@ -108,8 +182,6 @@ export default class Main extends Component {
     });
 
     return brandData;
-
-    // this.brandData = brandData;
   }
 
   private handleProductClick(): void {
@@ -136,7 +208,7 @@ export default class Main extends Component {
 
     if (priceFilter) {
       priceFilter.addEventListener('change', (e) => {
-        this.filter.onChangePriceAmount(e, this.changeQueryParam.bind(this), this.renderNewData.bind(this));
+        this.filter.filter();
         const filteredData = this.filter.getFilteredData();
         this.renderer.render(filteredData);
       });
@@ -147,9 +219,11 @@ export default class Main extends Component {
     const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
 
     if (stockFilter) {
-      stockFilter.addEventListener('change', (e) =>
-        this.filter.onChangeStockAmount(e, this.changeQueryParam.bind(this), this.renderNewData.bind(this))
-      );
+      stockFilter.addEventListener('change', (e) => {
+        this.filter.filter();
+        const filteredData = this.filter.getFilteredData();
+        this.renderer.render(filteredData);
+      });
     }
   }
 
@@ -182,8 +256,8 @@ export default class Main extends Component {
     const currCategoryData = this.calcCategoryStock(newData);
     const initCategoryData = this.calcCategoryStock(this.data);
 
-    this.filterRenderer.renderFilterList('.scroll-filter_brand', currBrandData, initBrandData);
-    this.filterRenderer.renderFilterList('.scroll-filter_category', currCategoryData, initCategoryData);
+    this.filterRenderer.renderFilterList('.scroll-filter_brand', currBrandData);
+    this.filterRenderer.renderFilterList('.scroll-filter_category', currCategoryData);
   }
 
   private changeLayoutQueryParam(btnWrapper: HTMLDivElement): void {
