@@ -43,7 +43,7 @@ export default class Details extends Component {
     // const url = new URL(window.location.href);
     // const newUrl = `${url.origin}/#details/${this.id}`
     // window.history.pushState({path: newUrl}, '', newUrl);
-
+    this.basket.init();
     this.draw(this.id);
     this.basket.drawHeader();
     this.initEvents();
@@ -177,11 +177,11 @@ export default class Details extends Component {
   }
 
   public addProductFromMain(e: Event): void {
-    const id: string | null = localStorage.getItem('itemId');
+    // const id: string | null = localStorage.getItem('itemId');
     const target = e.target as HTMLElement;
     if (this.id) {
       if (target.textContent === 'Add in Cart') {
-        this.basket.addProduct(id);
+        this.basket.addProduct(this.id);
       } else {
         this.basket.deleteProduct(this.id);
       }

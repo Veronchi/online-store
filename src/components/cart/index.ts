@@ -41,10 +41,10 @@ export default class Cart extends Component {
 
   public init(): void {
     console.log('cart');
+    this.basket.init();
 
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
     blockProducts.style.height = `${Math.min(this.cartParams.maxItems, this.basket.getTotalProducts()) * 100}px`;
-
     this.draw();
     this.drawSummary();
     this.basket.drawHeader();
@@ -125,15 +125,14 @@ export default class Cart extends Component {
   }
 
   private initEvents():void {
-    this.handlerPrevPage();
-    this.handlerNextPage();
-    this.handlerItemsPerPage();
-    this.handlerInputPromo();
-    this.handlerAddPromo()
-
-    this.handlerChangeCount();
-    this.handlerDeleteProduct();
-    this.handleBodyClick();
+    if (this.basket.purchases.length !== 0) {
+      this.handlerPrevPage();
+      this.handlerNextPage();
+      this.handlerItemsPerPage();
+      this.handlerInputPromo();
+      this.handlerAddPromo()
+      this.handleBodyClick();
+    }
   }
 
   private handlerChangeCount(): void {

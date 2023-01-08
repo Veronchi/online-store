@@ -8,6 +8,13 @@ export default class Basket {
   public totalDiscount: number;
 
   constructor() {
+      this.purchases = [];
+      this.totalCount = 0;
+      this.totalSumm = 0;
+      this.totalDiscount = 0;
+  }
+
+  public init(): void {
     const basketSave: string | null = localStorage.getItem('basket');
     if (basketSave) {
       const basketValue = JSON.parse(basketSave);
@@ -15,16 +22,7 @@ export default class Basket {
       this.totalCount = basketValue.totalCount;
       this.totalSumm = basketValue.totalSumm;
       this.totalDiscount = basketValue.totalDiscount;
-    } else {
-      this.purchases = [];
-      this.totalCount = 0;
-      this.totalSumm = 0;
-      this.totalDiscount = 0;
     }
-  }
-
-  public init(): void {
-    console.log(this.purchases);
   }
 
   public addProduct(idx?: string): void {
