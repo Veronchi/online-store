@@ -90,6 +90,7 @@ export default class RendererProducts {
     btn.className = 'product__btn';
 
     li.id = product.id;
+    link.href = '#details';
     img.src = product.images[0];
     title.innerText = product.title;
     rateNum.innerText = product.rating + '';
