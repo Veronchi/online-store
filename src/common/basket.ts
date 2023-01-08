@@ -1,5 +1,5 @@
 import { IProduct, IPurchase } from './interface';
-import { products} from '../products';
+import { products } from '../products';
 
 export default class Basket {
   public purchases: IPurchase[];
@@ -8,7 +8,7 @@ export default class Basket {
   public totalDiscount: number;
 
   constructor() {
-    const basketSave:string | null = localStorage.getItem('basket');
+    const basketSave: string | null = localStorage.getItem('basket');
     if (basketSave) {
       const basketValue = JSON.parse(basketSave);
       this.purchases = basketValue.purchases;
@@ -27,21 +27,36 @@ export default class Basket {
     console.log(this.purchases);
   }
 
-  public addProduct(): void {
-    const id: string | null = localStorage.getItem('productId');
-    if (id) {
-      if (this.isInBasket(id)) {
-        if (this.purchases[this.getPurchaseId(id)].count < this.purchases[this.getPurchaseId(id)].product.stock) {
-          this.purchases[this.getPurchaseId(id)].count++;
+  public addProduct(idx?: string): void {
+    if (idx) {
+      if (this.isInBasket(idx)) {
+        if (this.purchases[this.getPurchaseId(idx)].count < this.purchases[this.getPurchaseId(idx)].product.stock) {
+          this.purchases[this.getPurchaseId(idx)].count++;
         }
       } else {
-        this.purchases.push({count: 1, product: this.getProduct(id)});
+        this.purchases.push({ count: 1, product: this.getProduct(idx) });
         this.totalCount++;
-        this.totalSumm += this.getProduct(id).price;
+        this.totalSumm += this.getProduct(idx).price;
       }
       this.setTotals();
       this.drawHeader();
       this.setToLocalStorage();
+    } else {
+      const id: string | null = localStorage.getItem('productId');
+      if (id) {
+        if (this.isInBasket(id)) {
+          if (this.purchases[this.getPurchaseId(id)].count < this.purchases[this.getPurchaseId(id)].product.stock) {
+            this.purchases[this.getPurchaseId(id)].count++;
+          }
+        } else {
+          this.purchases.push({ count: 1, product: this.getProduct(id) });
+          this.totalCount++;
+          this.totalSumm += this.getProduct(id).price;
+        }
+        this.setTotals();
+        this.drawHeader();
+        this.setToLocalStorage();
+      }
     }
   }
 
@@ -49,7 +64,7 @@ export default class Basket {
     let result = 0;
     this.purchases.forEach((el: IPurchase) => {
       if (el.product.id === id) result = el.count;
-    })
+    });
     return result;
   }
 
@@ -57,12 +72,12 @@ export default class Basket {
     let result = 0;
     this.purchases.forEach((el: IPurchase, index: number) => {
       if (el.product.id === id) result = index;
-    })
+    });
     return result;
   }
 
   public changeProductCount(id: string, operation: string): number {
-    const purchaseId =  this.getPurchaseId(id);
+    const purchaseId = this.getPurchaseId(id);
 
     if (operation === '+') {
       if (this.purchases[purchaseId].count < this.purchases[purchaseId].product.stock) {
@@ -88,9 +103,9 @@ export default class Basket {
     let discount = 0;
     this.purchases.forEach((element: IPurchase) => {
       count += element.count;
-      summ +=element.count * element.product.price * (100 - element.product.discountPercentage) / 100;
-      discount += element.count * element.product.price * element.product.discountPercentage / 100;
-    })
+      summ += (element.count * element.product.price * (100 - element.product.discountPercentage)) / 100;
+      discount += (element.count * element.product.price * element.product.discountPercentage) / 100;
+    });
     this.totalCount = count;
     this.totalSumm = Math.round(summ * 100) / 100;
     this.totalDiscount = Math.round(discount * 100) / 100;
@@ -113,7 +128,7 @@ export default class Basket {
   }
 
   public deleteProduct(id: string): void {
-    const purchaseId =  this.getPurchaseId(id);
+    const purchaseId = this.getPurchaseId(id);
     this.purchases.splice(purchaseId, 1);
     this.setTotals();
     this.drawHeader();
@@ -129,7 +144,7 @@ export default class Basket {
     let result = false;
     this.purchases.forEach((el: IPurchase) => {
       if (el.product.id === id) result = true;
-    })
+    });
     return result;
   }
 

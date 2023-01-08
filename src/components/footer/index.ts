@@ -6,7 +6,7 @@ export default class Footer extends Component {
     super(name);
   }
 
-  init() {
+  public init() {
     // console.log("footer");
   }
 }
