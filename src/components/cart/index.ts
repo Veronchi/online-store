@@ -3,6 +3,7 @@ import Basket from '../../common/basket';
 import { IPromo, IProduct, ICart } from '../../common/interface';
 import './style-cart.scss';
 
+
 const validPromo: IPromo[] = [
   {
     promoname: 'NEWYEAR',
@@ -109,16 +110,18 @@ export default class Cart extends Component {
   }
 
   private drawSummary() {
-    const countProducts = document.querySelector('.cart-summary__products-count') as HTMLElement;
-    countProducts.textContent = `${this.basket.getTotalCount()}`;
-
-    const countDiscount = document.querySelector('.cart-summary__discount-count') as HTMLElement;
-    countDiscount.textContent = `${this.basket.getTotalDiscount().toFixed(2)}$`;
-
-    const countSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
-    countSumm.textContent = `${this.basket.getTotalSumm().toFixed(2)}$`;
-
-    this.setPromoTotalSumm();
+    if (this.basket.purchases.length !== 0) {
+      const countProducts = document.querySelector('.cart-summary__products-count') as HTMLElement;
+      countProducts.textContent = `${this.basket.getTotalCount()}`;
+  
+      const countDiscount = document.querySelector('.cart-summary__discount-count') as HTMLElement;
+      countDiscount.textContent = `${this.basket.getTotalDiscount().toFixed(2)}$`;
+  
+      const countSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
+      countSumm.textContent = `${this.basket.getTotalSumm().toFixed(2)}$`;
+  
+      this.setPromoTotalSumm();
+    }
   }
 
   private initEvents():void {
@@ -244,9 +247,14 @@ export default class Cart extends Component {
     const product = this.findNode(target);
     const productId = product?.dataset.id;
 
+    localStorage.setItem('productId', `${productId}`);
+    
     const url = window.location.href.slice(0, window.location.href.indexOf('#'));
-
     window.location.href = `${url}#details/${productId}`;
+
+    // const url = new URL(window.location.href);
+    // const newUrl = `${url.origin}/#details/${this.id}`
+    // window.history.pushState({path: newUrl}, '', newUrl);
   }
 
   private createEmptyCart():HTMLElement {
@@ -331,7 +339,7 @@ export default class Cart extends Component {
     const url = new URL(window.location.href);
     const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
     window.history.pushState({path: newUrl}, '', newUrl);
-
+    
     this.setToLocalStorage();
   }
 
