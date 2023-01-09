@@ -8,10 +8,10 @@ export default class Basket {
   public totalDiscount: number;
 
   constructor() {
-      this.purchases = [];
-      this.totalCount = 0;
-      this.totalSumm = 0;
-      this.totalDiscount = 0;
+    this.purchases = [];
+    this.totalCount = 0;
+    this.totalSumm = 0;
+    this.totalDiscount = 0;
   }
 
   public init(): void {

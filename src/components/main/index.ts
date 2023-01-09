@@ -252,9 +252,9 @@ export default class Main extends Component {
     }
 
     const currBrandData = this.calcBrandStock(newData);
-    const initBrandData = this.calcBrandStock(this.data);
+    // const initBrandData = this.calcBrandStock(this.data);
     const currCategoryData = this.calcCategoryStock(newData);
-    const initCategoryData = this.calcCategoryStock(this.data);
+    // const initCategoryData = this.calcCategoryStock(this.data);
 
     this.filterRenderer.renderFilterList('.scroll-filter_brand', currBrandData);
     this.filterRenderer.renderFilterList('.scroll-filter_category', currCategoryData);

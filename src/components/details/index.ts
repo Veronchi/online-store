@@ -177,13 +177,13 @@ export default class Details extends Component {
   }
 
   public addProductFromMain(e: Event): void {
-    // const id: string | null = localStorage.getItem('itemId');
+    const id = localStorage.getItem('itemId') as string;
     const target = e.target as HTMLElement;
     if (this.id) {
       if (target.textContent === 'Add in Cart') {
-        this.basket.addProduct(this.id);
+        this.basket.addProduct(id);
       } else {
-        this.basket.deleteProduct(this.id);
+        this.basket.deleteProduct(id);
       }
     }
   }
