@@ -32,6 +32,10 @@ export default class Filter {
     this.calcInitAmountRange(this.data);
   }
 
+  public getSearchQuery() {
+    return this.serachInput;
+  }
+
   public addFilterCatergory(name: string): void {
     this.categoryData.push(name);
   }

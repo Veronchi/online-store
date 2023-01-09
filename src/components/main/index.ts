@@ -87,6 +87,7 @@ export default class Main extends Component {
           this.filter.filter();
           const renderedData = this.filter.getFilteredData();
           if (dropdownLabel) dropdownLabel.innerText = dropdownEl.innerText;
+          this.router.appendParam('sortBy', `${sortID}`);
           this.renderer.render(renderedData);
         }
       });
@@ -103,6 +104,8 @@ export default class Main extends Component {
           inputElem.checked
             ? this.filter.addFilterBrand(inputElem.name)
             : this.filter.removeFilterBrand(inputElem.name);
+          if (inputElem.checked) this.router.addParam('brandList', `${inputElem.name}`);
+          else this.router.removeParam('brandList', `${inputElem.name}`);
           this.filter.filter();
           const renderedData = this.filter.getFilteredData();
           this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
@@ -125,6 +128,8 @@ export default class Main extends Component {
           inputElem.checked
             ? this.filter.addFilterCatergory(inputElem.name)
             : this.filter.removeFilterCatergory(inputElem.name);
+          if (inputElem.checked) this.router.addParam('categoryList', `${inputElem.name}`);
+          else this.router.removeParam('categoryList', `${inputElem.name}`);
           this.filter.filter();
           const renderedData = this.filter.getFilteredData();
           this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
@@ -149,6 +154,7 @@ export default class Main extends Component {
         const filteredData = this.filter.getFilteredData();
         this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(filteredData));
         this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(filteredData));
+        this.router.appendParam('searchQuery', `${this.filter.getSearchQuery()}`);
         this.renderer.render(filteredData);
       });
     }
