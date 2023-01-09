@@ -15,14 +15,10 @@ export default class Main extends Component {
   private router: Router;
   private data: Array<IProduct>;
   private details: Details;
-  // private categoryData: Array<IFilterProduct>;
-  // private brandData: Array<IFilterProduct>;
 
   constructor(name: string, router: Router, details: Details) {
     super(name);
     this.data = products;
-    // this.categoryData = [];
-    // this.brandData = [];
     this.renderer = new Renderer();
     this.details = details;
     this.filter = new Filter(this.data);
@@ -37,6 +33,7 @@ export default class Main extends Component {
     this.handleData();
     this.renderer.init();
     this.renderer.render(this.data);
+    this.details.initFromMain();
     this.details.drawCart();
     this.filterRenderer.init();
     this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(this.data));
@@ -52,7 +49,6 @@ export default class Main extends Component {
     this.filter.changeFoundAmount(this.data.length);
     const basketData = JSON.parse(localStorage.getItem('basket') as string);
     const nodes = this.findItem(basketData);
-
     basketData ? this.renderer.changeProductBtn(nodes) : null;
   }
 
@@ -207,7 +203,7 @@ export default class Main extends Component {
     const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
 
     if (priceFilter) {
-      priceFilter.addEventListener('change', (e) => {
+      priceFilter.addEventListener('change', () => {
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
         this.renderer.render(filteredData);
@@ -219,7 +215,7 @@ export default class Main extends Component {
     const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
 
     if (stockFilter) {
-      stockFilter.addEventListener('change', (e) => {
+      stockFilter.addEventListener('change', () => {
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
         this.renderer.render(filteredData);
@@ -252,9 +248,7 @@ export default class Main extends Component {
     }
 
     const currBrandData = this.calcBrandStock(newData);
-    // const initBrandData = this.calcBrandStock(this.data);
     const currCategoryData = this.calcCategoryStock(newData);
-    // const initCategoryData = this.calcCategoryStock(this.data);
 
     this.filterRenderer.renderFilterList('.scroll-filter_brand', currBrandData);
     this.filterRenderer.renderFilterList('.scroll-filter_category', currCategoryData);
@@ -382,7 +376,5 @@ export default class Main extends Component {
     }
 
     return catalogList;
-
-    // console.log(this.renderer.catalogEl?.childNodes);
   }
 }

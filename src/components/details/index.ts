@@ -198,6 +198,10 @@ export default class Details extends Component {
     this.basket.drawHeader();
   }
 
+  public initFromMain() {
+    this.basket.init();
+  }
+
   private buyNow() {
     if (this.id) {
       if (!this.basket.isInBasket(this.id)) {
