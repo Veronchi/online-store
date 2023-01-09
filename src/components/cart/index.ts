@@ -129,8 +129,6 @@ export default class Cart extends Component {
       this.handlerAddPromo()
       this.handlerBuyNow();
 
-      this.handlerChangeCount();
-      this.handlerDeleteProduct();
       this.handleBodyClick();
       this.handleCartSummmaryClick();
       this.handleModalEvent();
