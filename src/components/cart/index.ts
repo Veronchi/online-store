@@ -1,36 +1,19 @@
 import Component from '../../common/component';
 import Basket from '../../common/basket';
-import { IPromo, IProduct, ICart } from '../../common/interface';
+import { IProduct, ICart, IPromo } from '../../common/interface';
+import { validPromo } from '../../common/basket';
 import './style-cart.scss';
 
-const validPromo: IPromo[] = [
-  {
-    promoname: 'NEWYEAR',
-    description: 'Happy New Year',
-    discount: 23,
-  },
-  {
-    promoname: 'RS',
-    description: 'Rolling Scopes School',
-    discount: 10,
-  },
-  {
-    promoname: 'MC',
-    description: 'Merry Christmas',
-    discount: 7,
-  },
-];
 
 export default class Cart extends Component {
   private basket: Basket;
-  private promocodes: IPromo[];
+  
   private cartParams: ICart;
 
   constructor(name: string) {
     super(name);
     this.basket = new Basket();
-    this.promocodes = [];
-    const cartSave: string | null = localStorage.getItem('cartParams');
+    const cartSave:string | null = localStorage.getItem('cartParams');
     if (cartSave) {
       this.cartParams = JSON.parse(cartSave);
     } else {
@@ -40,15 +23,24 @@ export default class Cart extends Component {
 
   public init(): void {
     console.log('cart');
+
+    const url = new URL(window.location.href);
+    console.log(url);
+
     this.basket.init();
 
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
     blockProducts.style.height = `${Math.min(this.cartParams.maxItems, this.basket.getTotalProducts()) * 100}px`;
 
     this.draw();
+    this.drawPromoCodes();
     this.drawSummary();
     this.basket.drawHeader();
     this.initEvents();
+
+    if (url.hash === '#cart?buy=1') {
+      this.callModal();
+    }
   }
 
   public draw(): void {
@@ -71,8 +63,8 @@ export default class Cart extends Component {
 
   private changeCountProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.dataset.id;
+    const product = this.findNode(target) as HTMLElement;
+    const productId = product.dataset.id;
     e.stopPropagation();
 
     if (productId) {
@@ -101,8 +93,8 @@ export default class Cart extends Component {
 
   private deleteProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.dataset.id;
+    const product = this.findNode(target)  as HTMLElement;
+    const productId = product.dataset.id;
     e.stopPropagation();
 
     if (productId) {
@@ -128,19 +120,22 @@ export default class Cart extends Component {
     }
   }
 
-  private initEvents(): void {
-    this.handlerPrevPage();
-    this.handlerNextPage();
-    this.handlerItemsPerPage();
-    this.handlerInputPromo();
-    this.handlerAddPromo();
+  private initEvents():void {
+    if (this.basket.purchases.length !== 0) {
+      this.handlerPrevPage();
+      this.handlerNextPage();
+      this.handlerItemsPerPage();
+      this.handlerInputPromo();
+      this.handlerAddPromo()
+      this.handlerBuyNow();
 
-    this.handlerChangeCount();
-    this.handlerDeleteProduct();
-    this.handleBodyClick();
-    this.handleCartSummmaryClick();
-    this.handleModalEvent();
-    this.handleSubmitBtn();
+      this.handlerChangeCount();
+      this.handlerDeleteProduct();
+      this.handleBodyClick();
+      this.handleCartSummmaryClick();
+      this.handleModalEvent();
+      this.handleSubmitBtn();
+    }
   }
 
   private handlerChangeCount(): void {
@@ -182,6 +177,11 @@ export default class Cart extends Component {
     element.addEventListener('click', (event: Event) => this.delPromoCode(event));
   }
 
+  private handlerBuyNow():void {
+    const btnBuy = document.querySelector('.cart-summary__submit') as HTMLButtonElement;
+    btnBuy.addEventListener('click', () => this.callModal());
+  }
+  
   private handleBodyClick(): void {
     document.body.addEventListener('click', (e) => this.handleBody(e));
   }
@@ -275,8 +275,8 @@ export default class Cart extends Component {
 
   private openProductInfo(event: Event): void {
     const target = event.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.dataset.id;
+    const product = this.findNode(target)  as HTMLElement;
+    const productId = product.dataset.id;
 
     localStorage.setItem('productId', `${productId}`);
 
@@ -367,8 +367,8 @@ export default class Cart extends Component {
     }
 
     const url = new URL(window.location.href);
-    const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
+    const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
+    window.history.pushState({path: newUrl}, '', newUrl);
 
     this.setToLocalStorage();
   }
@@ -402,11 +402,6 @@ export default class Cart extends Component {
     return `?page=${page}`;
   }
 
-  private getPromoCode(name: string): IPromo {
-    const index: number = validPromo.findIndex((el) => el.promoname === name);
-    return validPromo[index];
-  }
-
   private findPromoCode(e: Event): void {
     const target = e.target as HTMLInputElement;
     const index: number = validPromo.findIndex((el) => el.promoname === target.value);
@@ -422,7 +417,7 @@ export default class Cart extends Component {
 
   private addPromoCode(): void {
     const promoName = document.querySelector('.cart-summary__promo') as HTMLInputElement;
-    this.promocodes.push(this.getPromoCode(promoName.value));
+    this.basket.addPromoCode(promoName.value);
     this.drawPromoCodes();
     promoName.value = '';
     promoName.dispatchEvent(new Event('input', { bubbles: true }));
@@ -434,8 +429,7 @@ export default class Cart extends Component {
     const codeName = liItem.dataset.promoname;
 
     if (codeName) {
-      const index = this.getPromoCodesIndex(codeName);
-      this.promocodes.splice(index, 1);
+      this.basket.deletePromoCode(codeName);
       liItem?.parentNode?.removeChild(liItem);
       this.drawPromoCodes();
     }
@@ -446,8 +440,8 @@ export default class Cart extends Component {
     const promoItems = document.querySelector('.cart-summary__promo-items') as HTMLElement;
     const promoTotal = document.querySelector('.cart-summary__total-promo') as HTMLElement;
     promoItems.innerHTML = '';
-    if (this.promocodes.length > 0) {
-      this.promocodes.forEach((element: IPromo) => {
+    if (this.basket.promocodes.length > 0) {
+      this.basket.promocodes.forEach((element: IPromo) => {
         const liItem = document.createElement('li');
         const liDrop = document.createElement('button');
         liItem.className = 'cart-summary__promo-item';
@@ -475,9 +469,9 @@ export default class Cart extends Component {
     let promoSumm = 0;
     const totalSumm = this.basket.getTotalSumm();
     let prevSumm = totalSumm;
-    if (this.promocodes.length > 0) {
-      this.promocodes.forEach((element: IPromo) => {
-        promoSumm = Math.round(((prevSumm * (100 - element.discount)) / 100) * 100) / 100;
+    if (this.basket.promocodes.length > 0) {
+      this.basket.promocodes.forEach((element: IPromo) => {
+        promoSumm = Math.round((prevSumm * (100 - element.discount) / 100) * 100) / 100;
         prevSumm = promoSumm;
       });
       promoTotalSumm.textContent = `${totalSumm.toFixed(2)}$`;
@@ -485,16 +479,6 @@ export default class Cart extends Component {
     } else {
       summaryTotalSumm.textContent = `${totalSumm.toFixed(2)}$`;
     }
-  }
-
-  private getPromoCodesIndex(name: string): number {
-    let result = -1;
-    for (let i = 0; i < this.promocodes.length; i++) {
-      if (this.promocodes[i].promoname === name) {
-        result = i;
-      }
-    }
-    return result;
   }
 
   public setToLocalStorage(): void {
