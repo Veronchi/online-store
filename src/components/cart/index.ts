@@ -41,14 +41,23 @@ export default class Cart extends Component {
 
   public init(): void {
     console.log('cart');
+
+    const url = new URL(window.location.href);
+    console.log(url);
+
     this.basket.init();
 
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
     blockProducts.style.height = `${Math.min(this.cartParams.maxItems, this.basket.getTotalProducts()) * 100}px`;
+
     this.draw();
     this.drawSummary();
     this.basket.drawHeader();
     this.initEvents();
+
+    if (url.hash === '#cart?buy=1') {
+      this.callPopup();
+    }
   }
 
   public draw(): void {
@@ -71,8 +80,8 @@ export default class Cart extends Component {
 
   private changeCountProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.dataset.id;
+    const product = this.findNode(target) as HTMLElement;
+    const productId = product.dataset.id;
     e.stopPropagation();
 
     if (productId) {
@@ -97,8 +106,8 @@ export default class Cart extends Component {
 
   private deleteProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.dataset.id;
+    const product = this.findNode(target)  as HTMLElement;
+    const productId = product.dataset.id;
     e.stopPropagation();
 
     if (productId) {
@@ -132,6 +141,7 @@ export default class Cart extends Component {
       this.handlerInputPromo();
       this.handlerAddPromo()
       this.handleBodyClick();
+      this.handlerBuyNow();
     }
   }
 
@@ -172,6 +182,11 @@ export default class Cart extends Component {
 
   private handlerDelPromo(element: HTMLButtonElement):void {
     element.addEventListener('click', (event: Event) => this.delPromoCode(event));
+  }
+
+  private handlerBuyNow():void {
+    const btnBuy = document.querySelector('.cart-summary__submit') as HTMLButtonElement;
+    btnBuy.addEventListener('click', () => this.callPopup());
   }
 
   private createCartProduct(product: IProduct): HTMLUListElement {
@@ -243,8 +258,8 @@ export default class Cart extends Component {
 
   private openProductInfo(event: Event):void {
     const target = event.target as HTMLElement;
-    const product = this.findNode(target);
-    const productId = product?.dataset.id;
+    const product = this.findNode(target)  as HTMLElement;
+    const productId = product.dataset.id;
 
     localStorage.setItem('productId', `${productId}`);
     
@@ -338,7 +353,7 @@ export default class Cart extends Component {
     const url = new URL(window.location.href);
     const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
     window.history.pushState({path: newUrl}, '', newUrl);
-    
+
     this.setToLocalStorage();
   }
 
