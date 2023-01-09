@@ -3,9 +3,11 @@ import { IFilterAmount, IFilterProduct, IFilterInitValues, IFilterMapElements } 
 export default class FilterRenderer {
   private initElements: IFilterInitValues;
   private mapRootElements: IFilterMapElements;
+  private total: { [n: string]: number };
   constructor(elements: IFilterInitValues) {
     this.initElements = elements;
     this.mapRootElements = { lists: {}, ranges: {} };
+    this.total = {};
   }
 
   public init(): void {
@@ -49,13 +51,15 @@ export default class FilterRenderer {
         input.id = list[i].name;
         input.type = 'checkbox';
         input.name = list[i].name;
+        input.checked = list[i].checked;
         label.classList.add('scroll-filter__label');
         label.htmlFor = list[i].name;
         label.innerText = list[i].name;
         spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
         spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
         spanCurr.innerText = `${list[i].stock}/`;
-        if (spanTotal.innerText.length < 1) spanTotal.innerText = `${list[i].stock}`;
+        if (!this.total[list[i].name]) this.total[list[i].name] = list[i].stock;
+        spanTotal.innerText = `${this.total[list[i].name]}`;
         li.append(input);
         li.append(label);
         li.append(spanCurr);
@@ -92,6 +96,7 @@ export default class FilterRenderer {
   public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string): void {
     const input = document.getElementById(inp) as HTMLInputElement | null;
     const span = document.querySelector(el) as HTMLSpanElement;
+    // debugger;
 
     if (input) {
       input.min = `${data.from}`;

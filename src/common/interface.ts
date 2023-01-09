@@ -46,6 +46,7 @@ interface IPromo {
 interface IFilterProduct {
   name: string;
   stock: number;
+  checked: boolean;
 }
 
 interface IFilterAmount {

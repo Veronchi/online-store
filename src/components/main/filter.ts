@@ -2,16 +2,18 @@ import { IFilterAmount, IProduct } from '../../common/interface';
 
 export default class Filter {
   private data: Array<IProduct>;
+  public dataToList: Array<IProduct>;
   private filteredData: Array<IProduct>;
   private priceRange: IFilterAmount;
   private amountRange: IFilterAmount;
-  private categoryData: Array<string>;
-  private brandData: Array<string>;
+  public categoryData: Array<string>;
+  public brandData: Array<string>;
   private serachInput: string;
   private sortParam: string;
 
   constructor(data: Array<IProduct>) {
     this.data = data;
+    this.dataToList = [];
     this.filteredData = this.data;
     this.priceRange = {
       from: 0,
@@ -92,13 +94,13 @@ export default class Filter {
   onChangeList(): void {
     let data;
     if (this.brandData.length > 0 && this.categoryData.length > 0) {
-      data = this.data.filter(
+      data = this.filteredData.filter(
         (item) => this.brandData.includes(item.brand) && this.categoryData.includes(item.category)
       );
     } else if (this.brandData.length > 0) {
-      data = this.data.filter((item) => this.brandData.includes(item.brand));
+      data = this.filteredData.filter((item) => this.brandData.includes(item.brand));
     } else {
-      data = this.data.filter((item) => this.categoryData.includes(item.category));
+      data = this.filteredData.filter((item) => this.categoryData.includes(item.category));
     }
     this.filteredData = this.brandData.length < 1 && this.categoryData.length < 1 ? this.data : data;
   }
@@ -190,18 +192,27 @@ export default class Filter {
       (i) =>
         i.price >= priceRange.from && i.price <= priceRange.to && i.stock >= stockRange.from && i.stock <= stockRange.to
     );
+    this.dataToList = this.data.filter(
+      (i) =>
+        i.price >= priceRange.from && i.price <= priceRange.to && i.stock >= stockRange.from && i.stock <= stockRange.to
+    );
     // } else {
     //   this.filteredData = this.data.filter((i) => i.stock >= range.from && i.stock <= range.to);
     // }
   }
 
   public filter(): void {
+    this.filteredData = this.data;
     this.onChangeList();
     this.onChangePriceAmount();
     this.onChangeStockAmount();
     this.calcProductsByRangeNEW();
     this.filterBySearchParam();
     this.sortBy();
+
+    this.changeFoundAmount(this.filteredData.length);
+    // this.calcInitPriceRange(this.filteredData);
+    // this.calcInitAmountRange(this.filteredData);
   }
 
   private changeInputFromVal(start: HTMLInputElement, end: HTMLInputElement): void {
@@ -220,7 +231,7 @@ export default class Filter {
     }
   }
 
-  public addSearchParam(input: string): void {
+  public addSearchParam(input: string) {
     this.serachInput = input;
   }
 

@@ -72,6 +72,7 @@ export default class Main extends Component {
 
   private handleDropdownList(): void {
     const dropdown: HTMLElement | null = document.querySelector('.dropdown');
+    const dropdownLabel: HTMLElement | null = document.querySelector('.dropdown__label');
     const dropdownList: HTMLElement | null = document.querySelector('.dropdown .dropdown__list');
 
     if (dropdown && dropdownList) {
@@ -85,6 +86,7 @@ export default class Main extends Component {
           this.filter.addSortParam(sortID);
           this.filter.filter();
           const renderedData = this.filter.getFilteredData();
+          if (dropdownLabel) dropdownLabel.innerText = dropdownEl.innerText;
           this.renderer.render(renderedData);
         }
       });
@@ -103,6 +105,10 @@ export default class Main extends Component {
             : this.filter.removeFilterBrand(inputElem.name);
           this.filter.filter();
           const renderedData = this.filter.getFilteredData();
+          this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
+          this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
+          // this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(renderedData));
+          // this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(renderedData));
           this.renderer.render(renderedData);
         }
       });
@@ -121,6 +127,10 @@ export default class Main extends Component {
             : this.filter.removeFilterCatergory(inputElem.name);
           this.filter.filter();
           const renderedData = this.filter.getFilteredData();
+          this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
+          this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
+          // this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(renderedData));
+          // this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(renderedData));
           this.renderer.render(renderedData);
         }
       });
@@ -137,13 +147,17 @@ export default class Main extends Component {
         this.filter.addSearchParam(value);
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
+        this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(filteredData));
+        this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(filteredData));
         this.renderer.render(filteredData);
       });
     }
   }
 
   private calcCategoryStock(dataArr: Array<IProduct>): Array<IFilterProduct> {
-    const result: { [n: string]: number } = {};
+    let result: { [n: string]: number } = {};
+    const z: { [n: string]: number } = {};
+    const y: { [n: string]: number } = {};
 
     for (let i = 0; i < dataArr.length; i++) {
       const stockAmount: number | undefined = result[dataArr[i].category];
@@ -151,18 +165,33 @@ export default class Main extends Component {
       else result[dataArr[i].category] += 1;
     }
 
+    for (let i = 0; i < this.data.length; i++) {
+      const stockAmount: number | undefined = z[this.data[i].category];
+      if (!stockAmount) z[this.data[i].category] = 0;
+      else z[this.data[i].category] = 0;
+    }
+
+    for (let i = 0; i < this.filter.dataToList.length; i++) {
+      const stockAmount: number | undefined = y[this.filter.dataToList[i].category];
+      if (!stockAmount) y[this.filter.dataToList[i].category] = 1;
+      else y[this.filter.dataToList[i].category] += 1;
+    }
+
+    result = Object.assign({}, z, result, y);
     const categoryData: Array<IFilterProduct> = Object.entries(result).map((i) => {
       return {
         name: i[0],
         stock: i[1],
+        checked: this.filter.categoryData.includes(i[0]),
       };
     });
-
     return categoryData;
   }
 
   private calcBrandStock(dataArr: Array<IProduct>): Array<IFilterProduct> {
-    const result: { [n: string]: number } = {};
+    let result: { [n: string]: number } = {};
+    const z: { [n: string]: number } = {};
+    const y: { [n: string]: number } = {};
 
     for (let i = 0; i < dataArr.length; i++) {
       const stockAmount: number | undefined = result[dataArr[i].brand];
@@ -170,10 +199,24 @@ export default class Main extends Component {
       else result[dataArr[i].brand] += 1;
     }
 
+    for (let i = 0; i < this.data.length; i++) {
+      const stockAmount: number | undefined = z[this.data[i].brand];
+      if (!stockAmount) z[this.data[i].brand] = 0;
+      else z[this.data[i].brand] = 0;
+    }
+
+    for (let i = 0; i < this.filter.dataToList.length; i++) {
+      const stockAmount: number | undefined = y[this.filter.dataToList[i].brand];
+      if (!stockAmount) y[this.filter.dataToList[i].brand] = 1;
+      else y[this.filter.dataToList[i].brand] += 1;
+    }
+
+    result = Object.assign({}, z, result, y);
     const brandData: Array<IFilterProduct> = Object.entries(result).map((i) => {
       return {
         name: i[0],
         stock: i[1],
+        checked: this.filter.brandData.includes(i[0]),
       };
     });
 
@@ -203,10 +246,17 @@ export default class Main extends Component {
     const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
 
     if (priceFilter) {
-      priceFilter.addEventListener('change', () => {
+      priceFilter.addEventListener('change', (e) => {
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
+        this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(filteredData));
+        this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(filteredData));
         this.renderer.render(filteredData);
+
+        this.router.appendParam('from-price', `${this.filter.getPriceRange().from}`);
+        this.router.appendParam('to-price', `${this.filter.getPriceRange().to}`);
+        // localStorage.setItem('from-price', `${this.filter.getPriceRange().from}`);
+        // localStorage.setItem('to-price', `${this.filter.getPriceRange().to}`);
       });
     }
   }
@@ -215,10 +265,17 @@ export default class Main extends Component {
     const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
 
     if (stockFilter) {
-      stockFilter.addEventListener('change', () => {
+      stockFilter.addEventListener('change', (e) => {
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
+        this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(filteredData));
+        this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(filteredData));
         this.renderer.render(filteredData);
+
+        this.router.appendParam('from-stock', `${this.filter.getAmountRange().from}`);
+        this.router.appendParam('to-stock', `${this.filter.getAmountRange().to}`);
+        // localStorage.setItem('from-stock', `${this.filter.getAmountRange().from}`);
+        // localStorage.setItem('to-stock', `${this.filter.getAmountRange().to}`);
       });
     }
   }
