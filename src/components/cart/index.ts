@@ -17,7 +17,7 @@ export default class Cart extends Component {
     if (cartSave) {
       this.cartParams = JSON.parse(cartSave);
     } else {
-      this.cartParams = {maxItems: 4, currenPage: 1};
+      this.cartParams = { maxItems: 4, currenPage: 1 };
     }
   }
 
@@ -39,7 +39,7 @@ export default class Cart extends Component {
     this.initEvents();
 
     if (url.hash === '#cart?buy=1') {
-      this.callPopup();
+      this.callModal();
     }
   }
 
@@ -69,16 +69,20 @@ export default class Cart extends Component {
 
     if (productId) {
       const newCount = this.basket.changeProductCount(productId, String(target.textContent));
-  
+
       if (newCount > 0) {
         const searchBlock = target.parentElement?.parentElement as HTMLElement;
         const productCount = searchBlock.querySelector('.cart-products__quantity-count') as HTMLElement;
         productCount.textContent = `${newCount}`;
-  
+
         const searchTotal = target.parentElement?.parentElement?.parentElement as HTMLElement;
         const subTotal = searchTotal.querySelector('.cart-products__subtotal') as HTMLElement;
-        subTotal.textContent = `${(newCount * this.basket.getProduct(productId).price * 
-          (100 - this.basket.getProduct(productId).discountPercentage) / 100).toFixed(2)}$`;
+        subTotal.textContent = `${(
+          (newCount *
+            this.basket.getProduct(productId).price *
+            (100 - this.basket.getProduct(productId).discountPercentage)) /
+          100
+        ).toFixed(2)}$`;
       } else {
         const currentPage = Number(document.querySelector('.cart-pagination__count')?.textContent);
         this.changePage(Math.min(currentPage, this.getNumPages()));
@@ -105,13 +109,13 @@ export default class Cart extends Component {
     if (this.basket.purchases.length !== 0) {
       const countProducts = document.querySelector('.cart-summary__products-count') as HTMLElement;
       countProducts.textContent = `${this.basket.getTotalCount()}`;
-  
+
       const countDiscount = document.querySelector('.cart-summary__discount-count') as HTMLElement;
       countDiscount.textContent = `${this.basket.getTotalDiscount().toFixed(2)}$`;
-  
+
       const countSumm = document.querySelector('.cart-summary__total-count') as HTMLElement;
       countSumm.textContent = `${this.basket.getTotalSumm().toFixed(2)}$`;
-  
+
       this.setPromoTotalSumm();
     }
   }
@@ -123,8 +127,14 @@ export default class Cart extends Component {
       this.handlerItemsPerPage();
       this.handlerInputPromo();
       this.handlerAddPromo()
-      this.handleBodyClick();
       this.handlerBuyNow();
+
+      this.handlerChangeCount();
+      this.handlerDeleteProduct();
+      this.handleBodyClick();
+      this.handleCartSummmaryClick();
+      this.handleModalEvent();
+      this.handleSubmitBtn();
     }
   }
 
@@ -138,38 +148,60 @@ export default class Cart extends Component {
     btnCount.forEach((el) => el.addEventListener('click', (event: Event) => this.deleteProduct(event)));
   }
 
-  private handlerPrevPage():void {
+  private handlerPrevPage(): void {
     const btnPrev = document.querySelector('.cart-pagination__left') as HTMLButtonElement;
     btnPrev.addEventListener('click', () => this.prevPage());
   }
 
-  private handlerNextPage():void {
+  private handlerNextPage(): void {
     const btnNext = document.querySelector('.cart-pagination__right') as HTMLButtonElement;
     btnNext.addEventListener('click', () => this.nextPage());
   }
 
-  private handlerItemsPerPage():void {
+  private handlerItemsPerPage(): void {
     const btnNext = document.querySelector('.cart-pagination__input') as HTMLButtonElement;
     btnNext.addEventListener('input', () => this.changeItemsPerPage());
   }
 
-  private handlerInputPromo():void {
+  private handlerInputPromo(): void {
     const promo = document.querySelector('.cart-summary__promo') as HTMLInputElement;
     promo.addEventListener('input', (e: Event) => this.findPromoCode(e));
   }
 
-  private handlerAddPromo():void {
+  private handlerAddPromo(): void {
     const btnAddpromo = document.querySelector('.cart-summary__promo-add') as HTMLButtonElement;
     btnAddpromo.addEventListener('click', () => this.addPromoCode());
   }
 
-  private handlerDelPromo(element: HTMLButtonElement):void {
+  private handlerDelPromo(element: HTMLButtonElement): void {
     element.addEventListener('click', (event: Event) => this.delPromoCode(event));
   }
 
   private handlerBuyNow():void {
     const btnBuy = document.querySelector('.cart-summary__submit') as HTMLButtonElement;
-    btnBuy.addEventListener('click', () => this.callPopup());
+    btnBuy.addEventListener('click', () => this.callModal());
+  }
+  
+  private handleBodyClick(): void {
+    document.body.addEventListener('click', (e) => this.handleBody(e));
+  }
+
+  private handleCartSummmaryClick(): void {
+    const summaryBtn = document.querySelector('.cart-summary__submit') as HTMLButtonElement;
+
+    summaryBtn.addEventListener('click', this.callModal);
+  }
+
+  private handleModalEvent(): void {
+    const modal = document.querySelector('.modal') as HTMLDivElement;
+
+    modal.addEventListener('input', (e) => this.handleModal(e as InputEvent));
+  }
+
+  private handleSubmitBtn() {
+    const btn = document.querySelector('.modal__submit');
+
+    btn?.addEventListener('click', (e) => this.submitForm(e));
   }
 
   private createCartProduct(product: IProduct): HTMLUListElement {
@@ -206,7 +238,7 @@ export default class Cart extends Component {
     btnMinus.className = 'ride-button cart-products__quantity-down';
 
     ul.setAttribute('data-id', product.id);
-    liNum.textContent = `${this.basket.getProductPosition(product.id) + 1}`
+    liNum.textContent = `${this.basket.getProductPosition(product.id) + 1}`;
     liDesc.textContent = product.description;
     liPrice.textContent = `${product.price.toFixed(2)}$`;
     liDiscount.textContent = `${product.discountPercentage}%`;
@@ -216,9 +248,11 @@ export default class Cart extends Component {
     stock.textContent = `Stock: ${product.stock}`;
     btnPlus.textContent = '+';
     btnMinus.textContent = '-';
-    liSubtotal.textContent = `${(this.basket.getProductCount(product.id) * product.price * 
-      (100 - product.discountPercentage) / 100).toFixed(2)}$`;
-    
+    liSubtotal.textContent = `${(
+      (this.basket.getProductCount(product.id) * product.price * (100 - product.discountPercentage)) /
+      100
+    ).toFixed(2)}$`;
+
     div.append(btnPlus);
     div.append(btnMinus);
     div.append(stock);
@@ -239,13 +273,13 @@ export default class Cart extends Component {
     return ul;
   }
 
-  private openProductInfo(event: Event):void {
+  private openProductInfo(event: Event): void {
     const target = event.target as HTMLElement;
     const product = this.findNode(target)  as HTMLElement;
     const productId = product.dataset.id;
 
     localStorage.setItem('productId', `${productId}`);
-    
+
     const url = window.location.href.slice(0, window.location.href.indexOf('#'));
     window.location.href = `${url}#details/${productId}`;
 
@@ -254,10 +288,10 @@ export default class Cart extends Component {
     // window.history.pushState({path: newUrl}, '', newUrl);
   }
 
-  private createEmptyCart():HTMLElement {
+  private createEmptyCart(): HTMLElement {
     const emptyCArt = document.createElement('p');
     emptyCArt.className = 'cart-products__empty';
-    emptyCArt.textContent = 'Cart is Empty'
+    emptyCArt.textContent = 'Cart is Empty';
     return emptyCArt;
   }
 
@@ -290,7 +324,6 @@ export default class Cart extends Component {
   }
 
   private changePage(page: number): void {
-
     const pageCount = document.querySelector('.cart-pagination__count') as HTMLElement;
     pageCount.textContent = `${page}`;
 
@@ -304,25 +337,25 @@ export default class Cart extends Component {
     cartProducts.innerHTML = '';
 
     if (this.basket.purchases.length !== 0) {
-      for (let i = (page - 1) * itemPerPage; i < (page * itemPerPage) && i < this.basket.purchases.length; i++) {
+      for (let i = (page - 1) * itemPerPage; i < page * itemPerPage && i < this.basket.purchases.length; i++) {
         const cartEl = this.createCartProduct(this.basket.purchases[i].product);
         cartProducts.append(cartEl);
       }
-  
+
       if (page === 1) {
-        prevPage.style.visibility = "hidden";
+        prevPage.style.visibility = 'hidden';
       } else {
-        prevPage.style.visibility = "visible";
+        prevPage.style.visibility = 'visible';
       }
-  
+
       if (page === this.getNumPages()) {
-        nextPage.style.visibility = "hidden";
+        nextPage.style.visibility = 'hidden';
       } else {
-        nextPage.style.visibility = "visible";
+        nextPage.style.visibility = 'visible';
       }
-      
+
       this.cartParams.currenPage = page;
-      
+
       this.handlerChangeCount();
       this.handlerDeleteProduct();
     } else {
@@ -332,7 +365,7 @@ export default class Cart extends Component {
       const cartEl = this.createEmptyCart();
       cartProducts.append(cartEl);
     }
-       
+
     const url = new URL(window.location.href);
     const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
     window.history.pushState({path: newUrl}, '', newUrl);
@@ -343,7 +376,7 @@ export default class Cart extends Component {
   private changeItemsPerPage(): void {
     const maxItem = document.querySelector('.cart-pagination__input') as HTMLInputElement;
     const itemPerPage = Number(maxItem.value);
-    
+
     const blockProducts = document.querySelector('.cart-products') as HTMLElement;
     blockProducts.style.height = `${Math.min(itemPerPage, this.basket.getTotalProducts()) * 100}px`;
 
@@ -371,7 +404,7 @@ export default class Cart extends Component {
 
   private findPromoCode(e: Event): void {
     const target = e.target as HTMLInputElement;
-    const index: number = validPromo.findIndex(el => el.promoname === target.value);
+    const index: number = validPromo.findIndex((el) => el.promoname === target.value);
     const promoFind = document.querySelector('.cart-summary__promo-find') as HTMLElement;
     if (index >= 0) {
       const promoDesc = document.querySelector('.cart-summary__promo-desc') as HTMLElement;
@@ -390,11 +423,11 @@ export default class Cart extends Component {
     promoName.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
-  private delPromoCode(e: Event):void {
+  private delPromoCode(e: Event): void {
     const target = e.target as HTMLElement;
     const liItem = target.parentNode as HTMLElement;
     const codeName = liItem.dataset.promoname;
-    
+
     if (codeName) {
       this.basket.deletePromoCode(codeName);
       liItem?.parentNode?.removeChild(liItem);
@@ -452,38 +485,269 @@ export default class Cart extends Component {
     localStorage.setItem('cartParams', JSON.stringify(this.cartParams));
   }
 
-  private handleBodyClick() {
-    document.body.addEventListener('click', (e) => {
-      const target = e.target as HTMLDivElement;
-      const targetParent = target.offsetParent;
-      const modal = document.querySelector('.modal') as HTMLElement;
+  private handleBody(e: Event): void {
+    const target = e.target as HTMLDivElement;
+    const modal = document.querySelector('.modal') as HTMLElement;
 
-      if (
-        target.className !== 'modal' &&
-        targetParent?.className !== 'modal' &&
-        target.className !== 'cart-summary__submit'
-      ) {
-        modal.style.display = 'none';
-        document.body.classList.remove('shadow');
-      }
-    });
-  }
-
-  private callPopup() {
-    const body = document.body;
-    const modal = document.querySelector('.modal') as HTMLDivElement;
-
-    body.classList.add('shadow');
-
-    if (modal) {
-      modal.style.display = 'block';
-      modal.addEventListener('click', (e) => this.handleModal(e));
+    if (target.className.includes('shadow')) {
+      modal.style.display = 'none';
+      document.body.classList.remove('shadow');
     }
   }
 
-  handleModal(e: Event) {
-    const target = e.target as HTMLElement;
+  private callModal() {
+    const modal = document.querySelector('.modal') as HTMLDivElement;
+    document.body.classList.add('shadow');
 
-    // добавить валидацию
+    modal.style.display = 'block';
+  }
+
+  private handleModal(e: InputEvent): void {
+    const target = e.target as HTMLInputElement;
+    const errorStyles = `border: 1px solid red; box-shadow: 0px 2px 9px red; outline-color: red;`;
+
+    switch (target.name) {
+      case 'user-name':
+        this.validateNameInput(target as HTMLInputElement, errorStyles);
+        break;
+      case 'user-phone':
+        this.validatePhoneInput(target as HTMLInputElement, errorStyles);
+        break;
+      case 'user-adress':
+        this.validateAdressInput(target as HTMLInputElement, errorStyles);
+        break;
+      case 'user-mail':
+        this.validateMailInput(target as HTMLInputElement, errorStyles);
+        break;
+      case 'credit-num':
+        this.validateCreditNumInput(target as HTMLInputElement, errorStyles);
+        break;
+      case 'credit-date':
+        this.validateDateInput(target as HTMLInputElement, errorStyles);
+        break;
+      case 'credit-cvv':
+        this.validateCvvInput(target as HTMLInputElement, errorStyles);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private validateNameInput(target: HTMLInputElement, errorStyle: string) {
+    const inputName = target.value;
+    const errorText = document.querySelector('.error-name') as HTMLSpanElement;
+
+    const inputArr = inputName?.split(' ') as Array<string>;
+
+    if (inputName) {
+      if (~inputName.search(/[^a-z,A-Z,\s]+/gm)) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else if (inputArr.length !== 2) {
+        errorText.classList.add('visible');
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else if (inputArr.find((str) => str.length < 3)) {
+        errorText.classList.add('visible');
+        target.style.cssText = errorStyle;
+      } else if (inputArr.includes('')) {
+        errorText.classList.add('visible');
+        target.style.cssText = errorStyle;
+      } else if (inputArr.find((item) => item[0].search(/[A-Z]/))) {
+        errorText.classList.add('visible');
+        target.style.cssText = errorStyle;
+      } else {
+        target.style.cssText = ``;
+        errorText.classList.remove('visible');
+      }
+    }
+  }
+
+  private validatePhoneInput(target: HTMLInputElement, errorStyle: string) {
+    const inputValue = target.value;
+    const errorText = document.querySelector('.error-phone') as HTMLSpanElement;
+
+    if (inputValue) {
+      if (inputValue.length < 9) {
+        errorText.classList.add('visible');
+        target.style.cssText = errorStyle;
+      } else if (!/^\+\d{9,}/i.test(inputValue)) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else {
+        target.style.cssText = ``;
+        errorText.classList.remove('visible');
+      }
+    }
+  }
+
+  private validateAdressInput(target: HTMLInputElement, errorStyle: string) {
+    const inputValue = target.value;
+    const inputArr = inputValue?.split(' ') as Array<string>;
+    const errorText = document.querySelector('.error-adress') as HTMLSpanElement;
+
+    if (inputValue) {
+      if (~inputValue.search(/[^a-z,A-Z,\s,0-9]+/gm)) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else if (inputArr.length !== 3) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else if (inputArr.find((str) => str.length < 5)) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else if (inputArr.includes('')) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else {
+        target.style.cssText = ``;
+        errorText.classList.remove('visible');
+      }
+    }
+  }
+
+  private validateMailInput(target: HTMLInputElement, errorStyle: string) {
+    const inputValue = target.value;
+    const errorText = document.querySelector('.error-mail') as HTMLSpanElement;
+
+    if (inputValue) {
+      if (!~inputValue.search(/^[\w|\d]+@\w+\.\w+/gm)) {
+        target.style.cssText = errorStyle;
+        errorText.classList.add('visible');
+      } else {
+        target.style.cssText = ``;
+        errorText.classList.remove('visible');
+      }
+    }
+  }
+
+  private validateCreditNumInput(target: HTMLInputElement, errorStyle: string) {
+    const inputValue = target.value;
+    const errorText = document.querySelector('.error-cart') as HTMLSpanElement;
+
+    if (~inputValue.search(/[^\d,\s]/gm)) {
+      target.style.cssText = errorStyle;
+      errorText.classList.add('visible');
+    } else if (inputValue.length < 19) {
+      target.style.cssText = errorStyle;
+      errorText.classList.add('visible');
+    } else {
+      target.style.cssText = ``;
+      errorText.classList.remove('visible');
+    }
+
+    let value = target.value.replace(/[^\d]/g, '').substring(0, 16);
+    value = value !== '' ? (value.match(/.{1,4}/g)?.join(' ') as string) : '';
+    target.value = value;
+  }
+
+  private validateDateInput(target: HTMLInputElement, errorStyle: string) {
+    const inputValue = target.value;
+    const errorText = document.querySelector('.error-date') as HTMLSpanElement;
+
+    if (~inputValue.search(/[^\d,\s,//]/gm)) {
+      target.style.cssText = errorStyle;
+      errorText.classList.add('visible');
+    } else if (inputValue.length < 4) {
+      target.style.cssText = errorStyle;
+      errorText.classList.add('visible');
+    } else {
+      target.style.cssText = ``;
+      errorText.classList.remove('visible');
+    }
+
+    let value = target.value.replace(/[^0-9]/g, '').substring(0, 4);
+    value = value !== '' ? (value.match(/.{1,2}/g)?.join(' / ') as string) : '';
+    target.value = value;
+
+    if (+target.value.slice(0, 2) > 12) {
+      target.style.cssText = errorStyle;
+      errorText.classList.add('visible');
+    }
+  }
+
+  private validateCvvInput(target: HTMLInputElement, errorStyle: string) {
+    const value = target.value.replace(/[^0-9]/g, '').substring(0, 4);
+    const errorText = document.querySelector('.error-cvv') as HTMLSpanElement;
+
+    if (value.length < 3) {
+      target.style.cssText = errorStyle;
+      errorText.classList.add('visible');
+    } else {
+      target.style.cssText = ``;
+      errorText.classList.remove('visible');
+    }
+
+    target.value = value;
+  }
+
+  private submitForm(e: Event) {
+    e.preventDefault();
+    let count = 0;
+
+    const form = document.getElementById('modal-form') as HTMLFormElement;
+    const popup = document.querySelector('.popup') as HTMLDivElement;
+
+    const name = document.querySelector('.person-info__input_name') as HTMLInputElement;
+    const number = document.querySelector('.person-info__input_number') as HTMLInputElement;
+    const adress = document.querySelector('.person-info__input_adress') as HTMLInputElement;
+    const email = document.querySelector('.person-info__input_email') as HTMLInputElement;
+    const credit = document.querySelector('.credit__input_number') as HTMLInputElement;
+    const date = document.querySelector('.credit__input_date') as HTMLInputElement;
+    const cvv = document.querySelector('.credit__input_cvv') as HTMLInputElement;
+
+    if (name.value.length > 6) {
+      count += 1;
+    } else {
+      name.nextElementSibling?.classList.add('visible');
+    }
+
+    if (number.value.length > 9) {
+      count += 1;
+    } else {
+      number.nextElementSibling?.classList.add('visible');
+    }
+
+    if (adress.value.length > 17) {
+      count += 1;
+    } else {
+      adress.nextElementSibling?.classList.add('visible');
+    }
+
+    if (email.value.includes('@')) {
+      count += 1;
+    } else {
+      email.nextElementSibling?.classList.add('visible');
+    }
+
+    if (credit.value.length > 16) {
+      count += 1;
+    } else {
+      credit.nextElementSibling?.classList.add('visible');
+    }
+
+    if (date.value.length > 4) {
+      count += 1;
+    } else {
+      date.nextElementSibling?.classList.add('visible');
+    }
+
+    if (cvv.value.length === 3) {
+      count += 1;
+    } else {
+      cvv.nextElementSibling?.classList.add('visible');
+    }
+
+    if (count === 7) {
+      form.style.display = 'none';
+      popup.style.display = 'flex';
+
+      setTimeout(() => {
+        document.body.classList.remove('shadow');
+        localStorage.removeItem('basket');
+        const url = window.location.href.slice(0, window.location.href.indexOf('#'));
+        window.location.href = `${url}#`;
+      }, 3000);
+    }
   }
 }
