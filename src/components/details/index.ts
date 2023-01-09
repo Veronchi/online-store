@@ -19,25 +19,25 @@ export default class Details extends Component {
   init() {
     console.log('details');
 
-//     const url = window.location.href;
-//     const productId = url.slice(url.lastIndexOf('/') - url.length + 1);
-//     // const location = url.slice(0, url.indexOf('#'));
-// console.log(url, productId)
-//     if (productId[0] !== '#') {
-//       if (this.isIdInProducts(productId)) {
-//         this.id = productId;
-//       } else {
-//         this.id = null;
-//         this.router.initRoutes(this.router.routes);
-//       }
-//     } else {
-//       if (localStorage.getItem('productId')) {
-//         this.id = localStorage.getItem('productId');
-//       } else {
-//         this.id = null;
-//         window.location.href = `${location}#page404`;
-//       }
-//     }
+    //     const url = window.location.href;
+    //     const productId = url.slice(url.lastIndexOf('/') - url.length + 1);
+    //     // const location = url.slice(0, url.indexOf('#'));
+    // console.log(url, productId)
+    //     if (productId[0] !== '#') {
+    //       if (this.isIdInProducts(productId)) {
+    //         this.id = productId;
+    //       } else {
+    //         this.id = null;
+    //         this.router.initRoutes(this.router.routes);
+    //       }
+    //     } else {
+    //       if (localStorage.getItem('productId')) {
+    //         this.id = localStorage.getItem('productId');
+    //       } else {
+    //         this.id = null;
+    //         window.location.href = `${location}#page404`;
+    //       }
+    //     }
     this.id = localStorage.getItem('productId');
 
     // const url = new URL(window.location.href);
@@ -196,6 +196,10 @@ export default class Details extends Component {
 
   public drawCart() {
     this.basket.drawHeader();
+  }
+
+  public initFromMain() {
+    this.basket.init();
   }
 
   private buyNow() {

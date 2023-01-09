@@ -5,19 +5,19 @@ export const validPromo: IPromo[] = [
   {
     promoname: 'NEWYEAR',
     description: 'Happy New Year',
-    discount: 23
+    discount: 23,
   },
   {
     promoname: 'RS',
     description: 'Rolling Scopes School',
-    discount: 10
+    discount: 10,
   },
   {
     promoname: 'MC',
     description: 'Merry Christmas',
-    discount: 7
+    discount: 7,
   },
-]
+];
 
 export default class Basket {
   public purchases: IPurchase[];
@@ -27,11 +27,11 @@ export default class Basket {
   public totalDiscount: number;
 
   constructor() {
-      this.purchases = [];
-      this.promocodes = [];
-      this.totalCount = 0;
-      this.totalSumm = 0;
-      this.totalDiscount = 0;
+    this.purchases = [];
+    this.promocodes = [];
+    this.totalCount = 0;
+    this.totalSumm = 0;
+    this.totalDiscount = 0;
   }
 
   public init(): void {
@@ -188,7 +188,7 @@ export default class Basket {
   }
 
   private getPromoCode(name: string): IPromo {
-    const index: number = validPromo.findIndex(el => el.promoname === name);
+    const index: number = validPromo.findIndex((el) => el.promoname === name);
     return validPromo[index];
   }
 
