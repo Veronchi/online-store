@@ -70,7 +70,7 @@ export default class Main extends Component {
     this.handleDropdownList();
   }
 
-  private handleDropdownList() {
+  private handleDropdownList(): void {
     const dropdown: HTMLElement | null = document.querySelector('.dropdown');
     const dropdownList: HTMLElement | null = document.querySelector('.dropdown .dropdown__list');
 
@@ -91,7 +91,7 @@ export default class Main extends Component {
     }
   }
 
-  private handleBrandList() {
+  private handleBrandList(): void {
     const brandList: HTMLElement | null = document.querySelector('.scroll-filter_brand');
 
     if (brandList) {
@@ -109,7 +109,7 @@ export default class Main extends Component {
     }
   }
 
-  private handleCategoryList() {
+  private handleCategoryList(): void {
     const categoryList: HTMLElement | null = document.querySelector('.scroll-filter_category');
 
     if (categoryList) {
@@ -127,7 +127,7 @@ export default class Main extends Component {
     }
   }
 
-  private handleSearchInput() {
+  private handleSearchInput(): void {
     const searchInput: HTMLElement | null = document.querySelector('.search__input');
 
     if (searchInput) {
@@ -211,7 +211,7 @@ export default class Main extends Component {
     }
   }
 
-  private handleStockFilter() {
+  private handleStockFilter(): void {
     const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
 
     if (stockFilter) {
@@ -239,7 +239,7 @@ export default class Main extends Component {
     }
   }
 
-  public renderNewData(newData: Array<IProduct>, newRangeData: IFilterAmount, indicator?: string) {
+  public renderNewData(newData: Array<IProduct>, newRangeData: IFilterAmount, indicator?: string): void {
     this.renderer.render(newData);
     if (indicator) {
       this.filterRenderer.renderFilterRangeValues('.range-filter_stock', newRangeData);

@@ -4,16 +4,15 @@ import { IProduct, ICart, IPromo } from '../../common/interface';
 import { validPromo } from '../../common/basket';
 import './style-cart.scss';
 
-
 export default class Cart extends Component {
   private basket: Basket;
-  
+
   private cartParams: ICart;
 
   constructor(name: string) {
     super(name);
     this.basket = new Basket();
-    const cartSave:string | null = localStorage.getItem('cartParams');
+    const cartSave: string | null = localStorage.getItem('cartParams');
     if (cartSave) {
       this.cartParams = JSON.parse(cartSave);
     } else {
@@ -93,7 +92,7 @@ export default class Cart extends Component {
 
   private deleteProduct(e: Event): void {
     const target = e.target as HTMLElement;
-    const product = this.findNode(target)  as HTMLElement;
+    const product = this.findNode(target) as HTMLElement;
     const productId = product.dataset.id;
     e.stopPropagation();
 
@@ -120,13 +119,13 @@ export default class Cart extends Component {
     }
   }
 
-  private initEvents():void {
+  private initEvents(): void {
     if (this.basket.purchases.length !== 0) {
       this.handlerPrevPage();
       this.handlerNextPage();
       this.handlerItemsPerPage();
       this.handlerInputPromo();
-      this.handlerAddPromo()
+      this.handlerAddPromo();
       this.handlerBuyNow();
 
       this.handleBodyClick();
@@ -175,11 +174,11 @@ export default class Cart extends Component {
     element.addEventListener('click', (event: Event) => this.delPromoCode(event));
   }
 
-  private handlerBuyNow():void {
+  private handlerBuyNow(): void {
     const btnBuy = document.querySelector('.cart-summary__submit') as HTMLButtonElement;
     btnBuy.addEventListener('click', () => this.callModal());
   }
-  
+
   private handleBodyClick(): void {
     document.body.addEventListener('click', (e) => this.handleBody(e));
   }
@@ -196,7 +195,7 @@ export default class Cart extends Component {
     modal.addEventListener('input', (e) => this.handleModal(e as InputEvent));
   }
 
-  private handleSubmitBtn() {
+  private handleSubmitBtn(): void {
     const btn = document.querySelector('.modal__submit');
 
     btn?.addEventListener('click', (e) => this.submitForm(e));
@@ -273,7 +272,7 @@ export default class Cart extends Component {
 
   private openProductInfo(event: Event): void {
     const target = event.target as HTMLElement;
-    const product = this.findNode(target)  as HTMLElement;
+    const product = this.findNode(target) as HTMLElement;
     const productId = product.dataset.id;
 
     localStorage.setItem('productId', `${productId}`);
@@ -365,8 +364,8 @@ export default class Cart extends Component {
     }
 
     const url = new URL(window.location.href);
-    const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`
-    window.history.pushState({path: newUrl}, '', newUrl);
+    const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
 
     this.setToLocalStorage();
   }
@@ -469,7 +468,7 @@ export default class Cart extends Component {
     let prevSumm = totalSumm;
     if (this.basket.promocodes.length > 0) {
       this.basket.promocodes.forEach((element: IPromo) => {
-        promoSumm = Math.round((prevSumm * (100 - element.discount) / 100) * 100) / 100;
+        promoSumm = Math.round(((prevSumm * (100 - element.discount)) / 100) * 100) / 100;
         prevSumm = promoSumm;
       });
       promoTotalSumm.textContent = `${totalSumm.toFixed(2)}$`;
@@ -493,7 +492,7 @@ export default class Cart extends Component {
     }
   }
 
-  private callModal() {
+  private callModal(): void {
     const modal = document.querySelector('.modal') as HTMLDivElement;
     document.body.classList.add('shadow');
 
@@ -531,7 +530,7 @@ export default class Cart extends Component {
     }
   }
 
-  private validateNameInput(target: HTMLInputElement, errorStyle: string) {
+  private validateNameInput(target: HTMLInputElement, errorStyle: string): void {
     const inputName = target.value;
     const errorText = document.querySelector('.error-name') as HTMLSpanElement;
 
@@ -561,7 +560,7 @@ export default class Cart extends Component {
     }
   }
 
-  private validatePhoneInput(target: HTMLInputElement, errorStyle: string) {
+  private validatePhoneInput(target: HTMLInputElement, errorStyle: string): void {
     const inputValue = target.value;
     const errorText = document.querySelector('.error-phone') as HTMLSpanElement;
 
@@ -579,7 +578,7 @@ export default class Cart extends Component {
     }
   }
 
-  private validateAdressInput(target: HTMLInputElement, errorStyle: string) {
+  private validateAdressInput(target: HTMLInputElement, errorStyle: string): void {
     const inputValue = target.value;
     const inputArr = inputValue?.split(' ') as Array<string>;
     const errorText = document.querySelector('.error-adress') as HTMLSpanElement;
@@ -604,7 +603,7 @@ export default class Cart extends Component {
     }
   }
 
-  private validateMailInput(target: HTMLInputElement, errorStyle: string) {
+  private validateMailInput(target: HTMLInputElement, errorStyle: string): void {
     const inputValue = target.value;
     const errorText = document.querySelector('.error-mail') as HTMLSpanElement;
 
@@ -619,7 +618,7 @@ export default class Cart extends Component {
     }
   }
 
-  private validateCreditNumInput(target: HTMLInputElement, errorStyle: string) {
+  private validateCreditNumInput(target: HTMLInputElement, errorStyle: string): void {
     const inputValue = target.value;
     const errorText = document.querySelector('.error-cart') as HTMLSpanElement;
 
@@ -639,7 +638,7 @@ export default class Cart extends Component {
     target.value = value;
   }
 
-  private validateDateInput(target: HTMLInputElement, errorStyle: string) {
+  private validateDateInput(target: HTMLInputElement, errorStyle: string): void {
     const inputValue = target.value;
     const errorText = document.querySelector('.error-date') as HTMLSpanElement;
 
@@ -664,7 +663,7 @@ export default class Cart extends Component {
     }
   }
 
-  private validateCvvInput(target: HTMLInputElement, errorStyle: string) {
+  private validateCvvInput(target: HTMLInputElement, errorStyle: string): void {
     const value = target.value.replace(/[^0-9]/g, '').substring(0, 4);
     const errorText = document.querySelector('.error-cvv') as HTMLSpanElement;
 
@@ -679,7 +678,7 @@ export default class Cart extends Component {
     target.value = value;
   }
 
-  private submitForm(e: Event) {
+  private submitForm(e: Event): void {
     e.preventDefault();
     let count = 0;
 

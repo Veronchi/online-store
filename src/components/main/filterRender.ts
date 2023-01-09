@@ -8,7 +8,7 @@ export default class FilterRenderer {
     this.mapRootElements = { lists: {}, ranges: {} };
   }
 
-  public init() {
+  public init(): void {
     const rootElements: IFilterMapElements = {
       lists: {},
       ranges: {},
@@ -55,7 +55,7 @@ export default class FilterRenderer {
         spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
         spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
         spanCurr.innerText = `${list[i].stock}/`;
-        if(spanTotal.innerText.length < 1) spanTotal.innerText = `${list[i].stock}`;
+        if (spanTotal.innerText.length < 1) spanTotal.innerText = `${list[i].stock}`;
         li.append(input);
         li.append(label);
         li.append(spanCurr);
@@ -68,7 +68,7 @@ export default class FilterRenderer {
     }
   }
 
-  public renderFilterRangeValues(rootName: string, data: IFilterAmount) {
+  public renderFilterRangeValues(rootName: string, data: IFilterAmount): void {
     const fromInput = document.querySelector(`${rootName} .range-filter__input_from`) as HTMLInputElement | null;
     const toInput = document.querySelector(`${rootName} .range-filter__input_to`) as HTMLInputElement | null;
     const fromSpan = document.querySelector(`${rootName} .amount__start`) as HTMLSpanElement;
@@ -89,10 +89,9 @@ export default class FilterRenderer {
     toSpan.innerText = `${data.to}`;
   }
 
-  public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string) {
+  public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string): void {
     const input = document.getElementById(inp) as HTMLInputElement | null;
     const span = document.querySelector(el) as HTMLSpanElement;
-    // debugger;
 
     if (input) {
       input.min = `${data.from}`;
