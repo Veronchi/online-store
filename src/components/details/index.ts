@@ -129,6 +129,7 @@ export default class Details extends Component {
   private initEvents(): void {
     this.handlerProductImage();
     this.handlerAddCart();
+    this.handlerBuyNow();
   }
 
   private handlerProductImage(): void {
@@ -139,6 +140,11 @@ export default class Details extends Component {
   private handlerAddCart(): void {
     const btnCart = document.querySelector('.details__cart') as HTMLButtonElement;
     btnCart.addEventListener('click', () => this.addProductToCart());
+  }
+
+  private handlerBuyNow(): void {
+    const btnBuy = document.querySelector('.details__buy') as HTMLButtonElement;
+    btnBuy.addEventListener('click', () => this.buyNow());
   }
 
   private addProductToCart(): void {
@@ -192,7 +198,14 @@ export default class Details extends Component {
     this.basket.drawHeader();
   }
 
-  // buyNow() {
-
-  // }
+  private buyNow() {
+    if (this.id) {
+      if (!this.basket.isInBasket(this.id)) {
+        this.basket.addProduct(this.id);
+      }
+      const url = new URL(window.location.href);
+      const newUrl = `${url.origin}/#cart?buy=1`;
+      window.location.href = newUrl;
+    }
+  }
 }
