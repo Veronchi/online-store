@@ -1,14 +1,34 @@
-import { IProduct, IPurchase } from './interface';
+import { IProduct, IPurchase, IPromo } from './interface';
 import { products } from '../products';
+
+export const validPromo: IPromo[] = [
+  {
+    promoname: 'NEWYEAR',
+    description: 'Happy New Year',
+    discount: 23
+  },
+  {
+    promoname: 'RS',
+    description: 'Rolling Scopes School',
+    discount: 10
+  },
+  {
+    promoname: 'MC',
+    description: 'Merry Christmas',
+    discount: 7
+  },
+]
 
 export default class Basket {
   public purchases: IPurchase[];
+  public promocodes: IPromo[];
   public totalSumm: number;
   public totalCount: number;
   public totalDiscount: number;
 
   constructor() {
       this.purchases = [];
+      this.promocodes = [];
       this.totalCount = 0;
       this.totalSumm = 0;
       this.totalDiscount = 0;
@@ -18,6 +38,7 @@ export default class Basket {
     const basketSave: string | null = localStorage.getItem('basket');
     if (basketSave) {
       const basketValue = JSON.parse(basketSave);
+      this.promocodes = basketValue.promocodes;
       this.purchases = basketValue.purchases;
       this.totalCount = basketValue.totalCount;
       this.totalSumm = basketValue.totalSumm;
@@ -154,6 +175,32 @@ export default class Basket {
       }
     }
     return result;
+  }
+
+  private getPromoCodesIndex(name: string): number {
+    let result = -1;
+    for (let i = 0; i < this.promocodes.length; i++) {
+      if (this.promocodes[i].promoname === name) {
+        result = i;
+      }
+    }
+    return result;
+  }
+
+  private getPromoCode(name: string): IPromo {
+    const index: number = validPromo.findIndex(el => el.promoname === name);
+    return validPromo[index];
+  }
+
+  public addPromoCode(name: string) {
+    this.promocodes.push(this.getPromoCode(name));
+    this.setToLocalStorage();
+  }
+
+  public deletePromoCode(name: string) {
+    const index = this.getPromoCodesIndex(name);
+    this.promocodes.splice(index, 1);
+    this.setToLocalStorage();
   }
 
   public drawHeader() {
