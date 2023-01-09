@@ -183,13 +183,13 @@ export default class Details extends Component {
   }
 
   public addProductFromMain(e: Event): void {
-    const id = localStorage.getItem('itemId') as string;
+    this.id = localStorage.getItem('itemId');
     const target = e.target as HTMLElement;
     if (this.id) {
       if (target.textContent === 'Add in Cart') {
-        this.basket.addProduct(id);
+        this.basket.addProduct(this.id);
       } else {
-        this.basket.deleteProduct(id);
+        this.basket.deleteProduct(this.id);
       }
     }
   }
