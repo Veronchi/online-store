@@ -29,12 +29,6 @@ export default class FilterRenderer {
     this.mapRootElements = rootElements;
   }
 
-  // public renderAll() {
-  // this.renderFilterList();
-  // this.renderFilterRangeValues();
-  // this.changeFilterRangeValues();
-  // }
-
   public renderFilterList(rootEl: string, list: Array<IFilterProduct>): void {
     const root: HTMLElement | null = document.querySelector(rootEl);
 
@@ -96,7 +90,6 @@ export default class FilterRenderer {
   public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string): void {
     const input = document.getElementById(inp) as HTMLInputElement | null;
     const span = document.querySelector(el) as HTMLSpanElement;
-    // debugger;
 
     if (input) {
       input.min = `${data.from}`;

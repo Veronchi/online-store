@@ -277,7 +277,11 @@ export default class Filter {
     }
   }
 
-  private saveFilteredData(): void {
+  public saveFilteredData(data?: Array<IProduct>): void {
+    if (data) {
+      localStorage.setItem('CurrFilteredData', JSON.stringify(data));
+    }
+
     localStorage.setItem('CurrFilteredData', JSON.stringify(this.filteredData));
   }
 

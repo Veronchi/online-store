@@ -51,6 +51,7 @@ export default class Main extends Component {
     this.filter.changeFoundAmount(this.filter.getCurrFilteredData().length);
     const nodes = this.findItem(this.basketData);
     this.basketData ? this.renderer.changeProductBtn(nodes) : null;
+    this.filter.saveFilteredData(this.data);
   }
 
   private handleData(): void {
@@ -312,18 +313,7 @@ export default class Main extends Component {
     const clearBtn = document.querySelector<HTMLButtonElement>('.btn_reset');
 
     if (clearBtn) {
-      clearBtn.addEventListener('click', () => {
-        this.renderer.render(this.data);
-        this.filter.calcInitPriceRange(this.data);
-        this.filter.calcInitAmountRange(this.data);
-        this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
-        this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
-        this.filter.changeFoundAmount(this.data.length);
-        const nodes = this.findItem(this.basketData);
-        this.basketData ? this.renderer.changeProductBtn(nodes) : null;
-        this.router.clearParams();
-        this.renderer.setGridProductLayout();
-      });
+      clearBtn.addEventListener('click', () => this.clearPage());
     }
   }
 
@@ -333,6 +323,23 @@ export default class Main extends Component {
     if (categoryList) {
       categoryList.addEventListener('click', this.filter.onChangeCatalogList);
     }
+  }
+
+  private clearPage() {
+    this.renderer.render(this.data);
+    this.filter.calcInitPriceRange(this.data);
+    this.filter.calcInitAmountRange(this.data);
+    this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
+    this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
+    this.filter.changeFoundAmount(this.data.length);
+    const nodes = this.findItem(this.basketData);
+    this.basketData ? this.renderer.changeProductBtn(nodes) : null;
+    this.router.clearParams();
+    this.renderer.setGridProductLayout();
+    this.filter.categoryData = [];
+    this.filter.brandData = [];
+    this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(this.data));
+    this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(this.data));
   }
 
   public renderNewData(newData: Array<IProduct>, newRangeData: IFilterAmount, indicator?: string): void {
@@ -410,6 +417,16 @@ export default class Main extends Component {
               this.filter.getAmountRange(),
               qParams[key]
             );
+            break;
+          case 'categoryList':
+            // console.log(qParams[key]);
+
+            // this.filterRenderer.changeFilterRangeValues(
+            //   'to-stock',
+            //   '.amount__end_num',
+            //   this.filter.getAmountRange(),
+            //   qParams[key]
+            // );
             break;
 
           default:
