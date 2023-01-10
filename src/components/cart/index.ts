@@ -21,9 +21,6 @@ export default class Cart extends Component {
   }
 
   public init(): void {
-    console.log('cart');
-
-    const url = new URL(window.location.href);
 
     this.basket.init();
 
@@ -36,8 +33,10 @@ export default class Cart extends Component {
     this.basket.drawHeader();
     this.initEvents();
 
-    if (url.hash === '#cart?buy=1') {
+    const buy: string | null = localStorage.getItem('buy-now');
+    if (buy === '1') {
       this.callModal();
+      localStorage.setItem('buy-now','0');
     }
   }
 
