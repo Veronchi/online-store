@@ -364,7 +364,7 @@ export default class Cart extends Component {
     }
 
     const url = new URL(window.location.href);
-    const newUrl = `${url.origin}/#cart${this.getQueryParamNumPage(page)}`;
+    const newUrl = `${url.origin}${url.pathname}#cart${this.getQueryParamNumPage(page)}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
 
     this.setToLocalStorage();
