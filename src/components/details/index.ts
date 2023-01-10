@@ -17,32 +17,9 @@ export default class Details extends Component {
   }
 
   init() {
-    console.log('details');
-
-    //     const url = window.location.href;
-    //     const productId = url.slice(url.lastIndexOf('/') - url.length + 1);
-    //     // const location = url.slice(0, url.indexOf('#'));
-    // console.log(url, productId)
-    //     if (productId[0] !== '#') {
-    //       if (this.isIdInProducts(productId)) {
-    //         this.id = productId;
-    //       } else {
-    //         this.id = null;
-    //         this.router.initRoutes(this.router.routes);
-    //       }
-    //     } else {
-    //       if (localStorage.getItem('productId')) {
-    //         this.id = localStorage.getItem('productId');
-    //       } else {
-    //         this.id = null;
-    //         window.location.href = `${location}#page404`;
-    //       }
-    //     }
+    
     this.id = localStorage.getItem('productId');
 
-    // const url = new URL(window.location.href);
-    // const newUrl = `${url.origin}/#details/${this.id}`
-    // window.history.pushState({path: newUrl}, '', newUrl);
     this.basket.init();
     this.draw(this.id);
     this.basket.drawHeader();
@@ -207,8 +184,9 @@ export default class Details extends Component {
       if (!this.basket.isInBasket(this.id)) {
         this.basket.addProduct(this.id);
       }
+      localStorage.setItem('buy-now','1');
       const url = new URL(window.location.href);
-      const newUrl = `${url.origin}/#cart?buy=1`;
+      const newUrl = `${url.origin}/#cart`;
       window.location.href = newUrl;
     }
   }
