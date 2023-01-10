@@ -16,6 +16,7 @@ export default class Main extends Component {
   private data: Array<IProduct>;
   private details: Details;
   private basketData: Ibasket;
+  private qParams: TQParams;
 
   constructor(name: string, router: Router, details: Details) {
     super(name);
@@ -29,12 +30,20 @@ export default class Main extends Component {
     });
     this.router = router;
     this.basketData = JSON.parse(localStorage.getItem('basket') as string);
+    this.qParams = this.router.getObjProperties();
   }
 
   public init(): void {
     this.handleData();
     this.renderer.init();
-    this.renderer.render(this.filter.getCurrFilteredData());
+    if (Object.keys(this.qParams).length == 0) {
+      this.renderer.render(this.data);
+      this.filter.changeFoundAmount(this.data.length);
+      this.filter.saveFilteredData(this.data);
+    } else {
+      this.renderer.render(this.filter.getCurrFilteredData());
+      this.filter.changeFoundAmount(this.filter.getCurrFilteredData().length);
+    }
     this.details.initFromMain();
     this.details.drawCart();
     this.filterRenderer.init();
@@ -47,11 +56,9 @@ export default class Main extends Component {
     localStorage.setItem('from-stock', `${this.filter.getAmountRange().from}`);
     localStorage.setItem('to-stock', `${this.filter.getAmountRange().to}`);
     this.initEvents();
-    this.checkUrlLayout();
-    this.filter.changeFoundAmount(this.filter.getCurrFilteredData().length);
     const nodes = this.findItem(this.basketData);
     this.basketData ? this.renderer.changeProductBtn(nodes) : null;
-    this.filter.saveFilteredData(this.data);
+    this.checkUrlLayout();
   }
 
   private handleData(): void {
@@ -64,7 +71,6 @@ export default class Main extends Component {
     this.handlerProductLayout();
     this.handlePriceFilter();
     this.handleStockFilter();
-    this.handleCategoryFilter();
     this.handleCopyUrl();
     this.handleBrandList();
     this.handleCategoryList();
@@ -115,8 +121,6 @@ export default class Main extends Component {
           const renderedData = this.filter.getFilteredData();
           this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
           this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
-          // this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(renderedData));
-          // this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(renderedData));
           this.renderer.render(renderedData);
           const nodes = this.findItem(this.basketData);
           this.basketData ? this.renderer.changeProductBtn(nodes) : null;
@@ -141,8 +145,6 @@ export default class Main extends Component {
           const renderedData = this.filter.getFilteredData();
           this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
           this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
-          // this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(renderedData));
-          // this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(renderedData));
           this.renderer.render(renderedData);
           const nodes = this.findItem(this.basketData);
           this.basketData ? this.renderer.changeProductBtn(nodes) : null;
@@ -317,14 +319,6 @@ export default class Main extends Component {
     }
   }
 
-  private handleCategoryFilter(): void {
-    const categoryList = document.querySelector('.scroll-filter_category');
-
-    if (categoryList) {
-      categoryList.addEventListener('click', this.filter.onChangeCatalogList);
-    }
-  }
-
   private clearPage() {
     this.renderer.render(this.data);
     this.filter.calcInitPriceRange(this.data);
@@ -374,13 +368,11 @@ export default class Main extends Component {
   }
 
   public checkUrlLayout(): void {
-    const qParams: TQParams = this.router.getObjProperties();
-
-    for (const key in qParams) {
-      if (Object.prototype.hasOwnProperty.call(qParams, key)) {
+    for (const key in this.qParams) {
+      if (Object.prototype.hasOwnProperty.call(this.qParams, key)) {
         switch (key) {
           case 'productLayout':
-            qParams[key] === 'row' ? this.renderer.setRowProductLayout() : this.renderer.setGridProductLayout();
+            this.qParams[key] === 'row' ? this.renderer.setRowProductLayout() : this.renderer.setGridProductLayout();
             break;
 
           case 'from-price':
@@ -388,7 +380,7 @@ export default class Main extends Component {
               'from-price',
               '.amount__start_price',
               this.filter.getPriceRange(),
-              qParams[key]
+              this.qParams[key]
             );
             break;
 
@@ -397,7 +389,7 @@ export default class Main extends Component {
               'to-price',
               '.amount__end_price',
               this.filter.getPriceRange(),
-              qParams[key]
+              this.qParams[key]
             );
             break;
 
@@ -406,7 +398,7 @@ export default class Main extends Component {
               'from-stock',
               '.amount__start_num',
               this.filter.getAmountRange(),
-              qParams[key]
+              this.qParams[key]
             );
             break;
 
@@ -415,18 +407,23 @@ export default class Main extends Component {
               'to-stock',
               '.amount__end_num',
               this.filter.getAmountRange(),
-              qParams[key]
+              this.qParams[key]
             );
             break;
           case 'categoryList':
-            // console.log(qParams[key]);
+            this.changeList(this.qParams[key], 'categoryList');
+            break;
 
-            // this.filterRenderer.changeFilterRangeValues(
-            //   'to-stock',
-            //   '.amount__end_num',
-            //   this.filter.getAmountRange(),
-            //   qParams[key]
-            // );
+          case 'brandList':
+            this.changeList(this.qParams[key], 'brandList');
+            break;
+
+          case 'sortBy':
+            this.changeDropdown(this.qParams[key]);
+            break;
+
+          case 'searchQuery':
+            this.changeSearch(this.qParams[key]);
             break;
 
           default:
@@ -434,6 +431,49 @@ export default class Main extends Component {
         }
       }
     }
+  }
+
+  private changeList(str: string, type: string) {
+    let paramsArr = str.split(',');
+    paramsArr = paramsArr.map((item) => decodeURI(item));
+    paramsArr.map((item) => {
+      const zxc = document.getElementById(item) as HTMLInputElement;
+      if (zxc) zxc.checked = true;
+
+      const inputElem = zxc;
+      if (type === 'categoryList') {
+        inputElem.checked
+          ? this.filter.addFilterCatergory(inputElem.name)
+          : this.filter.removeFilterCatergory(inputElem.name);
+      } else {
+        inputElem.checked ? this.filter.addFilterBrand(inputElem.name) : this.filter.removeFilterBrand(inputElem.name);
+      }
+      if (inputElem.checked) this.router.addParam(type, `${inputElem.name}`);
+      else this.router.removeParam(type, `${inputElem.name}`);
+      this.filter.filter('repeat');
+      this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
+      this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
+      this.renderer.render(this.filter.getCurrFilteredData());
+      this.filter.changeFoundAmount(this.filter.getCurrFilteredData().length);
+      const nodes = this.findItem(this.basketData);
+      this.basketData ? this.renderer.changeProductBtn(nodes) : null;
+    });
+  }
+
+  private changeDropdown(key: string) {
+    const dropdownLabel: HTMLElement | null = document.querySelector('.dropdown__label');
+    const itemDrop: HTMLElement | null = document.querySelector(`[data-sortID~="${key}"]`);
+    if (dropdownLabel && itemDrop) dropdownLabel.innerHTML = itemDrop?.innerText;
+    this.filter.addSortParam(this.qParams[key]);
+    this.filter.sortBy();
+  }
+
+  private changeSearch(key: string) {
+    const searchInput = document.querySelector('.search__input') as HTMLInputElement;
+
+    searchInput.value = key;
+    this.filter.addSearchParam(key);
+    this.filter.filterBySearchParam();
   }
 
   private selectProduct(e: Event): void {
