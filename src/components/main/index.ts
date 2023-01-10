@@ -34,7 +34,7 @@ export default class Main extends Component {
   public init(): void {
     this.handleData();
     this.renderer.init();
-    this.renderer.render(this.data);
+    this.renderer.render(this.filter.getCurrFilteredData());
     this.details.initFromMain();
     this.details.drawCart();
     this.filterRenderer.init();
@@ -48,8 +48,7 @@ export default class Main extends Component {
     localStorage.setItem('to-stock', `${this.filter.getAmountRange().to}`);
     this.initEvents();
     this.checkUrlLayout();
-    this.filter.changeFoundAmount(this.data.length);
-    // const basketData = JSON.parse(localStorage.getItem('basket') as string);
+    this.filter.changeFoundAmount(this.filter.getCurrFilteredData().length);
     const nodes = this.findItem(this.basketData);
     this.basketData ? this.renderer.changeProductBtn(nodes) : null;
   }

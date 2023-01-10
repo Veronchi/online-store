@@ -216,7 +216,7 @@ export default class Filter {
 
     this.changeFoundAmount(this.filteredData.length);
 
-    // this.saveFilteredData();
+    this.saveFilteredData();
     // this.calcInitPriceRange(this.filteredData);
     // this.calcInitAmountRange(this.filteredData);
   }
@@ -277,8 +277,13 @@ export default class Filter {
     }
   }
 
-  // public saveFilteredData() {
-  //   localStorage.setItem('CurrFilteredData', JSON.stringify(this.filteredData));
-  //   // console.log(this.filteredData);
-  // }
+  private saveFilteredData(): void {
+    localStorage.setItem('CurrFilteredData', JSON.stringify(this.filteredData));
+  }
+
+  public getCurrFilteredData(): Array<IProduct> {
+    const currData = JSON.parse(localStorage.getItem('CurrFilteredData') as string);
+
+    return currData;
+  }
 }
