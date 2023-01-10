@@ -56,7 +56,7 @@ export default class Filter {
     return this.filteredData;
   }
 
-  private calcInitPriceRange(data: Array<IProduct>): void {
+  public calcInitPriceRange(data: Array<IProduct>): void {
     const cloneData = [...data];
     const result = cloneData.sort((a, b) => a.price - b.price);
 
@@ -66,7 +66,7 @@ export default class Filter {
     };
   }
 
-  private calcInitAmountRange(data: Array<IProduct>): void {
+  public calcInitAmountRange(data: Array<IProduct>): void {
     const cloneData = [...data];
     const result = cloneData.sort((a, b) => a.stock - b.stock);
 
@@ -110,73 +110,33 @@ export default class Filter {
   }
 
   public onChangePriceAmount(): void {
-    // const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-price') as HTMLInputElement;
     const inputTo = document.getElementById('to-price') as HTMLInputElement;
 
     const priceStart = document.querySelector('.amount__start_price') as HTMLSpanElement;
     const priceEnd = document.querySelector('.amount__end_price') as HTMLSpanElement;
 
-    // if (input.id === 'from-price') {
     priceStart.innerText = `${inputFrom.value}`;
     this.priceRange.from = +inputFrom.value;
     this.changeInputFromVal(inputFrom, inputTo);
-    // this.calcProductsByRangeNEW();
-    // this.calcInitAmountRange(this.filteredData);
-    // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-    // changeParam(input.id, `${input.value}`);
-    // this.changeFoundAmount(this.filteredData.length);
-    // } else {
     priceEnd.innerText = `${inputTo.value}`;
     this.priceRange.to = +inputTo.value;
     this.changeInputToVal(inputFrom, inputTo);
-    // this.calcProductsByRangeNEW();
-    // this.calcInitAmountRange(this.filteredData);
-    // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-    // changeParam(input.id, `${input.value}`);
-    // this.changeFoundAmount(this.filteredData.length);
-    // }
   }
 
   public onChangeStockAmount(): void {
-    // const input = e.target as HTMLInputElement;
     const inputFrom = document.getElementById('from-stock') as HTMLInputElement;
     const inputTo = document.getElementById('to-stock') as HTMLInputElement;
 
     const stockStartNum = document.querySelector('.amount__start_num') as HTMLSpanElement;
     const stockEndNum = document.querySelector('.amount__end_num') as HTMLSpanElement;
 
-    // if (input.id === 'from-stock') {
     this.changeInputFromVal(inputFrom, inputTo);
     stockStartNum.innerText = `${inputFrom.value}`;
     this.amountRange.from = +inputFrom.value;
-    // this.calcProductsByRangeNEW();
-    // this.calcInitPriceRange(this.filteredData);
-    // renderNewData(this.filteredData, this.getPriceRange());
-    // changeParam(input.id, `${input.value}`);
-    // this.changeFoundAmount(this.filteredData.length);
-    // } else {
     this.changeInputToVal(inputFrom, inputTo);
     stockEndNum.innerText = `${inputTo.value}`;
     this.amountRange.to = +inputTo.value;
-    // this.calcProductsByRangeNEW();
-    // this.calcInitPriceRange(this.filteredData);
-    // renderNewData(this.filteredData, this.getPriceRange());
-    // changeParam(input.id, `${input.value}`);
-    // this.changeFoundAmount(this.filteredData.length);
-    // }
-  }
-
-  public onChangeCatalogList(e: Event) {
-    // const target = e.target as HTMLElement;
-    // console.log(this.data);
-    // // debugger;
-    // if (target.innerHTML) {
-    //   this.filteredData = this.data.filter((i) => i.category === target.innerHTML);
-    // } else {
-    //   this.filteredData = this.data.filter((i) => i.category === target.id);
-    // }
-    // console.log(this.filteredData);
   }
 
   private calcProductsByRange(range: IFilterAmount, value: string): void {
@@ -190,8 +150,6 @@ export default class Filter {
   public calcProductsByRangeNEW(): void {
     const priceRange = this.getPriceRange();
     const stockRange = this.getAmountRange();
-    // if (value === 'price') {
-    // debugger
     this.filteredData = this.filteredData.filter(
       (i) =>
         i.price >= priceRange.from && i.price <= priceRange.to && i.stock >= stockRange.from && i.stock <= stockRange.to
@@ -200,12 +158,9 @@ export default class Filter {
       (i) =>
         i.price >= priceRange.from && i.price <= priceRange.to && i.stock >= stockRange.from && i.stock <= stockRange.to
     );
-    // } else {
-    //   this.filteredData = this.data.filter((i) => i.stock >= range.from && i.stock <= range.to);
-    // }
   }
 
-  public filter(): void {
+  public filter(str?: string): void {
     this.filteredData = this.data;
     this.onChangeList();
     this.onChangePriceAmount();
@@ -215,8 +170,10 @@ export default class Filter {
     this.sortBy();
 
     this.changeFoundAmount(this.filteredData.length);
-    // this.calcInitPriceRange(this.filteredData);
-    // this.calcInitAmountRange(this.filteredData);
+
+    if (!str) {
+      this.saveFilteredData();
+    }
   }
 
   private changeInputFromVal(start: HTMLInputElement, end: HTMLInputElement): void {
@@ -239,7 +196,7 @@ export default class Filter {
     this.serachInput = input;
   }
 
-  private filterBySearchParam(): void {
+  public filterBySearchParam(): void {
     this.filteredData = this.filteredData.filter((item) =>
       item.title.toLowerCase().includes(this.serachInput.toLowerCase())
     );
@@ -249,7 +206,7 @@ export default class Filter {
     this.sortParam = input;
   }
 
-  private sortBy(): void {
+  public sortBy(): void {
     switch (this.sortParam) {
       case 'priceDESC':
         this.filteredData.sort((a: IProduct, b: IProduct) => a.price - b.price);
@@ -273,5 +230,19 @@ export default class Filter {
       default:
         break;
     }
+  }
+
+  public saveFilteredData(data?: Array<IProduct>): void {
+    if (data) {
+      localStorage.setItem('CurrFilteredData', JSON.stringify(data));
+    } else {
+      localStorage.setItem('CurrFilteredData', JSON.stringify(this.filteredData));
+    }
+  }
+
+  public getCurrFilteredData(): Array<IProduct> {
+    const currData = JSON.parse(localStorage.getItem('CurrFilteredData') as string);
+
+    return currData;
   }
 }

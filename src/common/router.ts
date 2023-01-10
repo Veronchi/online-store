@@ -49,23 +49,25 @@ export class Router {
     let search = window.location.search;
     if (search[0] === '?') search = search.slice(1);
 
-    const array = search.split('&');
+    let array = search.split('&');
     if (array[0] === '') array.length = 0;
-
     const findDelParam = array.find((el) => el.includes(key));
     if (findDelParam?.includes(value)) return;
-    let params;
+    let params: string;
     if (findDelParam) {
-      params = `,${value}`;
+      params = `${value}`;
     } else {
       params = `${key}=${value}`;
     }
 
-    // let deletedIdx;
-
-    if (!array.includes(params)) array.push(params);
-
-    this.url.search = array.join('');
+    array = array.map((item) => decodeURI(item));
+    const arr = array.filter((item) => item.includes(params));
+    if (arr.length < 1) {
+      const idx = array.findIndex((item) => item.includes(key));
+      if (~idx) array[idx] = `${array[idx]},${params}`;
+      else array.push(params);
+    }
+    this.url.search = array.join('&');
     history.pushState(null, '', this.url.href);
   }
 
@@ -73,23 +75,36 @@ export class Router {
     let search = window.location.search;
     if (search[0] === '?') search = search.slice(1);
 
-    const array = search.split('&');
+    let array = search.split('&');
     if (array[0] === '') array.length = 0;
 
     const findDelParam = array.find((el) => el.includes(key));
     let params = '';
-    if (findDelParam) {
-      params = findDelParam.replace(value, '');
+    array = array.map((item) => decodeURI(item));
+    const arr = array.filter((item) => item.includes(value));
+    if (arr.length > 0 && findDelParam) {
+      params = arr[0].replace(value, '');
       params = params.replace(/=,/, '=');
       params = params.replace(/,$/, '');
       params = params.replace(/,+/, ',');
       if (/=$|=&/.test(params)) params = '';
     }
 
-    if (!array.includes(params)) array.push(params);
+    const idx = array.findIndex((item) => item.includes(key));
+    if (~idx) array[idx] = `${params}`;
+    else array.push(params);
 
-    this.url.search = array[array.length - 1];
+    array = array.filter((item) => item !== '');
+    this.url.search = array.join('&');
     history.replaceState(null, '', this.url.href);
+  }
+
+  public clearParams(): void {
+    const search = window.location.search;
+    let href = window.location.href;
+
+    href = href.replace(search, '');
+    history.replaceState(null, '', href);
   }
 
   private initialize(): void {
