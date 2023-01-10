@@ -17,7 +17,6 @@ export default class Details extends Component {
   }
 
   init() {
-    
     this.id = localStorage.getItem('productId');
 
     this.basket.init();
@@ -184,9 +183,9 @@ export default class Details extends Component {
       if (!this.basket.isInBasket(this.id)) {
         this.basket.addProduct(this.id);
       }
-      localStorage.setItem('buy-now','1');
+      localStorage.setItem('buy-now', '1');
       const url = new URL(window.location.href);
-      const newUrl = `${url.origin}/#cart`;
+      const newUrl = `${url.origin}${url.pathname}#cart`;
       window.location.href = newUrl;
     }
   }
