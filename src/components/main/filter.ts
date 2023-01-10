@@ -2,16 +2,18 @@ import { IFilterAmount, IProduct } from '../../common/interface';
 
 export default class Filter {
   private data: Array<IProduct>;
+  public dataToList: Array<IProduct>;
   private filteredData: Array<IProduct>;
   private priceRange: IFilterAmount;
   private amountRange: IFilterAmount;
-  private categoryData: Array<string>;
-  private brandData: Array<string>;
+  public categoryData: Array<string>;
+  public brandData: Array<string>;
   private serachInput: string;
   private sortParam: string;
 
   constructor(data: Array<IProduct>) {
     this.data = data;
+    this.dataToList = [];
     this.filteredData = this.data;
     this.priceRange = {
       from: 0,
@@ -21,8 +23,8 @@ export default class Filter {
       from: 0,
       to: 0,
     };
-    this.serachInput = "";
-    this.sortParam = "";
+    this.serachInput = '';
+    this.sortParam = '';
     this.categoryData = [];
     this.brandData = [];
 
@@ -30,23 +32,27 @@ export default class Filter {
     this.calcInitAmountRange(this.data);
   }
 
-  public addFilterCatergory(name: string) {
-    this.categoryData.push(name)
+  public getSearchQuery() {
+    return this.serachInput;
   }
 
-  public addFilterBrand(name: string) {
-    this.brandData.push(name)
+  public addFilterCatergory(name: string): void {
+    this.categoryData.push(name);
   }
 
-  public removeFilterCatergory(name: string) {
-    this.categoryData = this.categoryData.filter(item => item !== name)
+  public addFilterBrand(name: string): void {
+    this.brandData.push(name);
   }
 
-  public removeFilterBrand(name: string) {
-    this.brandData = this.brandData.filter(item => item !== name)
+  public removeFilterCatergory(name: string): void {
+    this.categoryData = this.categoryData.filter((item) => item !== name);
   }
 
-  public getFilteredData() {
+  public removeFilterBrand(name: string): void {
+    this.brandData = this.brandData.filter((item) => item !== name);
+  }
+
+  public getFilteredData(): Array<IProduct> {
     return this.filteredData;
   }
 
@@ -70,7 +76,7 @@ export default class Filter {
     };
   }
 
-  public changeFoundAmount(num: number) {
+  public changeFoundAmount(num: number): void {
     const foundSpan = document.querySelector('.found__amount');
 
     foundSpan ? (foundSpan.innerHTML = `Found: ${num}`) : null;
@@ -91,14 +97,16 @@ export default class Filter {
 
   onChangeList(): void {
     let data;
-    if(this.brandData.length > 0 && this.categoryData.length > 0) {
-      data = this.data.filter((item) => (this.brandData.includes(item.brand) && this.categoryData.includes(item.category)))
-    } else if(this.brandData.length > 0) {
-      data = this.data.filter((item) => (this.brandData.includes(item.brand)))
+    if (this.brandData.length > 0 && this.categoryData.length > 0) {
+      data = this.filteredData.filter(
+        (item) => this.brandData.includes(item.brand) && this.categoryData.includes(item.category)
+      );
+    } else if (this.brandData.length > 0) {
+      data = this.filteredData.filter((item) => this.brandData.includes(item.brand));
     } else {
-      data = this.data.filter((item) => (this.categoryData.includes(item.category)))
+      data = this.filteredData.filter((item) => this.categoryData.includes(item.category));
     }
-    this.filteredData = (this.brandData.length < 1 && this.categoryData.length < 1) ? this.data : data;
+    this.filteredData = this.brandData.length < 1 && this.categoryData.length < 1 ? this.data : data;
   }
 
   public onChangePriceAmount(): void {
@@ -110,23 +118,23 @@ export default class Filter {
     const priceEnd = document.querySelector('.amount__end_price') as HTMLSpanElement;
 
     // if (input.id === 'from-price') {
-      priceStart.innerText = `${inputFrom.value}`;
-      this.priceRange.from = +inputFrom.value;
-      this.changeInputFromVal(inputFrom, inputTo);
-      // this.calcProductsByRangeNEW();
-      // this.calcInitAmountRange(this.filteredData);
-      // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-      // changeParam(input.id, `${input.value}`);
-      // this.changeFoundAmount(this.filteredData.length);
+    priceStart.innerText = `${inputFrom.value}`;
+    this.priceRange.from = +inputFrom.value;
+    this.changeInputFromVal(inputFrom, inputTo);
+    // this.calcProductsByRangeNEW();
+    // this.calcInitAmountRange(this.filteredData);
+    // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+    // changeParam(input.id, `${input.value}`);
+    // this.changeFoundAmount(this.filteredData.length);
     // } else {
-      priceEnd.innerText = `${inputTo.value}`;
-      this.priceRange.to = +inputTo.value;
-      this.changeInputToVal(inputFrom, inputTo);
-      // this.calcProductsByRangeNEW();
-      // this.calcInitAmountRange(this.filteredData);
-      // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
-      // changeParam(input.id, `${input.value}`);
-      // this.changeFoundAmount(this.filteredData.length);
+    priceEnd.innerText = `${inputTo.value}`;
+    this.priceRange.to = +inputTo.value;
+    this.changeInputToVal(inputFrom, inputTo);
+    // this.calcProductsByRangeNEW();
+    // this.calcInitAmountRange(this.filteredData);
+    // renderNewData(this.filteredData, this.getAmountRange(), 'stock');
+    // changeParam(input.id, `${input.value}`);
+    // this.changeFoundAmount(this.filteredData.length);
     // }
   }
 
@@ -139,23 +147,23 @@ export default class Filter {
     const stockEndNum = document.querySelector('.amount__end_num') as HTMLSpanElement;
 
     // if (input.id === 'from-stock') {
-      this.changeInputFromVal(inputFrom, inputTo);
-      stockStartNum.innerText = `${inputFrom.value}`;
-      this.amountRange.from = +inputFrom.value;
-      // this.calcProductsByRangeNEW();
-      // this.calcInitPriceRange(this.filteredData);
-      // renderNewData(this.filteredData, this.getPriceRange());
-      // changeParam(input.id, `${input.value}`);
-      // this.changeFoundAmount(this.filteredData.length);
+    this.changeInputFromVal(inputFrom, inputTo);
+    stockStartNum.innerText = `${inputFrom.value}`;
+    this.amountRange.from = +inputFrom.value;
+    // this.calcProductsByRangeNEW();
+    // this.calcInitPriceRange(this.filteredData);
+    // renderNewData(this.filteredData, this.getPriceRange());
+    // changeParam(input.id, `${input.value}`);
+    // this.changeFoundAmount(this.filteredData.length);
     // } else {
-      this.changeInputToVal(inputFrom, inputTo);
-      stockEndNum.innerText = `${inputTo.value}`;
-      this.amountRange.to = +inputTo.value;
-      // this.calcProductsByRangeNEW();
-      // this.calcInitPriceRange(this.filteredData);
-      // renderNewData(this.filteredData, this.getPriceRange());
-      // changeParam(input.id, `${input.value}`);
-      // this.changeFoundAmount(this.filteredData.length);
+    this.changeInputToVal(inputFrom, inputTo);
+    stockEndNum.innerText = `${inputTo.value}`;
+    this.amountRange.to = +inputTo.value;
+    // this.calcProductsByRangeNEW();
+    // this.calcInitPriceRange(this.filteredData);
+    // renderNewData(this.filteredData, this.getPriceRange());
+    // changeParam(input.id, `${input.value}`);
+    // this.changeFoundAmount(this.filteredData.length);
     // }
   }
 
@@ -180,23 +188,35 @@ export default class Filter {
   }
 
   public calcProductsByRangeNEW(): void {
-    const priceRange = this.getPriceRange()
-    const stockRange = this.getAmountRange()
+    const priceRange = this.getPriceRange();
+    const stockRange = this.getAmountRange();
     // if (value === 'price') {
-      // debugger
-    this.filteredData = this.filteredData.filter((i) => (i.price >= priceRange.from && i.price <= priceRange.to) && (i.stock >= stockRange.from && i.stock <= stockRange.to));
+    // debugger
+    this.filteredData = this.filteredData.filter(
+      (i) =>
+        i.price >= priceRange.from && i.price <= priceRange.to && i.stock >= stockRange.from && i.stock <= stockRange.to
+    );
+    this.dataToList = this.data.filter(
+      (i) =>
+        i.price >= priceRange.from && i.price <= priceRange.to && i.stock >= stockRange.from && i.stock <= stockRange.to
+    );
     // } else {
     //   this.filteredData = this.data.filter((i) => i.stock >= range.from && i.stock <= range.to);
     // }
   }
 
-  public filter() {
+  public filter(): void {
+    this.filteredData = this.data;
     this.onChangeList();
-    this.onChangePriceAmount()
-    this.onChangeStockAmount()
+    this.onChangePriceAmount();
+    this.onChangeStockAmount();
     this.calcProductsByRangeNEW();
     this.filterBySearchParam();
     this.sortBy();
+
+    this.changeFoundAmount(this.filteredData.length);
+    // this.calcInitPriceRange(this.filteredData);
+    // this.calcInitAmountRange(this.filteredData);
   }
 
   private changeInputFromVal(start: HTMLInputElement, end: HTMLInputElement): void {
@@ -219,38 +239,39 @@ export default class Filter {
     this.serachInput = input;
   }
 
-  private filterBySearchParam() {
-    this.filteredData = this.filteredData.filter((item) => item.title.toLowerCase().includes(this.serachInput.toLowerCase()))
+  private filterBySearchParam(): void {
+    this.filteredData = this.filteredData.filter((item) =>
+      item.title.toLowerCase().includes(this.serachInput.toLowerCase())
+    );
   }
 
-  public addSortParam(input: string) {
+  public addSortParam(input: string): void {
     this.sortParam = input;
   }
 
-  private sortBy() {
+  private sortBy(): void {
     switch (this.sortParam) {
-      case "priceDESC":
-        this.filteredData.sort((a: IProduct, b: IProduct) => a.price - b.price)
+      case 'priceDESC':
+        this.filteredData.sort((a: IProduct, b: IProduct) => a.price - b.price);
         break;
-      case "priceASC":
-        this.filteredData.sort((a: IProduct, b: IProduct) => b.price - a.price)
+      case 'priceASC':
+        this.filteredData.sort((a: IProduct, b: IProduct) => b.price - a.price);
         break;
-      case "ratingDESC":
-        this.filteredData.sort((a: IProduct, b: IProduct) => a.rating - b.rating)
+      case 'ratingDESC':
+        this.filteredData.sort((a: IProduct, b: IProduct) => a.rating - b.rating);
         break;
-      case "ratinASC":
-        this.filteredData.sort((a: IProduct, b: IProduct) => b.rating - a.rating)
+      case 'ratinASC':
+        this.filteredData.sort((a: IProduct, b: IProduct) => b.rating - a.rating);
         break;
-      case "discountDESC":
-        this.filteredData.sort((a: IProduct, b: IProduct) => a.discountPercentage - b.discountPercentage)
+      case 'discountDESC':
+        this.filteredData.sort((a: IProduct, b: IProduct) => a.discountPercentage - b.discountPercentage);
         break;
-      case "discountASC":
-        this.filteredData.sort((a: IProduct, b: IProduct) => b.discountPercentage - a.discountPercentage)
+      case 'discountASC':
+        this.filteredData.sort((a: IProduct, b: IProduct) => b.discountPercentage - a.discountPercentage);
         break;
-    
+
       default:
         break;
     }
-    
   }
 }

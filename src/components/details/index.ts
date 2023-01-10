@@ -194,15 +194,15 @@ export default class Details extends Component {
     }
   }
 
-  public drawCart() {
+  public drawCart(): void {
     this.basket.drawHeader();
   }
 
-  public initFromMain() {
+  public initFromMain(): void {
     this.basket.init();
   }
 
-  private buyNow() {
+  private buyNow(): void {
     if (this.id) {
       if (!this.basket.isInBasket(this.id)) {
         this.basket.addProduct(this.id);

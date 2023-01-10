@@ -113,7 +113,7 @@ export default class Renderer {
     return li;
   }
 
-  public changeProductBtn(data: ChildNode[]) {
+  public changeProductBtn(data: ChildNode[]): void {
     data.forEach((i) => {
       i.childNodes.forEach((i) => {
         const item = i.childNodes[1] as HTMLElement;
@@ -122,72 +122,4 @@ export default class Renderer {
       });
     });
   }
-
-  // public renderFilterList(rootEl: string, list: Array<IFilterProduct>, prevList?: Array<IFilterProduct>): void {
-  //   const root: HTMLElement | null = document.querySelector(rootEl);
-
-  //   if (root) {
-  //     root.innerHTML = '';
-  //     for (let i = 0; i < list.length; i++) {
-  //       const li = document.createElement('li');
-  //       const input = document.createElement('input');
-  //       const label = document.createElement('label');
-  //       const spanCurr = document.createElement('span');
-  //       const spanTotal = document.createElement('span');
-  //       li.classList.add('scroll-filter__item');
-  //       input.classList.add('scroll-filter__input');
-  //       input.id = list[i].name;
-  //       input.type = 'checkbox';
-  //       input.name = list[i].name;
-  //       label.classList.add('scroll-filter__label');
-  //       label.htmlFor = list[i].name;
-  //       label.innerText = list[i].name;
-  //       spanCurr.classList.add('scroll-filter__amount', 'scroll-filter__amount_current');
-  //       spanTotal.classList.add('scroll-filter__amount', 'scroll-filter__amount_total');
-  //       spanCurr.innerText = `${list[i].stock}/`;
-  //       spanTotal.innerText = prevList ? `${prevList[i].stock}` : `${list[i].stock}`;
-  //       li.append(input);
-  //       li.append(label);
-  //       li.append(spanCurr);
-  //       li.append(spanTotal);
-
-  //       if (root) {
-  //         root.append(li);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // public renderFilterRangeValues(fromInp: string, toInp: string, fromEl: string, toEl: string, data: IFilterAmount) {
-  //   const fromInput = document.getElementById(fromInp) as HTMLInputElement | null;
-  //   const toInput = document.getElementById(toInp) as HTMLInputElement | null;
-  //   const fromSpan = document.querySelector(fromEl) as HTMLSpanElement;
-  //   const toSpan = document.querySelector(toEl) as HTMLSpanElement;
-
-  //   if (fromInput) {
-  //     fromInput.min = localStorage.getItem(fromInp) as string;
-  //     fromInput.max = localStorage.getItem(toInp) as string;
-  //     fromInput.value = `${data.from}`;
-  //   }
-  //   if (toInput) {
-  //     toInput.min = localStorage.getItem(fromInp) as string;
-  //     toInput.max = localStorage.getItem(toInp) as string;
-  //     toInput.value = `${data.to}`;
-  //   }
-
-  //   fromSpan.innerText = `${data.from}`;
-  //   toSpan.innerText = `${data.to}`;
-  // }
-
-  // public changeFilterRangeValues(inp: string, el: string, data: IFilterAmount, urlData?: string) {
-  //   const input = document.getElementById(inp) as HTMLInputElement | null;
-  //   const span = document.querySelector(el) as HTMLSpanElement;
-
-  //   if (input) {
-  //     input.min = `${data.from}`;
-  //     input.max = `${data.to}`;
-  //     input.value = `${urlData}`;
-  //     span.innerText = `${urlData}`;
-  //   }
-  // }
 }
