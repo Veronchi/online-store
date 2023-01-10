@@ -25,6 +25,7 @@ export default {
       template: './src/index.html',
       inject: 'body',
       minify: false,
+      favicon: './src/assets/icons/icons8-cart-64.png',
     }),
     new HtmlWebpackPlugin({
       filename: 'details.html',

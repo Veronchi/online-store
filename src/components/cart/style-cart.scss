@@ -419,11 +419,38 @@ hr {
 }
 
 .input-wrapper {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+
+  &_credit {
+    &.credit-card::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 10px;
+      width: 25px;
+      height: 25px;
+      background-image: url('../../assets/icons/credit-card.svg');
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &.visa::before {
+      background-image: url('../../assets/icons/visa.png');
+    }
+
+    &.mastercard::before {
+      background-image: url('../../assets/icons/master-card.svg');
+    }
+
+    &.union-pay::before {
+      background-image: url('../../assets/icons/union-pay.png');
+    }
+  }
 
   .error {
     display: none;
@@ -458,6 +485,7 @@ hr {
 
     &_number {
       width: 100%;
+      padding-left: 35px;
     }
 
     &_date {
