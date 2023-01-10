@@ -15,6 +15,7 @@ export default class Main extends Component {
   private router: Router;
   private data: Array<IProduct>;
   private details: Details;
+  private basketData: Ibasket;
 
   constructor(name: string, router: Router, details: Details) {
     super(name);
@@ -27,6 +28,7 @@ export default class Main extends Component {
       ranges: [{ root: '.range-filter_price' }, { root: '.range-filter_stock' }],
     });
     this.router = router;
+    this.basketData = JSON.parse(localStorage.getItem('basket') as string);
   }
 
   public init(): void {
@@ -47,9 +49,9 @@ export default class Main extends Component {
     this.initEvents();
     this.checkUrlLayout();
     this.filter.changeFoundAmount(this.data.length);
-    const basketData = JSON.parse(localStorage.getItem('basket') as string);
-    const nodes = this.findItem(basketData);
-    basketData ? this.renderer.changeProductBtn(nodes) : null;
+    // const basketData = JSON.parse(localStorage.getItem('basket') as string);
+    const nodes = this.findItem(this.basketData);
+    this.basketData ? this.renderer.changeProductBtn(nodes) : null;
   }
 
   private handleData(): void {
@@ -68,6 +70,7 @@ export default class Main extends Component {
     this.handleCategoryList();
     this.handleSearchInput();
     this.handleDropdownList();
+    this.handleClearFilters();
   }
 
   private handleDropdownList(): void {
@@ -89,6 +92,8 @@ export default class Main extends Component {
           if (dropdownLabel) dropdownLabel.innerText = dropdownEl.innerText;
           this.router.appendParam('sortBy', `${sortID}`);
           this.renderer.render(renderedData);
+          const nodes = this.findItem(this.basketData);
+          this.basketData ? this.renderer.changeProductBtn(nodes) : null;
         }
       });
     }
@@ -113,6 +118,8 @@ export default class Main extends Component {
           // this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(renderedData));
           // this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(renderedData));
           this.renderer.render(renderedData);
+          const nodes = this.findItem(this.basketData);
+          this.basketData ? this.renderer.changeProductBtn(nodes) : null;
         }
       });
     }
@@ -137,6 +144,8 @@ export default class Main extends Component {
           // this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(renderedData));
           // this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(renderedData));
           this.renderer.render(renderedData);
+          const nodes = this.findItem(this.basketData);
+          this.basketData ? this.renderer.changeProductBtn(nodes) : null;
         }
       });
     }
@@ -156,6 +165,8 @@ export default class Main extends Component {
         this.filterRenderer.renderFilterList('.scroll-filter_brand', this.calcBrandStock(filteredData));
         this.router.appendParam('searchQuery', `${this.filter.getSearchQuery()}`);
         this.renderer.render(filteredData);
+        const nodes = this.findItem(this.basketData);
+        this.basketData ? this.renderer.changeProductBtn(nodes) : null;
       });
     }
   }
@@ -261,6 +272,8 @@ export default class Main extends Component {
 
         this.router.appendParam('from-price', `${this.filter.getPriceRange().from}`);
         this.router.appendParam('to-price', `${this.filter.getPriceRange().to}`);
+        const nodes = this.findItem(this.basketData);
+        this.basketData ? this.renderer.changeProductBtn(nodes) : null;
         // localStorage.setItem('from-price', `${this.filter.getPriceRange().from}`);
         // localStorage.setItem('to-price', `${this.filter.getPriceRange().to}`);
       });
@@ -280,6 +293,8 @@ export default class Main extends Component {
 
         this.router.appendParam('from-stock', `${this.filter.getAmountRange().from}`);
         this.router.appendParam('to-stock', `${this.filter.getAmountRange().to}`);
+        const nodes = this.findItem(this.basketData);
+        this.basketData ? this.renderer.changeProductBtn(nodes) : null;
         // localStorage.setItem('from-stock', `${this.filter.getAmountRange().from}`);
         // localStorage.setItem('to-stock', `${this.filter.getAmountRange().to}`);
       });
@@ -287,10 +302,29 @@ export default class Main extends Component {
   }
 
   private handleCopyUrl(): void {
-    const copyBtn = document.querySelector<HTMLDivElement>('.btn_copy');
+    const copyBtn = document.querySelector<HTMLButtonElement>('.btn_copy');
 
     if (copyBtn) {
       copyBtn.addEventListener('click', this.filter.copyFilters);
+    }
+  }
+
+  private handleClearFilters() {
+    const clearBtn = document.querySelector<HTMLButtonElement>('.btn_reset');
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        this.renderer.render(this.data);
+        this.filter.calcInitPriceRange(this.data);
+        this.filter.calcInitAmountRange(this.data);
+        this.filterRenderer.renderFilterRangeValues('.range-filter_price', this.filter.getPriceRange());
+        this.filterRenderer.renderFilterRangeValues('.range-filter_stock', this.filter.getAmountRange());
+        this.filter.changeFoundAmount(this.data.length);
+        const nodes = this.findItem(this.basketData);
+        this.basketData ? this.renderer.changeProductBtn(nodes) : null;
+        this.router.clearParams();
+        this.renderer.setGridProductLayout();
+      });
     }
   }
 

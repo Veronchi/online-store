@@ -92,6 +92,14 @@ export class Router {
     history.replaceState(null, '', this.url.href);
   }
 
+  public clearParams(): void {
+    const search = window.location.search;
+    let href = window.location.href;
+
+    href = href.replace(search, '');
+    history.replaceState(null, '', href);
+  }
+
   private initialize(): void {
     window.addEventListener('hashchange', this.hashChanged.bind(this));
   }

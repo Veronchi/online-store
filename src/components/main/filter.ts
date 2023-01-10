@@ -56,7 +56,7 @@ export default class Filter {
     return this.filteredData;
   }
 
-  private calcInitPriceRange(data: Array<IProduct>): void {
+  public calcInitPriceRange(data: Array<IProduct>): void {
     const cloneData = [...data];
     const result = cloneData.sort((a, b) => a.price - b.price);
 
@@ -66,7 +66,7 @@ export default class Filter {
     };
   }
 
-  private calcInitAmountRange(data: Array<IProduct>): void {
+  public calcInitAmountRange(data: Array<IProduct>): void {
     const cloneData = [...data];
     const result = cloneData.sort((a, b) => a.stock - b.stock);
 
@@ -215,6 +215,8 @@ export default class Filter {
     this.sortBy();
 
     this.changeFoundAmount(this.filteredData.length);
+
+    // this.saveFilteredData();
     // this.calcInitPriceRange(this.filteredData);
     // this.calcInitAmountRange(this.filteredData);
   }
@@ -274,4 +276,9 @@ export default class Filter {
         break;
     }
   }
+
+  // public saveFilteredData() {
+  //   localStorage.setItem('CurrFilteredData', JSON.stringify(this.filteredData));
+  //   // console.log(this.filteredData);
+  // }
 }
