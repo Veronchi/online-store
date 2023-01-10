@@ -43,6 +43,8 @@ export default class Basket {
       this.totalCount = basketValue.totalCount;
       this.totalSumm = basketValue.totalSumm;
       this.totalDiscount = basketValue.totalDiscount;
+    } else {
+      this.setToLocalStorage();
     }
   }
 

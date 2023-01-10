@@ -24,7 +24,6 @@ export default class Cart extends Component {
     console.log('cart');
 
     const url = new URL(window.location.href);
-    console.log(url);
 
     this.basket.init();
 
@@ -433,30 +432,32 @@ export default class Cart extends Component {
   }
 
   private drawPromoCodes(): void {
-    const promoBlock = document.querySelector('.cart-summary__promocodes') as HTMLElement;
-    const promoItems = document.querySelector('.cart-summary__promo-items') as HTMLElement;
-    const promoTotal = document.querySelector('.cart-summary__total-promo') as HTMLElement;
-    promoItems.innerHTML = '';
-    if (this.basket.promocodes.length > 0) {
-      this.basket.promocodes.forEach((element: IPromo) => {
-        const liItem = document.createElement('li');
-        const liDrop = document.createElement('button');
-        liItem.className = 'cart-summary__promo-item';
-        liItem.textContent = `${element.description} - ${element.discount}%`;
-        liItem.setAttribute('data-promoname', element.promoname);
-        liDrop.className = 'cart-summary__promo-drop';
-        liDrop.textContent = 'X';
-        liItem.append(liDrop);
-        promoItems.append(liItem);
-        promoBlock.style.display = 'block';
-        promoTotal.style.display = 'block';
-        this.handlerDelPromo(liDrop);
-      });
-    } else {
-      promoBlock.style.display = 'none';
-      promoTotal.style.display = 'none';
+    if (this.basket.purchases.length !== 0) {
+      const promoBlock = document.querySelector('.cart-summary__promocodes') as HTMLElement;
+      const promoItems = document.querySelector('.cart-summary__promo-items') as HTMLElement;
+      const promoTotal = document.querySelector('.cart-summary__total-promo') as HTMLElement;
+      promoItems.innerHTML = '';
+      if (this.basket.promocodes.length > 0) {
+        this.basket.promocodes.forEach((element: IPromo) => {
+          const liItem = document.createElement('li');
+          const liDrop = document.createElement('button');
+          liItem.className = 'cart-summary__promo-item';
+          liItem.textContent = `${element.description} - ${element.discount}%`;
+          liItem.setAttribute('data-promoname', element.promoname);
+          liDrop.className = 'cart-summary__promo-drop';
+          liDrop.textContent = 'X';
+          liItem.append(liDrop);
+          promoItems.append(liItem);
+          promoBlock.style.display = 'block';
+          promoTotal.style.display = 'block';
+          this.handlerDelPromo(liDrop);
+        });
+      } else {
+        promoBlock.style.display = 'none';
+        promoTotal.style.display = 'none';
+      }
+      this.setPromoTotalSumm();
     }
-    this.setPromoTotalSumm();
   }
 
   private setPromoTotalSumm() {
