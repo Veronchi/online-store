@@ -36,7 +36,7 @@ export default class Main extends Component {
   public init(): void {
     this.handleData();
     this.renderer.init();
-    if (Object.keys(this.qParams).length == 0) {
+    if (Object.keys(this.qParams)[0].length < 1) {
       this.renderer.render(this.data);
       this.filter.changeFoundAmount(this.data.length);
       this.filter.saveFilteredData(this.data);
