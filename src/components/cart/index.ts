@@ -25,7 +25,6 @@ export default class Cart extends Component {
     console.log('cart');
 
     const url = new URL(window.location.href);
-    console.log(url);
 
     this.basket.init();
 
