@@ -622,6 +622,7 @@ export default class Cart extends Component {
   private validateCreditNumInput(target: HTMLInputElement, errorStyle: string): void {
     const inputValue = target.value;
     const errorText = document.querySelector('.error-cart') as HTMLSpanElement;
+    const wrapper = document.querySelector('.input-wrapper_credit') as HTMLDivElement;
 
     if (~inputValue.search(/[^\d,\s]/gm)) {
       target.style.cssText = errorStyle;
@@ -637,6 +638,26 @@ export default class Cart extends Component {
     let value = target.value.replace(/[^\d]/g, '').substring(0, 16);
     value = value !== '' ? (value.match(/.{1,4}/g)?.join(' ') as string) : '';
     target.value = value;
+
+    console.log(target.value[0]);
+
+    if (+value[0] === 4) {
+      wrapper.classList.remove('union-pay');
+      wrapper.classList.remove('mastercard');
+      wrapper.classList.add('visa');
+    } else if (+value[0] === 5) {
+      wrapper.classList.remove('visa');
+      wrapper.classList.remove('union-pay');
+      wrapper.classList.add('mastercard');
+    } else if (+value[0] === 6) {
+      wrapper.classList.remove('visa');
+      wrapper.classList.remove('mastercard');
+      wrapper.classList.add('union-pay');
+    } else {
+      wrapper.classList.remove('visa');
+      wrapper.classList.remove('mastercard');
+      wrapper.classList.remove('union-pay');
+    }
   }
 
   private validateDateInput(target: HTMLInputElement, errorStyle: string): void {
