@@ -90,6 +90,18 @@ export default class Filter {
   }
 
   public async copyFilters(): Promise<void> {
+    const copyBtn = document.querySelector('.btn_copy') as HTMLButtonElement;
+
+    if (copyBtn) {
+      copyBtn.classList.add('active');
+      copyBtn.textContent = 'copied!';
+    }
+
+    setTimeout(() => {
+      copyBtn.classList.remove('active');
+      copyBtn.textContent = 'copy link';
+    }, 2000);
+
     const href = window.location.href;
 
     await navigator.clipboard.writeText(href);

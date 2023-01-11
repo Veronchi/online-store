@@ -41,6 +41,13 @@
 
   .btn {
     @include button;
+
+    &_copy {
+      &.active {
+        background-color: $blue;
+        color: $primary-dark;
+      }
+    }
   }
 }
 
