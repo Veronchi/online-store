@@ -87,6 +87,10 @@ export default class Details extends Component {
         if (idx === 0) thumbnail.classList.add('details__thumbnail_checked');
         detailsThumbnails.append(thumbnail);
       });
+
+      const url = new URL(window.location.href);
+      const newUrl = `${url.origin}${url.pathname}#details/productId=${id}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
     }
   }
 
