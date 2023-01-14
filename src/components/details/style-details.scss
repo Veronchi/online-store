@@ -1,0 +1,242 @@
+@import '../../styles/palette.scss';
+@import '../../styles/fonts.css';
+@import '../../styles/buttons';
+
+hr {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  border-style:inset;
+  border-width: 1px;
+}
+
+.main {
+  min-height: calc(100vh - 197px);
+  margin: auto;
+  margin-top: 0;
+}
+
+.details {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    margin: 0 auto;
+    padding: 20px 20px;
+    width: 100%;
+    display: flex;
+    gap: 40px;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+    @media (max-width: 800px) {
+      &__header {
+        padding: 20px 10px;
+        gap: 10px;
+      }
+    }
+    
+    &__cost {
+      margin-block-start: 0;
+      margin-block-end: 0;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 800px) {
+      &__cost {
+        font-size: 1.3rem;
+      }
+    }
+
+    &__cart,
+    &__buy {
+        @include button;
+        width: 120px;
+    }
+    
+    @media (max-width: 800px) {
+    
+      &__cart,
+      &__buy {
+        padding: 0;
+        width: 110px;
+        height: 30px;
+        font-size: 12px;
+        line-height: 25px;
+      }
+    
+    }
+
+    &__wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    
+    @media (max-width: 800px) {
+    
+      &__wrapper {
+        flex-direction: column-reverse;
+      }
+    
+    }
+
+    &__photo {
+      position: relative;
+      width: 50%;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__photo {
+        width: 100%;
+      }
+    
+    }
+
+    &__discount {
+      position: absolute;
+      padding: 10px 0;
+      left: 5%;
+      top: 40px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      color: $red;
+      background-color: $yellow;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 800px) {
+    
+      &__discount {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+      }
+    
+    }
+    
+    &__container {
+      width: 75%;
+      height: 100%;
+    }
+    
+    &__image {
+      width: 100%;
+      height: 100%;
+      background-image: url("#");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: 0.5s ease-out;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__image {
+        min-height: 200px;
+      }
+    
+    }
+
+    &__thumbnail {
+      width: 60px;
+      height: 50px;
+      background-image: url("#");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: none;
+      cursor: pointer;
+      transition: 0.5s;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__thumbnail {
+        width: 50px;
+        height: 42px;
+      }
+    
+    }
+
+    &__thumbnails {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 0;
+    }
+
+    @media (max-width: 800px) {
+    
+      &__thumbnails {
+        gap: 10px;
+      }
+    
+    }
+
+    &__thumbnail_checked,
+    &__thumbnail:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+}
+
+.description {
+  width: 50%;
+  padding: 20px;
+  background-color: $light-blue;
+  color: $primary-dark;
+
+  @media (max-width: 800px) {
+  
+    & {
+      width: 100%;
+    }
+  
+  }
+
+  &__item {
+    margin: 0;
+  }
+
+  &__path {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding: 20px 0;
+  }
+
+  &__title {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding: 10px 20px;
+  }
+
+  &__caption {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding: 5px 10px;
+    background-color: $gray;
+    border-radius: 10px;
+  }
+
+  &__info {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding: 10px 20px;
+  }
+
+}

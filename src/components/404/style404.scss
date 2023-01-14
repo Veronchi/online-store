@@ -1,0 +1,29 @@
+@import '../../styles/buttons';
+@import '../../styles/palette.scss';
+
+.error__content {
+  margin: auto;
+  min-width: 30vw;
+  padding: 20px;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f7ff;
+  border: 5px solid #0156ff;
+  border-radius: 20px;
+  transition: all 0.1s ease;
+}
+
+.error__title {
+  margin: 0 auto;
+  font-size: 4rem;
+  color: #c94d3f;
+}
+
+.error__desc {
+  margin: 0 auto;
+  font-size: 2em;
+  color: #666666;
+}

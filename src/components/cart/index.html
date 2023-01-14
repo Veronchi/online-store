@@ -1,0 +1,104 @@
+<main class="main">
+  <div class="container">
+    <h2 class="cart-title">Shopping Cart</h2>
+    <div class="cart-container">
+      <div class="cart-items">
+        <ul class="cart-items__header">
+          <li class="cart-items__item">Item</li>
+          <li class="cart-items__price">Price</li>
+          <li class="cart-items__discont">Discount</li>
+          <li class="cart-items__quantity">Qty</li>
+          <li class="cart-items__subtotal">Subtotal</li>
+        </ul>
+        <hr>
+        <div class="products-section">
+          <div class="cart-products">
+          </div>
+          <div class="cart-pagination">
+            <div class="cart-pagination__items">
+              <label class="cart-pagination__label" for="items">Max items per page:</label>
+              <input class="cart-pagination__input" type="number" id="items" name="items" value="4" min="1" max="6">
+            </div>
+            <div class="cart-pagination__pages">
+              <p class="cart-pagination__title">Pages:</p>
+              <button class="cart-pagination__button cart-pagination__left">&lt;</button>
+              <p class="cart-pagination__count">1</p>
+              <button class="cart-pagination__button cart-pagination__right">&gt;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cart-summary">
+        <h2 class="cart-summary__title">Summary</h2>
+        <p class="cart-summary__products">Products:<span class="cart-summary__products-count">0</span></p>
+        <p class="cart-summary__discount">Total discount:<span class="cart-summary__discount-count">0$</span></p>
+        <div class="cart-summary__promocodes">
+          <h3 class="cart-summary__codes-title">Applied Discount Code:</h3>
+          <ul class="cart-summary__promo-items">
+          </ul>
+        </div>
+        <p class="cart-summary__total-promo">Total:<span class="cart-summary__total-count-promo">0$</span></p>
+        <p class="cart-summary__total">Total:<span class="cart-summary__total-count">0$</span></p>
+        <input class="cart-summary__promo" id="promocode" type="search" placeholder="Enter promo code"
+          autocomplete="off">
+        <div class="cart-summary__promo-find"><span class="cart-summary__promo-desc">Promo code2</span><button
+            class="cart-summary__promo-add">apply</button></div>
+        <label for="promocode">Promo for test: NEWYEAR, RS, MC</label>
+        <button class="cart-summary__submit">Buy now</button>
+      </div>
+    </div>
+
+    <div class="modal">
+      <form id="modal-form">
+        <div class="person-info">
+          <h2 class="person-info__title">Personal details</h2>
+          <div class="input-wrapper">
+            <input class="person-info__input person-info__input_name" type="text" name="user-name"
+              placeholder="First name Last name">
+            <span class="error error-name">Error</span>
+          </div>
+          <div class="input-wrapper">
+            <input class="person-info__input person-info__input_number" type="text" name="user-phone"
+              placeholder="phone number">
+            <span class="error error-phone">Error</span>
+          </div>
+          <div class="input-wrapper">
+            <input class="person-info__input person-info__input_adress" type="text" name="user-adress"
+              placeholder="delivery adress">
+            <span class="error error-adress">Error</span>
+          </div>
+          <div class="input-wrapper">
+            <input class="person-info__input person-info__input_email" type="text" name="user-mail"
+              placeholder="email@mail.com">
+            <span class="error error-mail">Error</span>
+          </div>
+        </div>
+        <div class="credit">
+          <h2 class="credit__title">Credit card details</h2>
+          <div class="input-wrapper input-wrapper_credit credit-card">
+            <input class="credit__input credit__input_number" type="text" name="credit-num"
+              placeholder="0000 0000 0000 0000">
+            <span class="error error-cart">Error</span>
+          </div>
+          <div class="wrapper">
+            <div class="input-wrapper">
+              <label>Valid:
+                <input class="credit__input credit__input_date" type="text" name="credit-date" placeholder="MM / YY">
+              </label>
+              <span class="error error-date">Error</span>
+            </div>
+            <div class="input-wrapper">
+              <label>CVV:
+                <input class="credit__input credit__input_cvv" type="text" name="credit-cvv" placeholder="XXX"
+                  maxlength="3">
+              </label>
+              <span class="error error-cvv">Error</span>
+            </div>
+          </div>
+        </div>
+        <button class="modal__submit" type="submit">Submit</button>
+      </form>
+      <div class="popup"><span>Thanks for your order!</span></div>
+    </div>
+  </div>
+</main>
