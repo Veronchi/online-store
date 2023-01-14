@@ -265,7 +265,7 @@ export default class Main extends Component {
     const priceFilter = document.querySelector<HTMLDivElement>('.range-filter__control_price');
 
     if (priceFilter) {
-      priceFilter.addEventListener('change', (e) => {
+      priceFilter.addEventListener('change', () => {
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
         this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(filteredData));
@@ -276,8 +276,6 @@ export default class Main extends Component {
         this.router.appendParam('to-price', `${this.filter.getPriceRange().to}`);
         const nodes = this.findItem(this.basketData);
         this.basketData ? this.renderer.changeProductBtn(nodes) : null;
-        // localStorage.setItem('from-price', `${this.filter.getPriceRange().from}`);
-        // localStorage.setItem('to-price', `${this.filter.getPriceRange().to}`);
       });
     }
   }
@@ -286,7 +284,7 @@ export default class Main extends Component {
     const stockFilter = document.querySelector<HTMLDivElement>('.range-filter__control_stock');
 
     if (stockFilter) {
-      stockFilter.addEventListener('change', (e) => {
+      stockFilter.addEventListener('change', () => {
         this.filter.filter();
         const filteredData = this.filter.getFilteredData();
         this.filterRenderer.renderFilterList('.scroll-filter_category', this.calcCategoryStock(filteredData));
@@ -297,8 +295,6 @@ export default class Main extends Component {
         this.router.appendParam('to-stock', `${this.filter.getAmountRange().to}`);
         const nodes = this.findItem(this.basketData);
         this.basketData ? this.renderer.changeProductBtn(nodes) : null;
-        // localStorage.setItem('from-stock', `${this.filter.getAmountRange().from}`);
-        // localStorage.setItem('to-stock', `${this.filter.getAmountRange().to}`);
       });
     }
   }
@@ -483,7 +479,6 @@ export default class Main extends Component {
 
     localStorage.removeItem('productId');
     localStorage.setItem('productId', `${productId}`);
-    // window.location.replace('#details');
   }
 
   private findNode(el: HTMLElement, e: Event): HTMLElement | undefined {

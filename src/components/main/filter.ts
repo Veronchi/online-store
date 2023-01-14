@@ -151,14 +151,6 @@ export default class Filter {
     this.amountRange.to = +inputTo.value;
   }
 
-  private calcProductsByRange(range: IFilterAmount, value: string): void {
-    if (value === 'price') {
-      this.filteredData = this.data.filter((i) => i.price >= range.from && i.price <= range.to);
-    } else {
-      this.filteredData = this.data.filter((i) => i.stock >= range.from && i.stock <= range.to);
-    }
-  }
-
   public calcProductsByRangeNEW(): void {
     const priceRange = this.getPriceRange();
     const stockRange = this.getAmountRange();
